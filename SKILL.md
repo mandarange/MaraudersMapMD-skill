@@ -1,6 +1,6 @@
 ---
-name: maraudersmapmd-readability-flow
-description: Rewrite Markdown documents to maximize readability and scan-ability using the MaraudersMapMD readability flow. Use this skill when the user asks to improve, rewrite, or optimize a Markdown document for readability, or when asked to apply MaraudersMapMD readability formatting.
+name: maraudersmapmd-skill
+description: Rewrite Markdown documents to maximize readability and scan-ability using the MaraudersMapMD skill. Use this skill when the user asks to improve, rewrite, or optimize a Markdown document for readability, or when asked to apply MaraudersMapMD readability formatting.
 metadata:
   version: "4.0.0"
   source: "MaraudersMapMD src/ai/aiService.ts buildReadabilityPrompt()"
@@ -11,7 +11,7 @@ metadata:
     - maraudersmapmd
 ---
 
-# MaraudersMapMD Readability Flow
+# MaraudersMapMD Skill
 
 ## When to Use
 

@@ -4,7 +4,7 @@ AI agent skill for [MaraudersMapMD](https://github.com/mandarange/MaraudersMapMD
 
 ## What This Skill Does
 
-`maraudersmapmd-readability-flow` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy.
+`maraudersmapmd-skill` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy.
 
 The skill contains three parts:
 
@@ -19,7 +19,7 @@ Humans make mistakes. We recommend letting the AI handle the installation for yo
 Paste the prompt below into Cursor's chat and the AI will set it up for you:
 
 ```
-Fetch the content from https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md and save it as .cursor/rules/maraudersmapmd-readability-flow.mdc in this project.
+Fetch the content from https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md and save it as .cursor/rules/maraudersmapmd-skill.mdc in this project.
 ```
 
 ## Installation
@@ -27,13 +27,13 @@ Fetch the content from https://raw.githubusercontent.com/mandarange/MaraudersMap
 ### Cursor
 
 ```bash
-mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .cursor/rules/maraudersmapmd-readability-flow.mdc
+mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .cursor/rules/maraudersmapmd-skill.mdc
 ```
 
 ### Claude Code
 
 ```bash
-mkdir -p .claude/skills && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .claude/skills/maraudersmapmd-readability-flow.md
+mkdir -p .claude/skills && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .claude/skills/maraudersmapmd-skill.md
 ```
 
 ### Manual
@@ -42,9 +42,9 @@ Download [`SKILL.md`](./SKILL.md) from this repo and place it at:
 
 | Tool | Path |
 |------|------|
-| Cursor | `.cursor/rules/maraudersmapmd-readability-flow.mdc` |
-| Claude Code (project) | `.claude/skills/maraudersmapmd-readability-flow.md` |
-| Claude Code (global) | `~/.claude/skills/maraudersmapmd-readability-flow/SKILL.md` |
+| Cursor | `.cursor/rules/maraudersmapmd-skill.mdc` |
+| Claude Code (project) | `.claude/skills/maraudersmapmd-skill.md` |
+| Claude Code (global) | `~/.claude/skills/maraudersmapmd-skill/SKILL.md` |
 
 ## Verify Installation
 
