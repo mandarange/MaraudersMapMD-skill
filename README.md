@@ -9,7 +9,7 @@ AI agent skill for [MaraudersMapMD](https://github.com/mandarange/MaraudersMapMD
 The skill contains three parts:
 
 1. **Canonical Prompt** — the verbatim prompt from the extension's `src/ai/aiService.ts` `buildReadabilityPrompt()`, copied without modification
-2. **4-Phase Procedure** — an artifact-driven editorial flow (Baseline Capture → Skeleton → Section Rewrite → Verification & Cleanup)
+2. **5-Phase Procedure** — an artifact-driven editorial flow (Baseline Capture → Working Copy → Skeleton → Section Rewrite → Verification & Cleanup)
 3. **Verification Checklist** — items that confirm the canonical prompt rules were followed
 
 ## Quick Install (Recommended)
@@ -54,7 +54,7 @@ After installing, type the following in Cursor's chat:
 Improve the readability of this document
 ```
 
-If the skill is loaded correctly, the AI will follow the 4-phase procedure (Baseline → Skeleton → Section Rewrite → Verification) instead of doing a generic rewrite.
+If the skill is loaded correctly, the AI will follow the 5-phase procedure (Baseline → Working Copy → Skeleton → Section Rewrite → Verification) instead of doing a generic rewrite.
 
 ## Skill Contents
 
