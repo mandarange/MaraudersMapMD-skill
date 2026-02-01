@@ -61,7 +61,7 @@ Read the AI Map (`ai-map.md`). It contains a table of every section with line ra
 
 ### Phase 2 — Create working copy
 
-Copy the original file to `<filename>.rewritten.md` in the same directory. Example: `guide.md` → `guide.rewritten.md`. All subsequent edits happen ONLY on this copy. Never modify the original.
+Copy the original file to `temp_<filename>.rewritten.md` in the same directory. Example: `guide.md` → `temp_guide.rewritten.md`. The `temp_` prefix marks it as an intermediate file. All subsequent edits happen ONLY on this copy. Never modify the original.
 
 ### Phase 3 — Skeleton
 
@@ -84,7 +84,10 @@ Compare the finished output against the original Search Index:
 4. Token count of the output should not significantly exceed the original (check AI Map's total).
 5. Run the checklist below.
 
-After verification passes, delete all intermediate artifacts (`docs/MaraudersMap/<docId>/` directory). Only the original source file and `<filename>.rewritten.md` should remain.
+After verification passes:
+1. Rename `temp_<filename>.rewritten.md` → `<filename>.rewritten.md` (remove `temp_` prefix).
+2. Delete all intermediate artifacts (`docs/MaraudersMap/<docId>/` directory).
+3. Confirm only the original source file and `<filename>.rewritten.md` remain. No `temp_` files should exist.
 
 ## Checklist
 
