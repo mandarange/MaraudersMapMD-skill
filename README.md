@@ -60,7 +60,7 @@ If the skill is loaded correctly, the AI will follow the 5-phase procedure (Base
 
 | File | Purpose |
 |------|---------|
-| [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter, canonical prompt, 4-phase procedure, checklist |
+| [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter, canonical prompt, 5-phase procedure, checklist |
 | `README.md` | This file |
 | `LICENSE` | MIT license |
 
