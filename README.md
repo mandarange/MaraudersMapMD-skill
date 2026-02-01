@@ -12,12 +12,14 @@ The skill contains three parts:
 2. **4-Phase Procedure** — an artifact-driven editorial flow (Baseline Capture → Skeleton → Section Rewrite → Verification & Cleanup)
 3. **Verification Checklist** — items that confirm the canonical prompt rules were followed
 
-## Quick Install
+## Quick Install (Recommended)
 
-Cursor 채팅창에 아래 프롬프트를 붙여넣으면 AI가 알아서 설치합니다:
+Humans make mistakes. We recommend letting the AI handle the installation for you.
+
+Paste the prompt below into Cursor's chat and the AI will set it up for you:
 
 ```
-https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md 내용을 fetch해서 이 프로젝트의 .cursor/rules/maraudersmapmd-readability-flow.mdc 파일로 저장해줘
+Fetch the content from https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md and save it as .cursor/rules/maraudersmapmd-readability-flow.mdc in this project.
 ```
 
 ## Installation
@@ -46,13 +48,13 @@ Download [`SKILL.md`](./SKILL.md) from this repo and place it at:
 
 ## Verify Installation
 
-설치 후 Cursor 채팅창에서 아래처럼 입력하면 됩니다:
+After installing, type the following in Cursor's chat:
 
 ```
-이 문서의 가독성을 개선해줘
+Improve the readability of this document
 ```
 
-스킬이 정상 로드되면 AI가 4-phase 절차(Baseline → Skeleton → Section Rewrite → Verification)를 따라 리라이트합니다.
+If the skill is loaded correctly, the AI will follow the 4-phase procedure (Baseline → Skeleton → Section Rewrite → Verification) instead of doing a generic rewrite.
 
 ## Skill Contents
 
