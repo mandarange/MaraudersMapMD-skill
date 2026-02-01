@@ -2,8 +2,8 @@
 name: maraudersmapmd-readability-flow
 description: Rewrite Markdown documents to maximize readability and scan-ability using the MaraudersMapMD readability flow. Use this skill when the user asks to improve, rewrite, or optimize a Markdown document for readability, or when asked to apply MaraudersMapMD readability formatting.
 metadata:
-  version: "3.0.0"
-  source: "MaraudersMapMD src/ai/aiService.ts → buildReadabilityPrompt()"
+  version: "4.0.0"
+  source: "MaraudersMapMD src/ai/aiService.ts buildReadabilityPrompt()"
   tags:
     - markdown
     - readability
@@ -19,102 +19,82 @@ metadata:
 - User asks to apply MaraudersMapMD formatting or make a document AI-readable
 - User provides a Markdown document and asks for editorial polish
 
-## Core Instructions (Verbatim)
+## Canonical Prompt
 
-Create a copy of the Markdown document, then edit the copy for MaraudersMapMD. Apply our format and feature rules to maximize readability and AI consumption.
+The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided Markdown.
 
-Rules:
-- Keep the final language the same as the original (do not translate).
-- Preserve meaning, constraints, and technical facts. Remove fluff only.
-- Use clean heading hierarchy so Section Pack splits are meaningful.
-- Keep Markdown semantics correct (headings, lists, tables, links, code fences).
-- Use AI Hint Blocks for critical content:
-  > [AI RULE] must-not-violate constraints
-  > [AI DECISION] key decisions and rationale
-  > [AI TODO] concrete follow-up actions
-  > [AI CONTEXT] essential background for AI
-- Keep code blocks and inline code unchanged.
-- Prefer short paragraphs, bullet lists, and tables for settings/options.
-- Output ONLY the revised Markdown.
+You are an expert technical editor. Rewrite the Markdown to maximize readability and scan-ability while preserving meaning and intent.
 
-Readability guidance:
-- Add a concise summary at the top for long docs.
-- Prefer short paragraphs (2-4 lines) and bullet lists for dense text.
-- Use consistent numbering for sections and sub-sections.
-- Use tables for settings, options, and comparisons.
-- Use bold for key terms and short callouts; use inline code for identifiers.
-- Keep blockquotes for important notes or constraints (avoid overuse).
-- Spacing: leave a single blank line between sections; no extra blank lines inside a list.
-- Line breaks: avoid manual hard breaks inside paragraphs; use Markdown lists/headings to separate ideas.
-- Typos: fix spelling/grammar and normalize terminology; keep product names and commands unchanged.
+Core requirements:
+- Keep the final language the same as the original (do not translate). If mixed, use the dominant language.
+- Preserve all facts, constraints, and technical details. Do not add new information.
+- Keep Markdown semantics correct (headings, lists, tables, code fences, links).
+- Use the project's AI hint block format where it helps: "> [AI RULE]", "> [AI DECISION]", "> [AI TODO]", "> [AI CONTEXT]".
+- Prefer short paragraphs, clear headings, and consistent numbering.
+- Use tables for settings, options, or structured comparisons when helpful.
+- Keep code blocks and inline code exactly as-is.
+- Remove fluff and redundancy; keep only what's necessary.
+- Output ONLY the final Markdown. No commentary.
 
-Icons (emoji) usage:
-- Use emojis sparingly and consistently (1 per heading max).
-- Only use when it improves scanning (e.g., ✅ for done, ⚠️ for warnings, 🔒 for constraints).
-- Do not decorate every line; avoid repeated icons in lists.
+Formatting guidance:
+- Ensure headings follow a clean hierarchy.
+- Convert dense prose into bullet lists where it improves readability.
+- Keep a concise top summary if the document is long.
 
-Separators (horizontal rules):
-- Use --- only between major sections or before a new major part.
-- Avoid consecutive rules or rules inside lists.
-- Do not use rules as visual noise; prefer headings and spacing.
+SOURCE MARKDOWN (do not omit any content):
+<<<BEGIN MARKDOWN
+${source}
+END MARKDOWN>>>
 
-Markdown syntax for readability:
-- Headings: use # to ### for hierarchy; avoid skipping levels.
-- Lists: use '-' for bullets; use '1.' for ordered steps.
-- Tables: use for structured options/configs; keep columns short.
-- Code: use fenced blocks with language; inline code for identifiers.
-- Quotes: use > for critical notes; keep them short.
+## Procedure
 
-How to express visual emphasis in MaraudersMapMD:
-- Heading levels (H1-H3) are color-coded in preview; use them to create visual hierarchy.
-- Links are colored; convert raw URLs to proper Markdown links.
-- Code blocks and inline code are styled; use them for commands, keys, or file names.
-- Blockquotes are styled with a colored border; use for critical notes.
-- AI Hint Blocks render with distinct styling; use them for must-read content.
+Follow these four phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.
 
-File name: ${fileName}
-Path: ${filePath}
+Artifact paths (generated by the extension on save):
+- AI Map: `docs/MaraudersMap/<docId>/ai-map.md`
+- Section Pack: `docs/MaraudersMap/<docId>/sections/*.md`
+- Search Index: `docs/MaraudersMap/<docId>/index.json`
 
-## Checklist (Verification Only)
+### Phase 1 — Baseline capture (before any rewriting)
 
-### A. Readability
+Read the AI Map (`ai-map.md`). It contains a table of every section with line ranges, token counts, and one-line summaries. Read the Search Index (`index.json`). It lists keywords, links, and AI Hint Blocks per section. Together these two artifacts are the ground truth for what the source contains. Do not rewrite anything yet.
 
-- [ ] Heading hierarchy correct — single `#`, no level skips
-- [ ] Summary present for long documents (>100 lines)
-- [ ] Paragraphs short (2–4 lines max)
-- [ ] Dense paragraphs converted to bullets where it improves scanning
+### Phase 2 — Skeleton
+
+Using the AI Map table as a guide, write a flat heading list for the rewrite. Next to each heading note its one-line purpose. Fix heading levels so they descend without skips (single `#`, then `##`, then `###`). If the document is long, place a concise summary after the title.
+
+### Phase 3 — Section-by-section rewrite
+
+Open each Section Pack file (`sections/*.md`) one at a time, in order. For each section:
+1. Check the Search Index entry for that section's keywords, links, and AI Hint Blocks.
+2. Apply the canonical prompt rules: shorten paragraphs, convert dense prose to bullets, use tables for settings/options, keep code blocks unchanged.
+3. Preserve every keyword, link, and AI Hint Block listed in the index entry.
+4. Make the section self-contained. Use brief cross-references ("see Section X") instead of repeating content.
+
+### Phase 4 — Verification and cleanup
+
+Compare the finished output against the original Search Index:
+1. Every keyword in the index must appear in the output.
+2. Every AI Hint Block in the index must appear in the output.
+3. Every link in the index must appear in the output.
+4. Token count of the output should not significantly exceed the original (check AI Map's total).
+5. Run the checklist below.
+
+After verification passes, delete all intermediate artifacts (`docs/MaraudersMap/<docId>/` directory). Only the original source file and the final rewritten file should remain.
+
+## Checklist
+
+After rewriting, verify every item below. Each maps to a rule in the canonical prompt.
+
+- [ ] Heading hierarchy is correct (single `#` title, levels descend without skips)
+- [ ] Concise summary present at the top for long documents
+- [ ] Paragraphs are short (2–4 lines); dense prose converted to bullets
 - [ ] Tables used for settings, options, or structured comparisons
-
-### B. Formatting / Semantics
-
-- [ ] Markdown syntax preserved (headings, lists, tables, links, code)
-- [ ] Inline code used for identifiers, commands, paths, config keys
-- [ ] Code blocks and inline code unchanged
-- [ ] Blockquotes reserved for critical notes or AI Hint Blocks only
-
-### C. Visual Emphasis
-
-- [ ] Headings leverage preview color hierarchy
-- [ ] Links descriptive — not bare URLs
-- [ ] AI Hint Blocks used only where source content matches the semantic
-
-### D. Spacing / Line Breaks / Typos
-
-- [ ] One blank line between sections
-- [ ] No extra blank lines inside lists
 - [ ] No hard line breaks inside paragraphs
-- [ ] Typos fixed; product names, command names, identifiers preserved exactly
-
-### E. Long Document Flow
-
-- [ ] Outline added at top (restating existing sections, not new content)
-- [ ] Section-by-section rewrite for self-contained scanning
-- [ ] All keywords and constraints from source accounted for
-- [ ] Final consistency pass completed
-
-### F. Completeness
-
-- [ ] Every fact, constraint, and detail from source present in output
-- [ ] No information fabricated beyond structural reorganization
-- [ ] Output language matches source dominant language
-- [ ] Output is Markdown only — no preamble, no commentary
+- [ ] No extra blank lines inside lists
+- [ ] Typos fixed; product names, command names, and identifiers preserved exactly
+- [ ] AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them
+- [ ] All facts, constraints, and technical details from the source are present in the output
+- [ ] Code blocks and inline code unchanged
+- [ ] Output language matches the source's dominant language
+- [ ] Output is only the final Markdown — no commentary or preamble

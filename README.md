@@ -6,46 +6,103 @@ AI agent skill for [MaraudersMapMD](https://github.com/mandarange/MaraudersMapMD
 
 `maraudersmapmd-readability-flow` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy.
 
-When activated, the skill instructs the AI agent to:
+The skill contains three parts:
 
-- Restructure headings into a clean hierarchy
-- Break dense paragraphs into short, scannable blocks
-- Convert inline lists to bullet points and structured data to tables
-- Apply AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) for critical content
-- Preserve all facts, code blocks, and technical details exactly
-- Remove fluff and redundancy while keeping the original language
+1. **Canonical Prompt** — the verbatim prompt from the extension's `src/ai/aiService.ts` `buildReadabilityPrompt()`, copied without modification
+2. **4-Phase Procedure** — an artifact-driven editorial flow (Baseline Capture → Skeleton → Section Rewrite → Verification & Cleanup)
+3. **Verification Checklist** — items that confirm the canonical prompt rules were followed
 
-The prompt is sourced from the extension's `src/ai/aiService.ts` `buildReadabilityPrompt()` function.
+## Quick Install
+
+Copy the prompt below and paste it into your AI coding assistant (Claude Code, Cursor, Windsurf, etc.):
+
+```
+Install the MaraudersMapMD readability skill into this project:
+1. Create .claude/skills/ directory if it doesn't exist
+2. Download SKILL.md from https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md
+3. Save it as .claude/skills/maraudersmapmd-readability-flow.md
+```
+
+Or run this one-liner in your terminal:
+
+```bash
+mkdir -p .claude/skills && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .claude/skills/maraudersmapmd-readability-flow.md
+```
+
+## Installation
+
+### Method 1: Project skill (recommended)
+
+Install into a single project. The skill is available only in that project's context.
+
+```bash
+cd your-project
+mkdir -p .claude/skills
+curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md \
+  -o .claude/skills/maraudersmapmd-readability-flow.md
+```
+
+### Method 2: Personal skill (all projects)
+
+Install once, available across every project on your machine.
+
+```bash
+mkdir -p ~/.claude/skills/maraudersmapmd-readability-flow
+curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md \
+  -o ~/.claude/skills/maraudersmapmd-readability-flow/SKILL.md
+```
+
+### Method 3: Git clone + symlink
+
+Keep the skill repo for updates via `git pull`.
+
+```bash
+# Clone once (anywhere you like)
+git clone https://github.com/mandarange/MaraudersMapMD-skill.git
+
+# Symlink into your project
+mkdir -p .claude/skills
+ln -s "$(pwd)/MaraudersMapMD-skill/SKILL.md" .claude/skills/maraudersmapmd-readability-flow.md
+```
+
+To update later:
+
+```bash
+cd MaraudersMapMD-skill && git pull
+```
+
+### Method 4: Manual copy
+
+Download [`SKILL.md`](./SKILL.md) from this repo and place it at either location:
+
+| Scope | Path |
+|-------|------|
+| Project only | `.claude/skills/maraudersmapmd-readability-flow.md` |
+| All projects | `~/.claude/skills/maraudersmapmd-readability-flow/SKILL.md` |
+
+## Verify Installation
+
+After installing, open your AI coding assistant and type:
+
+```
+이 문서의 가독성을 개선해줘
+```
+
+or
+
+```
+Apply MaraudersMapMD readability flow to this document
+```
+
+If the skill is loaded correctly, the agent will follow the 4-phase procedure (Baseline → Skeleton → Section Rewrite → Verification) instead of doing a generic rewrite.
 
 ## Skill Contents
 
 | File | Purpose |
 |------|---------|
-| [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter + rewrite instructions + verification checklist |
+| [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter, canonical prompt, 4-phase procedure, checklist |
 | `README.md` | This file |
 | `LICENSE` | MIT license |
-
-## Installation
-
-### Claude Code (CLI)
-
-Copy `SKILL.md` into your project's `.claude/skills/` directory:
-
-```bash
-mkdir -p .claude/skills
-cp SKILL.md .claude/skills/maraudersmapmd-readability-flow.md
-```
-
-Or clone the entire repo and symlink:
-
-```bash
-git clone https://github.com/mandarange/MaraudersMapMD-skill.git
-ln -s "$(pwd)/MaraudersMapMD-skill/SKILL.md" .claude/skills/maraudersmapmd-readability-flow.md
-```
-
-### Manual Use
-
-You can also copy the prompt text from the "Core Instructions" section of `SKILL.md` directly into any AI chat interface.
 
 ## When It Triggers
 
