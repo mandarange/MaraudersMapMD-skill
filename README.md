@@ -14,87 +14,45 @@ The skill contains three parts:
 
 ## Quick Install
 
-Copy the prompt below and paste it into your AI coding assistant (Claude Code, Cursor, Windsurf, etc.):
+Cursor 채팅창에 아래 프롬프트를 붙여넣으면 AI가 알아서 설치합니다:
 
 ```
-Install the MaraudersMapMD readability skill into this project:
-1. Create .claude/skills/ directory if it doesn't exist
-2. Download SKILL.md from https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md
-3. Save it as .claude/skills/maraudersmapmd-readability-flow.md
+https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md 내용을 fetch해서 이 프로젝트의 .cursor/rules/maraudersmapmd-readability-flow.mdc 파일로 저장해줘
 ```
 
-Or run this one-liner in your terminal:
+## Installation
+
+### Cursor
+
+```bash
+mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .cursor/rules/maraudersmapmd-readability-flow.mdc
+```
+
+### Claude Code
 
 ```bash
 mkdir -p .claude/skills && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .claude/skills/maraudersmapmd-readability-flow.md
 ```
 
-## Installation
+### Manual
 
-### Method 1: Project skill (recommended)
+Download [`SKILL.md`](./SKILL.md) from this repo and place it at:
 
-Install into a single project. The skill is available only in that project's context.
-
-```bash
-cd your-project
-mkdir -p .claude/skills
-curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md \
-  -o .claude/skills/maraudersmapmd-readability-flow.md
-```
-
-### Method 2: Personal skill (all projects)
-
-Install once, available across every project on your machine.
-
-```bash
-mkdir -p ~/.claude/skills/maraudersmapmd-readability-flow
-curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md \
-  -o ~/.claude/skills/maraudersmapmd-readability-flow/SKILL.md
-```
-
-### Method 3: Git clone + symlink
-
-Keep the skill repo for updates via `git pull`.
-
-```bash
-# Clone once (anywhere you like)
-git clone https://github.com/mandarange/MaraudersMapMD-skill.git
-
-# Symlink into your project
-mkdir -p .claude/skills
-ln -s "$(pwd)/MaraudersMapMD-skill/SKILL.md" .claude/skills/maraudersmapmd-readability-flow.md
-```
-
-To update later:
-
-```bash
-cd MaraudersMapMD-skill && git pull
-```
-
-### Method 4: Manual copy
-
-Download [`SKILL.md`](./SKILL.md) from this repo and place it at either location:
-
-| Scope | Path |
-|-------|------|
-| Project only | `.claude/skills/maraudersmapmd-readability-flow.md` |
-| All projects | `~/.claude/skills/maraudersmapmd-readability-flow/SKILL.md` |
+| Tool | Path |
+|------|------|
+| Cursor | `.cursor/rules/maraudersmapmd-readability-flow.mdc` |
+| Claude Code (project) | `.claude/skills/maraudersmapmd-readability-flow.md` |
+| Claude Code (global) | `~/.claude/skills/maraudersmapmd-readability-flow/SKILL.md` |
 
 ## Verify Installation
 
-After installing, open your AI coding assistant and type:
+설치 후 Cursor 채팅창에서 아래처럼 입력하면 됩니다:
 
 ```
 이 문서의 가독성을 개선해줘
 ```
 
-or
-
-```
-Apply MaraudersMapMD readability flow to this document
-```
-
-If the skill is loaded correctly, the agent will follow the 4-phase procedure (Baseline → Skeleton → Section Rewrite → Verification) instead of doing a generic rewrite.
+스킬이 정상 로드되면 AI가 4-phase 절차(Baseline → Skeleton → Section Rewrite → Verification)를 따라 리라이트합니다.
 
 ## Skill Contents
 
