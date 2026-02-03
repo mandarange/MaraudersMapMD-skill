@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
+  "generated": "2026-02-03T16:29:38.611Z",
+  "totalTokens": 1656,
+  "entries": [
+    {
+      "section": "When to Use",
+      "slug": "when-to-use",
+      "lineRange": [
+        15,
+        21
+      ],
+      "tokens": 94,
+      "keywords": [],
+      "links": [],
+      "summary": "",
+      "aiHints": []
+    },
+    {
+      "section": "Canonical Prompt",
+      "slug": "canonical-prompt",
+      "lineRange": [
+        22,
+        48
+      ],
+      "tokens": 331,
+      "keywords": [],
+      "links": [],
+      "summary": "The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.",
+      "aiHints": [
+        "[AI RULE]\", \"> [AI DECISION]\", \"> [AI TODO]\", \"> [AI CONTEXT]\"."
+      ]
+    },
+    {
+      "section": "Procedure",
+      "slug": "procedure",
+      "lineRange": [
+        49,
+        107
+      ],
+      "tokens": 992,
+      "keywords": [
+        "Sharded access rule (always-on)",
+        "Phase 1 — Baseline capture (before any rewriting)",
+        "Phase 2 — Create working copy",
+        "Phase 3 — Skeleton",
+        "Phase 4 — Section-by-section rewrite",
+        "Phase 5 — Verification and cleanup",
+        "Sync rule — rewritten changes must update shards"
+      ],
+      "links": [],
+      "summary": "Follow these five phases in order.",
+      "aiHints": []
+    },
+    {
+      "section": "Checklist",
+      "slug": "checklist",
+      "lineRange": [
+        108,
+        124
+      ],
+      "tokens": 239,
+      "keywords": [],
+      "links": [],
+      "summary": "After rewriting, verify every item below.",
+      "aiHints": [
+        "[AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them"
+      ]
+    }
+  ]
+}

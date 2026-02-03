@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/README.md",
+  "generated": "2026-02-03T16:31:26.095Z",
+  "totalTokens": 861,
+  "entries": [
+    {
+      "section": "What This Skill Does",
+      "slug": "what-this-skill-does",
+      "lineRange": [
+        4,
+        13
+      ],
+      "tokens": 161,
+      "keywords": [
+        "Canonical Prompt",
+        "5-Phase Procedure",
+        "Verification Checklist"
+      ],
+      "links": [],
+      "summary": "`maraudersmapmd-skill` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy. Canonical Prompt 5-Phase Procedure Verifica",
+      "aiHints": []
+    },
+    {
+      "section": "Sharded Markdown Workflow (AI Accuracy)",
+      "slug": "sharded-markdown-workflow-ai-accuracy",
+      "lineRange": [
+        14,
+        24
+      ],
+      "tokens": 161,
+      "keywords": [
+        "Section Pack",
+        "Search Index",
+        "AI Map",
+        "Rewritten full document"
+      ],
+      "links": [],
+      "summary": "1. Section Pack Search Index AI Map Rewritten full document",
+      "aiHints": []
+    },
+    {
+      "section": "Quick Install (Recommended)",
+      "slug": "quick-install-recommended",
+      "lineRange": [
+        25,
+        34
+      ],
+      "tokens": 98,
+      "keywords": [],
+      "links": [],
+      "summary": "Humans make mistakes.",
+      "aiHints": []
+    },
+    {
+      "section": "Installation",
+      "slug": "installation",
+      "lineRange": [
+        35,
+        58
+      ],
+      "tokens": 167,
+      "keywords": [
+        "`SKILL.md`",
+        "Cursor",
+        "Claude Code",
+        "Manual"
+      ],
+      "links": [
+        "./SKILL.md"
+      ],
+      "summary": "mkdir -p .",
+      "aiHints": []
+    },
+    {
+      "section": "Verify Installation",
+      "slug": "verify-installation",
+      "lineRange": [
+        59,
+        68
+      ],
+      "tokens": 76,
+      "keywords": [],
+      "links": [],
+      "summary": "If the skill is loaded correctly, the AI will follow the 5-phase procedure (Baseline → Working Copy → Skeleton → Section Rewrite → Verification) instead of doing a generic rewrite.",
+      "aiHints": []
+    },
+    {
+      "section": "Skill Contents",
+      "slug": "skill-contents",
+      "lineRange": [
+        69,
+        76
+      ],
+      "tokens": 55,
+      "keywords": [
+        "`SKILL.md`"
+      ],
+      "links": [
+        "./SKILL.md"
+      ],
+      "summary": "| [`SKILL.",
+      "aiHints": []
+    },
+    {
+      "section": "When It Triggers",
+      "slug": "when-it-triggers",
+      "lineRange": [
+        77,
+        87
+      ],
+      "tokens": 89,
+      "keywords": [],
+      "links": [],
+      "summary": "",
+      "aiHints": []
+    },
+    {
+      "section": "Related",
+      "slug": "related",
+      "lineRange": [
+        88,
+        92
+      ],
+      "tokens": 49,
+      "keywords": [
+        "MaraudersMapMD",
+        "Anthropic Skills Spec"
+      ],
+      "links": [
+        "https://github.com/mandarange/MaraudersMapMD",
+        "https://github.com/anthropics/skills"
+      ],
+      "summary": "- [MaraudersMapMD](https://github.",
+      "aiHints": []
+    },
+    {
+      "section": "License",
+      "slug": "license",
+      "lineRange": [
+        93,
+        96
+      ],
+      "tokens": 5,
+      "keywords": [],
+      "links": [],
+      "summary": "",
+      "aiHints": []
+    }
+  ]
+}

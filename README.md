@@ -4,13 +4,24 @@ AI agent skill for [MaraudersMapMD](https://github.com/mandarange/MaraudersMapMD
 
 ## What This Skill Does
 
-`maraudersmapmd-skill` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy.
+`maraudersmapmd-skill` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy. It also enforces sharded Markdown access for fast lookup and keeps shards strictly synced with the rewritten document for accuracy.
 
 The skill contains three parts:
 
 1. **Canonical Prompt** — the verbatim prompt from the extension's `src/ai/aiService.ts` `buildReadabilityPrompt()`, copied without modification
 2. **5-Phase Procedure** — an artifact-driven editorial flow (Baseline Capture → Working Copy → Skeleton → Section Rewrite → Verification & Cleanup)
 3. **Verification Checklist** — items that confirm the canonical prompt rules were followed
+
+## Sharded Markdown Workflow (AI Accuracy)
+
+The skill assumes the MaraudersMapMD artifacts are available and uses them as the primary source for AI lookup:
+
+1. **Section Pack** (`docs/MaraudersMap/<docId>/sections/*.md`) — primary source for fast retrieval
+2. **Search Index** (`docs/MaraudersMap/<docId>/index.json`) — validation of keywords, links, and AI Hint Blocks
+3. **AI Map** (`docs/MaraudersMap/<docId>/ai-map.md`) — section boundaries and summaries
+4. **Rewritten full document** (`<filename>.rewritten.md`) — only for cross-section context
+
+If the rewritten document changes, shards and index must be regenerated immediately so they match exactly.
 
 ## Quick Install (Recommended)
 
@@ -73,6 +84,7 @@ The skill activates when the user asks to:
 - Apply MaraudersMapMD formatting
 - Make a document AI-readable or AI-friendly
 - Polish a Markdown document editorially
+- Use sharded Markdown for fast retrieval or keep shards synced with the rewritten document
 
 ## Related
 
