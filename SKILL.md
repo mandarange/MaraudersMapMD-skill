@@ -76,6 +76,10 @@ When answering or extracting facts, use this order to minimize drift:
 - If a fact appears in a shard but is missing from the index, treat the shard as the source of truth and regenerate the index.
 - If shards disagree with the rewritten document, regenerate shards and index from the rewritten document immediately.
 
+### Repository safety rule
+
+- Never modify `README.md` in this repository. All changes must be confined to skill artifacts and generated MaraudersMapMD outputs only.
+
 ### Phase 1 — Baseline capture (before any rewriting)
 
 Read the AI Map (`ai-map.md`). It contains a table of every section with line ranges, token counts, and one-line summaries. Read the Search Index (`index.json`). It lists keywords, links, and AI Hint Blocks per section. Use the Section Pack (`sections/*.md`) for quick scanning. Together these artifacts are the ground truth for what the source contains. Do not rewrite anything yet.

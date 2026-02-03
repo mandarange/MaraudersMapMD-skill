@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-03T16:29:38.611Z",
-  "totalTokens": 1656,
+  "generated": "2026-02-03T17:20:36.674Z",
+  "totalTokens": 1883,
   "entries": [
     {
       "section": "When to Use",
@@ -37,11 +37,14 @@
       "slug": "procedure",
       "lineRange": [
         49,
-        107
+        125
       ],
-      "tokens": 992,
+      "tokens": 1219,
       "keywords": [
         "Sharded access rule (always-on)",
+        "Retrieval order for accuracy",
+        "Accuracy guardrails",
+        "Repository safety rule",
         "Phase 1 — Baseline capture (before any rewriting)",
         "Phase 2 — Create working copy",
         "Phase 3 — Skeleton",
@@ -57,8 +60,8 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        108,
-        124
+        126,
+        142
       ],
       "tokens": 239,
       "keywords": [],
