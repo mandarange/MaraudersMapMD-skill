@@ -90,6 +90,17 @@ When answering or extracting facts, use this order to minimize drift:
 
 - Never modify `README.md` in this repository. All changes must be confined to skill artifacts and generated MaraudersMapMD outputs only.
 
+### Artifact hygiene and structure rule
+
+- Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.
+- Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,sections/*.md}`.
+- Do not create or keep alternative artifact directories or extra copies outside the structure above.
+
+### Final honest review rule
+
+- Always end the workflow with a brief self-audit: re-check completed work against all rules and verify nothing is missing.
+- If any gap is found, fix it before completing the task.
+
 ### Phase 1 — Baseline capture (before any rewriting)
 
 Read the AI Map (`ai-map.md`). It contains a table of every section with line ranges, token counts, and one-line summaries. Read the Search Index (`index.json`). It lists keywords, links, and AI Hint Blocks per section. Use the Section Pack (`sections/*.md`) for quick scanning. Together these artifacts are the ground truth for what the source contains. Do not rewrite anything yet.
