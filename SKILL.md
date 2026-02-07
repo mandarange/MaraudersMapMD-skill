@@ -34,6 +34,7 @@ Core requirements:
 - Prefer short paragraphs, clear headings, and consistent numbering.
 - Use tables for settings, options, or structured comparisons when helpful.
 - Keep code blocks and inline code exactly as-is.
+- Convert ASCII art diagrams to Mermaid code blocks (see "ASCII-to-Mermaid conversion rule" below).
 - Remove fluff and redundancy; keep only what's necessary.
 - Output ONLY the final Markdown. No commentary.
 
@@ -85,6 +86,44 @@ When answering or extracting facts, use this order to minimize drift:
 - Use `python shards_to_json.py --doc-root docs/MaraudersMap/<docId>` to rebuild the JSON pack.
 - For quick lookup, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --keyword "<keyword>"`.
 - For fastest relevance ranking, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --query "<free text>" --top 5` (BM25).
+
+### ASCII-to-Mermaid conversion rule
+
+When the source Markdown contains ASCII art diagrams (box-drawing characters like `┌─┐│└─┘`, `+---+`, pipe-aligned tables used as diagrams, or any text-art layout representing structure), convert them to Mermaid code blocks during rewriting.
+
+Conversion guidelines:
+- Identify the diagram type and pick the best-fit Mermaid diagram:
+  - DB schemas, ER diagrams → `erDiagram`
+  - Architecture, system layout, grouping → `block-beta` or `flowchart`
+  - Flows, pipelines → `flowchart LR` or `flowchart TD`
+  - Sequences, timelines → `sequenceDiagram` or `timeline`
+  - Class/object relationships → `classDiagram`
+- Preserve every entity, relationship, label, and grouping from the original ASCII art. Do not omit items.
+- Use Mermaid `subgraph` for grouped/boxed sections when the original uses visual grouping.
+- Keep the Mermaid block inside a fenced code block: ` ```mermaid ... ``` `.
+- If the ASCII art is ambiguous, add a one-line comment inside the Mermaid block noting the assumption.
+- Do not keep the original ASCII art alongside the Mermaid block; replace it entirely.
+
+### Mermaid validation rule (Pretty-mermaid-skills)
+
+Mermaid syntax errors break rendering. After generating any Mermaid code block, validate and render it using [Pretty-mermaid-skills](https://github.com/imxv/Pretty-mermaid-skills).
+
+Setup (one-time, if not already installed):
+```bash
+npx skills add https://github.com/imxv/pretty-mermaid-skills --skill pretty-mermaid
+```
+
+Validation flow:
+1. After converting ASCII art to Mermaid, save each Mermaid block as a temporary `.mmd` file.
+2. Render with Pretty-mermaid-skills to verify syntax:
+   ```bash
+   node scripts/render.mjs --input <file>.mmd --output <file>.svg --theme tokyo-night
+   ```
+3. If rendering fails, fix the Mermaid syntax and re-render until it succeeds.
+4. Once validated, embed the corrected Mermaid code back into the Markdown as a fenced ` ```mermaid ``` ` block.
+5. Delete the temporary `.mmd` and `.svg` files.
+
+> [AI RULE] Never embed Mermaid code that has not passed Pretty-mermaid-skills rendering. Broken diagrams are worse than no diagrams.
 
 ### Repository safety rule
 
@@ -160,6 +199,8 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Typos fixed; product names, command names, and identifiers preserved exactly
 - [ ] AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them
 - [ ] All facts, constraints, and technical details from the source are present in the output
-- [ ] Code blocks and inline code unchanged
+- [ ] Code blocks and inline code unchanged (except ASCII art diagrams converted to Mermaid)
+- [ ] All ASCII art diagrams converted to appropriate Mermaid code blocks with no data loss
+- [ ] Every Mermaid code block validated via Pretty-mermaid-skills rendering (no syntax errors)
 - [ ] Output language matches the source's dominant language
 - [ ] Output is only the final Markdown — no commentary or preamble
