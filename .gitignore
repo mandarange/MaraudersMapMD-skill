@@ -3,3 +3,12 @@
 
 # MaraudersMapMD extension local data
 .maraudersmapmd/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# MaraudersMapMD build artifacts
+.manifest.json
+shards.db

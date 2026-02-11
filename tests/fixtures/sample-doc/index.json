@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "slug": "intro",
+      "section": "Introduction",
+      "keywords": ["parsing", "tokenization", "indexing"],
+      "links": [],
+      "aiHints": ["AI RULE"],
+      "summary": "Introduction to the system",
+      "lineRange": [1, 7],
+      "tokens": 15
+    },
+    {
+      "slug": "details",
+      "section": "Details",
+      "keywords": ["configuration", "BM25", "ranking"],
+      "links": [],
+      "aiHints": [],
+      "summary": "Configuration and implementation details",
+      "lineRange": [1, 12],
+      "tokens": 25
+    }
+  ]
+}

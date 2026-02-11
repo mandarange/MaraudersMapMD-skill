@@ -2,7 +2,7 @@
 name: maraudersmapmd-skill
 description: Rewrite Markdown documents to maximize readability and scan-ability and keep sharded Markdown packs in sync for fast lookup. Use this skill when the user asks to improve, rewrite, or optimize a Markdown document for readability, when asked to apply MaraudersMapMD readability formatting, or when sharded Markdown access is required.
 metadata:
-  version: "7.0.0"
+  version: "9.0.0"
   source: "MaraudersMapMD src/ai/aiService.ts buildReadabilityPrompt()"
   tags:
     - markdown
@@ -34,7 +34,10 @@ Core requirements:
 - Prefer short paragraphs, clear headings, and consistent numbering.
 - Use tables for settings, options, or structured comparisons when helpful.
 - Keep code blocks and inline code exactly as-is.
-- Convert ASCII art diagrams to Mermaid code blocks (see "ASCII-to-Mermaid conversion rule" below).
+- Convert ASCII art visuals to the appropriate Markdown-native format (see "ASCII visual content classification" below):
+  - **Data tables** drawn with ASCII borders → proper Markdown pipe tables.
+  - **Diagrams** (flowcharts, ER, architecture) → Mermaid code blocks.
+  - **Charts** (bar charts, histograms, sparklines) → Markdown tables or Mermaid `xychart-beta` / `pie` blocks.
 - Remove fluff and redundancy; keep only what's necessary.
 - Output ONLY the final Markdown. No commentary.
 
@@ -81,6 +84,35 @@ When answering or extracting facts, use this order to minimize drift:
 3. AI Map (`ai-map.md`) for section boundaries and summaries.
 4. Rewritten full document only if cross-section context is required.
 
+### Retrieval routing
+
+Choose the fastest retrieval path based on the query scope:
+
+| Query Scope | Route | Tool |
+|---|---|---|
+| Single section by keyword | **Fast-path** | `shards_search.py --shards ... --keyword "<kw>"` |
+| Relevance-ranked results | **BM25 JSON** | `shards_search.py --shards ... --query "<text>" --top 5` |
+| Cross-doc keyword search | **SQLite keyword** | `shards_search.py --db docs/MaraudersMap/shards.db --keyword "<kw>"` |
+| Cross-doc relevance search | **SQLite FTS5** | `shards_search.py --db docs/MaraudersMap/shards.db --query "<text>"` |
+| Regex pattern match | **Regex** | `shards_search.py --shards ... --regex "<pattern>"` or `--db ... --regex "<pattern>"` |
+| Full context validation | **Fallback** | Open `<filename>.rewritten.md` directly |
+
+> [AI RULE] Always attempt fast-path or BM25 before opening the full rewritten document. Only fall back to the full document when cross-section context is needed and shard results are insufficient.
+
+### Doc-type awareness
+
+Different document types benefit from different retrieval strategies:
+
+| Doc Type | Signal | Strategy |
+|---|---|---|
+| API Reference | Many short sections, code-heavy | Keyword search → exact section |
+| Tutorial/Guide | Sequential sections, prose-heavy | BM25 → top 3, read in order |
+| Configuration | Tables, key-value pairs | Keyword → single section |
+| Architecture | Diagrams, cross-references | Cross-doc search → multiple sections |
+| Mixed | No dominant pattern | BM25 → top 5, scan titles first |
+
+> [AI CONTEXT] Doc-type is inferred from AI Map structure and section content. No explicit tagging required.
+
 ### Accuracy guardrails
 
 - Do not infer facts that are not present in the shards or index.
@@ -95,6 +127,34 @@ When answering or extracting facts, use this order to minimize drift:
 - Use `python shards_to_json.py --doc-root docs/MaraudersMap/<docId>` to rebuild the JSON pack.
 - For quick lookup, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --keyword "<keyword>"`.
 - For fastest relevance ranking, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --query "<free text>" --top 5` (BM25).
+- For incremental rebuilds: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --changed` (skips rebuild if no content changes detected).
+- To preview changes without writing: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --dry-run --report`.
+- To build and ingest into the cross-doc SQLite index: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.
+- To initialize the cross-doc index for the first time: `python shards_db.py --init --map-root docs/MaraudersMap`.
+- To search across all documents: `python shards_search.py --db docs/MaraudersMap/shards.db --query "<text>" --top 5`.
+
+### ASCII visual content classification
+
+Before converting any ASCII art, classify it into one of three categories. The category determines the target format.
+
+Decision tree:
+
+1. **Does the ASCII block contain rows of data with column alignment?** (column headers, separator rows like `+---+---+` or `├───┼───┤`, and cells holding data values such as names, numbers, or settings)
+   → **Category: Data Table** → convert to Markdown pipe table (see "ASCII-to-Markdown-table conversion rule").
+
+2. **Does the ASCII block represent a quantitative visualization?** (bar lengths made of repeated characters like `█`, `▓`, `#`, `=`, `*`; axis labels with numeric values; histogram bins; sparkline-style rows)
+   → **Category: Chart** → convert to Markdown table (if simple) or Mermaid `xychart-beta` / `pie` (if complex) (see "ASCII-to-chart conversion rule").
+
+3. **Does the ASCII block represent structural relationships?** (boxes connected by arrows or lines; flow direction; entity-relationship grouping; sequence lifelines; tree/hierarchy)
+   → **Category: Diagram** → convert to Mermaid code block (see "ASCII-to-Mermaid conversion rule").
+
+Ambiguity rules:
+- If a block mixes data rows with structural arrows, split it: data rows → MD table, structural part → Mermaid.
+- If a pipe-aligned block is clearly a diagram legend or label (no meaningful row data), treat it as part of the diagram.
+- When in doubt, prefer the simpler format (MD table over Mermaid) to maximize portability.
+- Add a one-line HTML comment `<!-- Converted from ASCII art: [original description] -->` above each converted block so reviewers can trace origin.
+
+> [AI RULE] Never leave ASCII art unconverted. Every ASCII visual block must be classified and transformed to its target format.
 
 ### ASCII-to-Mermaid conversion rule
 
@@ -134,6 +194,54 @@ Validation flow:
 
 > [AI RULE] Never embed Mermaid code that has not passed Pretty-mermaid-skills rendering. Broken diagrams are worse than no diagrams.
 
+### ASCII-to-Markdown-table conversion rule
+
+When the source Markdown contains data tables drawn with ASCII art (box-drawing characters, `+---+` borders, or space/tab-aligned columns), convert them to standard Markdown pipe tables.
+
+Detection patterns — any of these signals a data table:
+- Rows delimited by `+---+---+` or `├───┼───┤` or `|---|---|` style separators.
+- Cells bounded by `|` or `│` containing data values (not arrows or flow labels).
+- Space-aligned columns with a clear header row followed by a separator row of dashes or `=`.
+- Box-drawing grids (`┌┬┐`, `├┼┤`, `└┴┘`) where cells hold scalar data (names, numbers, settings, status).
+
+Conversion guidelines:
+- Detect columns by splitting each row on the delimiter character (`|`, `│`, or consistent whitespace).
+- Trim leading/trailing whitespace in each cell.
+- Identify the header row (first data row, or the row directly above the first separator) and emit it as the Markdown table header.
+- Emit a separator row `|---|---|...` immediately after the header. Use `:---`, `:---:`, or `---:` to preserve original alignment if detectable.
+- Emit each subsequent data row as a pipe-delimited row.
+- If the original table has merged/spanned cells, approximate with repeated values or add a footnote explaining the merge.
+- If the original table has row-group separators (thicker lines, double borders), insert a blank row or a bold label row in the Markdown output to maintain grouping.
+- Preserve every data value exactly. Do not summarize, round, or omit any cell.
+
+> [AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original. Any mismatch is a data-loss bug.
+
+### ASCII-to-chart conversion rule
+
+When the source Markdown contains ASCII art representing quantitative data visualization (bar charts, histograms, sparklines, pie-chart text), convert it to the most readable Markdown-native format.
+
+Detection patterns — any of these signals a chart:
+- Rows with repeated fill characters (`█`, `▓`, `▒`, `░`, `#`, `=`, `*`, `■`) whose length encodes a numeric value.
+- An axis label column on the left and a bar on the right (horizontal bar chart).
+- Vertical columns of fill characters with labels at the bottom (vertical bar chart).
+- Percentage labels next to segments (pie-chart text representation).
+- Numeric scale markers along an edge (axis ticks).
+
+Conversion decision:
+- **Simple bar chart (≤10 items, single series)** → Markdown table with a `Bar` column using repeated `█` in inline code for visual reference, plus a numeric `Value` column.
+- **Multi-series or complex chart** → Mermaid `xychart-beta` block.
+- **Pie/donut chart** → Mermaid `pie` block.
+- **Sparkline or trend** → Markdown table with rows for each data point; optionally a Mermaid `xychart-beta` line chart.
+
+Conversion guidelines:
+- Extract every data label and its corresponding value from the ASCII chart.
+- Preserve the original data ordering (e.g., descending by value, chronological).
+- Include units if present in the original (e.g., `%`, `ms`, `MB`).
+- For Mermaid charts, add a `title` matching the original chart's caption or heading context.
+- Validate Mermaid chart blocks using the same Pretty-mermaid-skills flow as diagrams.
+
+> [AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output. Missing data points are conversion failures.
+
 ### Repository safety rule
 
 - Never modify `README.md` in this repository. All changes must be confined to skill artifacts and generated MaraudersMapMD outputs only.
@@ -141,7 +249,7 @@ Validation flow:
 ### Artifact hygiene and structure rule
 
 - Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.
-- Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,sections/*.md}`.
+- Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,.manifest.json,sections/*.md}`. The cross-doc index lives at docs/MaraudersMap/shards.db.
 - Only one `<docId>` directory per document. `<docId>` corresponds to the rewritten file, not the original.
 - If artifacts derived from the original source file exist, delete them immediately.
 - Do not create or keep alternative artifact directories or extra copies outside the structure above.
@@ -195,7 +303,8 @@ If the rewritten document is edited at any time:
 1. Re-run the MaraudersMapMD generation on `<filename>.rewritten.md`.
 2. Replace the Section Pack and Search Index with the newly generated versions.
 3. Regenerate `shards.json` from the updated shards and index.
-4. Do not continue work until shards, index, and `shards.json` exactly match the rewritten document.
+4. If a cross-doc SQLite index exists (`shards.db`), re-ingest the updated doc: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.
+5. Do not continue work until shards, index, and `shards.json` exactly match the rewritten document.
 
 ## Checklist
 
@@ -210,8 +319,12 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Typos fixed; product names, command names, and identifiers preserved exactly
 - [ ] AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them
 - [ ] All facts, constraints, and technical details from the source are present in the output
-- [ ] Code blocks and inline code unchanged (except ASCII art diagrams converted to Mermaid)
-- [ ] All ASCII art diagrams converted to appropriate Mermaid code blocks with no data loss
-- [ ] Every Mermaid code block validated via Pretty-mermaid-skills rendering (no syntax errors)
+- [ ] Code blocks and inline code unchanged (except ASCII art converted per classification rules)
+- [ ] Every ASCII visual block classified (data table / chart / diagram) per the decision tree
+- [ ] All ASCII data tables converted to Markdown pipe tables with identical row/column counts
+- [ ] All ASCII diagrams converted to appropriate Mermaid code blocks with no data loss
+- [ ] All ASCII charts converted to Markdown tables or Mermaid chart blocks with every data point preserved
+- [ ] Every Mermaid code block (diagrams and charts) validated via Pretty-mermaid-skills rendering (no syntax errors)
+- [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)
 - [ ] Output language matches the source's dominant language
 - [ ] Output is only the final Markdown — no commentary or preamble

@@ -1,33 +1,41 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-03T17:20:36.674Z",
-  "totalTokens": 1883,
+  "generated": "2026-02-11T02:59:00.000Z",
+  "totalTokens": 3450,
   "entries": [
     {
       "section": "When to Use",
       "slug": "when-to-use",
       "lineRange": [
-        15,
-        21
+        16,
+        22
       ],
       "tokens": 94,
       "keywords": [],
       "links": [],
-      "summary": "",
+      "summary": "Trigger conditions for the skill.",
       "aiHints": []
     },
     {
       "section": "Canonical Prompt",
       "slug": "canonical-prompt",
       "lineRange": [
-        22,
-        48
+        23,
+        52
       ],
-      "tokens": 331,
-      "keywords": [],
+      "tokens": 410,
+      "keywords": [
+        "ASCII visual content classification",
+        "Data tables",
+        "Diagrams",
+        "Charts",
+        "Mermaid",
+        "xychart-beta",
+        "pie"
+      ],
       "links": [],
-      "summary": "The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.",
+      "summary": "Verbatim prompt with ASCII data table, diagram, and chart conversion rules.",
       "aiHints": [
         "[AI RULE]\", \"> [AI DECISION]\", \"> [AI TODO]\", \"> [AI CONTEXT]\"."
       ]
@@ -36,15 +44,24 @@
       "section": "Procedure",
       "slug": "procedure",
       "lineRange": [
-        49,
-        125
+        54,
+        272
       ],
-      "tokens": 1219,
+      "tokens": 2480,
       "keywords": [
+        "Original file protection rule",
         "Sharded access rule (always-on)",
         "Retrieval order for accuracy",
         "Accuracy guardrails",
+        "JSON shard pack rule (Python-first)",
+        "ASCII visual content classification",
+        "ASCII-to-Mermaid conversion rule",
+        "Mermaid validation rule (Pretty-mermaid-skills)",
+        "ASCII-to-Markdown-table conversion rule",
+        "ASCII-to-chart conversion rule",
         "Repository safety rule",
+        "Artifact hygiene and structure rule",
+        "Final honest review rule",
         "Phase 1 — Baseline capture (before any rewriting)",
         "Phase 2 — Create working copy",
         "Phase 3 — Skeleton",
@@ -52,21 +69,37 @@
         "Phase 5 — Verification and cleanup",
         "Sync rule — rewritten changes must update shards"
       ],
-      "links": [],
-      "summary": "Follow these five phases in order.",
-      "aiHints": []
+      "links": [
+        "https://github.com/imxv/Pretty-mermaid-skills",
+        "https://github.com/imxv/pretty-mermaid-skills"
+      ],
+      "summary": "Five-phase editorial flow with ASCII visual content classification and conversion rules.",
+      "aiHints": [
+        "[AI RULE] <docId> is derived from the rewritten filename",
+        "[AI RULE] Never leave ASCII art unconverted",
+        "[AI RULE] Never embed Mermaid code that has not passed Pretty-mermaid-skills rendering",
+        "[AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original",
+        "[AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output"
+      ]
     },
     {
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        126,
-        142
+        274,
+        296
       ],
-      "tokens": 239,
-      "keywords": [],
+      "tokens": 338,
+      "keywords": [
+        "ASCII visual block classified",
+        "ASCII data tables",
+        "ASCII diagrams",
+        "ASCII charts",
+        "Mermaid validation",
+        "HTML comment tracing origin"
+      ],
       "links": [],
-      "summary": "After rewriting, verify every item below.",
+      "summary": "Verification items including ASCII visual block classification and conversion accuracy.",
       "aiHints": [
         "[AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them"
       ]
