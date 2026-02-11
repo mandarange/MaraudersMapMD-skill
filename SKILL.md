@@ -113,6 +113,41 @@ Different document types benefit from different retrieval strategies:
 
 > [AI CONTEXT] Doc-type is inferred from AI Map structure and section content. No explicit tagging required.
 
+### Parallel execution rule
+
+When working with multiple documents or many sections, maximize throughput by running independent operations in parallel.
+
+Parallelizable operations (no ordering dependency):
+
+| Operation | Parallel Unit | Constraint |
+|---|---|---|
+| Multi-document rewrite | Each document is independent | Different `<docId>` → safe to parallelize |
+| Section-by-section rewrite (Phase 4) | Sections that do NOT cross-reference each other | If section B references section A, rewrite A first |
+| Shard + index generation (Phase 5) | Per-document artifact generation | Each `<docId>` writes to its own directory |
+| `shards_to_json.py` runs | One run per `<docId>` | Each writes to `docs/MaraudersMap/<docId>/shards.json` — no conflict |
+| `shards_db.py --ingest` runs | One ingest per `<docId>` | SQLite handles concurrent reads; run ingests sequentially or use `--ingest-all` |
+| Verification (Phase 5 checks 1–4) | Per-document | Each document's checklist is independent |
+
+Must remain sequential (ordering dependency exists):
+
+| Operation | Reason |
+|---|---|
+| Phase 1 → 2 → 3 within a single document | Each phase depends on the previous |
+| Skeleton (Phase 3) before section rewrite (Phase 4) | Heading structure must exist before filling content |
+| Section rewrite → shard generation | Shards must reflect the final rewritten content |
+| `shards_to_json.py` → `shards_db.py --ingest` for the same doc | DB ingests from `shards.json`, so JSON must exist first |
+
+Execution strategy by scale:
+
+| Scale | Strategy |
+|---|---|
+| 1 document, ≤5 sections | Sequential is fine |
+| 1 document, >5 sections | Parallel-rewrite independent sections, then sequential for cross-referencing ones |
+| 2–5 documents | Parallel-rewrite all documents simultaneously |
+| >5 documents | Batch: parallel-rewrite up to 5 at a time, then `shards_db.py --ingest-all` once at the end |
+
+> [AI RULE] When the AI agent supports parallel tool calls or background tasks, it MUST use them for independent operations listed above. Sequential processing of independent documents is a performance bug.
+
 ### Accuracy guardrails
 
 - Do not infer facts that are not present in the shards or index.
@@ -273,11 +308,13 @@ Using the AI Map table as a guide, write a flat heading list in the working copy
 
 ### Phase 4 — Section-by-section rewrite
 
-Open each Section Pack file (`sections/*.md`) one at a time, in order. For each section:
+Open each Section Pack file (`sections/*.md`). For each section:
 1. Check the Search Index entry for that section's keywords, links, and AI Hint Blocks.
 2. Apply the canonical prompt rules: shorten paragraphs, convert dense prose to bullets, use tables for settings/options, keep code blocks unchanged.
 3. Preserve every keyword, link, and AI Hint Block listed in the index entry.
 4. Make the section self-contained. Use brief cross-references ("see Section X") instead of repeating content.
+
+Parallel rewrite guidance: Sections that do not reference each other may be rewritten in parallel (see "Parallel execution rule"). When unsure about cross-references, rewrite sequentially to preserve consistency.
 
 ### Phase 5 — Verification and cleanup
 
@@ -293,9 +330,10 @@ After verification passes:
 2. Generate MaraudersMapMD artifacts from `<filename>.rewritten.md` only (never from the original).
 3. Verify each `sections/*.md` shard matches its corresponding content in `<filename>.rewritten.md` (no drift).
 4. Regenerate `shards.json` from the freshly generated shards and index.
-5. Delete the `temp/` folder entirely.
-6. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.
-7. Confirm the project contains: the original source file (untouched), `<filename>.rewritten.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/`. No `temp/` folder, no `temp_` files, no original-derived artifacts.
+5. If processing multiple documents, run steps 2–4 in parallel for each `<docId>` (see "Parallel execution rule"). Then run `python shards_db.py --ingest-all --map-root docs/MaraudersMap` once to batch-update the cross-doc index.
+6. Delete the `temp/` folder entirely.
+7. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.
+8. Confirm the project contains: the original source file (untouched), `<filename>.rewritten.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/`. No `temp/` folder, no `temp_` files, no original-derived artifacts.
 
 ### Sync rule — rewritten changes must update shards
 
