@@ -2,7 +2,7 @@
 name: maraudersmapmd-skill
 description: Rewrite Markdown documents to maximize readability and scan-ability and keep sharded Markdown packs in sync for fast lookup. Use this skill when the user asks to improve, rewrite, or optimize a Markdown document for readability, when asked to apply MaraudersMapMD readability formatting, or when sharded Markdown access is required.
 metadata:
-  version: "10.0.0"
+  version: "10.1.0"
   source: "MaraudersMapMD src/ai/aiService.ts buildReadabilityPrompt()"
   tags:
     - markdown
@@ -220,7 +220,9 @@ Conversion guidelines:
 
 Naming convention for diagram images:
 - Use a descriptive kebab-case name derived from the diagram's context: `architecture-overview.png`, `auth-flow.png`, `er-schema.png`.
-- If multiple diagrams exist in the same document, suffix with an index: `data-flow-01.png`, `data-flow-02.png`.
+- If multiple diagrams exist in the same document, suffix with a zero-padded index in document order: `data-flow-01.png`, `data-flow-02.png`.
+- Naming must be deterministic: for the same input, produce the same filenames every run.
+- If a filename collision occurs in the same `<docId>`, append a short stable suffix: `data-flow-01-a3f2.png`.
 
 ### Diagram rendering and capture rule
 
@@ -235,11 +237,16 @@ Rendering flow:
 6. Visually inspect the screenshot — confirm all labels are readable, no overlapping elements, and the layout matches the original ASCII structure.
 7. If the rendering is broken or misaligned, fix the HTML/CSS and re-render until it is correct.
 8. Delete `temp/diagram-<name>.html` after successful capture.
-9. Embed in the Markdown output:
+9. Verify the temporary HTML file was deleted. If deletion fails, halt and report the cleanup error.
+10. Embed in the Markdown output:
    ```markdown
    <!-- Converted from ASCII art: [original description] -->
    ![<diagram description>](images/<diagram-name>.png)
    ```
+
+Failure handling rules:
+- If capture fails, delete the temporary HTML file and any broken PNG before retrying.
+- Never keep partial or invalid diagram outputs.
 
 Screenshot quality requirements:
 - Minimum width: 600px viewport. Maximum width: 1200px.
@@ -585,6 +592,8 @@ Conversion guidelines:
 - Only one `<docId>` directory per document. `<docId>` corresponds to the rewritten file, not the original.
 - If artifacts derived from the original source file exist, delete them immediately.
 - Do not create or keep alternative artifact directories or extra copies outside the structure above.
+- Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown.
+- Before finalizing, ensure no `temp/diagram-*.html` files remain.
 
 ### Final honest review rule
 
@@ -661,6 +670,9 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] All ASCII charts converted to Markdown tables (simple) or HTML screenshot PNG images (complex) with every data point preserved
 - [ ] Every diagram and chart PNG image visually verified after screenshot capture (labels readable, layout correct, no overlaps)
 - [ ] Diagram images saved to `docs/MaraudersMap/<docId>/images/` with descriptive kebab-case filenames
+- [ ] Diagram image filenames are deterministic across reruns for the same input
+- [ ] No orphaned image files exist in `docs/MaraudersMap/<docId>/images/` (every PNG is referenced)
+- [ ] No `temp/diagram-*.html` files remain after completion
 - [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)
 - [ ] Output language matches the source's dominant language
 - [ ] Output is only the final Markdown — no commentary or preamble
