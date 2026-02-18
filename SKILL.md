@@ -233,37 +233,30 @@ Naming convention for diagram images:
 Every diagram image must be visually verified. A broken or mis-rendered diagram is worse than no diagram.
 
 Rendering flow:
-1. Write the self-contained HTML file to `temp/diagram-<name>.html` in the working directory.
-2. Ensure the output directory `docs/MaraudersMap/<docId>/images/` exists (create it if missing).
-3. Capture PNG: open `file://<absolute-path>/temp/diagram-<name>.html` in the agent's browser tool, wait at least 400 ms, then take a full-page screenshot and save it to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`. If no browser tool is available, run: `npx -y playwright@latest screenshot -b chromium --full-page --viewport-size 1200,900 --wait-for-timeout 400 "file://<absolute-path>/temp/diagram-<name>.html" "docs/MaraudersMap/<docId>/images/<diagram-name>.png"` (run `npx -y playwright@latest install chromium` first if needed).
-4. Verify the PNG file exists and is non-empty. If capture failed, retry once with 800 ms wait.
-5. Ensure the Markdown reference path is relative to the rewritten file (for example `images/<diagram-name>.png`).
-6. Visually inspect the screenshot — confirm all labels are readable, no overlapping elements, and the layout matches the original ASCII structure.
-7. If the rendering is broken or misaligned, fix the HTML/CSS and re-render until it is correct.
-8. Delete `temp/diagram-<name>.html` after successful capture.
-9. Verify the temporary HTML file was deleted. If deletion fails, halt and report the cleanup error.
-10. Embed in the Markdown output:
+1. Write the self-contained HTML file to `temp/diagram-<name>.html`.
+2. Create `docs/MaraudersMap/<docId>/images/` if it does not exist.
+3. Open `file://<absolute-path>/temp/diagram-<name>.html` in the browser tool. Wait at least 400 ms for rendering to stabilize.
+4. Take a full-page screenshot and save it to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.
+5. Verify the PNG exists and is non-empty. If empty or missing, retry with 800 ms wait.
+6. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
+7. Delete `temp/diagram-<name>.html`.
+8. Embed in the Markdown output:
    ```markdown
    <!-- Converted from ASCII art: [original description] -->
    ![<diagram description>](images/<diagram-name>.png)
    ```
 
-Failure handling rules:
-- If capture fails, delete the temporary HTML file and any broken PNG before retrying.
-- Never keep partial or invalid diagram outputs.
-- Keep successfully captured PNG files on local disk after completion; Markdown image links depend on these files.
+Failure handling:
+- If capture fails, delete the temp HTML and any broken PNG before retrying.
+- Never keep partial or invalid outputs.
+- Keep captured PNGs on local disk; Markdown image links depend on them.
 
-Screenshot quality requirements:
-- Minimum width: 600px viewport. Maximum width: 1200px.
-- Device pixel ratio: 2 (for Retina/HiDPI clarity).
-- Background: white (`#ffffff`).
-- No browser chrome, scrollbars, or padding outside the diagram.
-- All text must be legible at the final embedded size.
+Screenshot quality:
+- Viewport: 600–1200 px wide. Device pixel ratio: 2.
+- Background: white (`#ffffff`). No browser chrome or scrollbars.
+- All text legible at final embedded size.
 
-> [AI RULE] Never embed a diagram image that has not been visually verified after screenshot capture. If the rendering looks wrong, fix and re-render.
-
-Playwright runtime setup (only needed when using the CLI fallback, one-time per machine):
-- `npx -y playwright@latest install chromium`
+> [AI RULE] Never embed a diagram image that has not been visually verified. If the rendering looks wrong, fix and re-render.
 
 ### Diagram type HTML/CSS templates
 

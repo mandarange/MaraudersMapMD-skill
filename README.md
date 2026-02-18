@@ -90,25 +90,8 @@ If the skill is loaded correctly, the AI will follow the 5-phase procedure (Base
 | File | Purpose |
 |------|---------|
 | [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter, canonical prompt, 5-phase procedure, checklist |
-| `render_html_to_png.py` | Local Playwright-based HTML → PNG capture helper used by diagram/chart conversion flow |
 | `README.md` | This file |
 | `LICENSE` | MIT license |
-
-## HTML to PNG Capture Helper
-
-If your workflow generates HTML diagrams/charts but does not produce PNG output, run:
-
-```bash
-python3 render_html_to_png.py --html temp/diagram-example.html --output docs/MaraudersMap/SKILL/images/diagram-example.png --markdown-file guide.rewritten_v2.md --alt "architecture overview" --source-description "auth flow ASCII diagram" --viewport-width 1200 --viewport-height 900 --wait-ms 400
-```
-
-This command uses `npx playwright screenshot` under the hood and auto-installs the browser runtime when missing.
-
-Recommended one-time setup on each machine:
-
-```bash
-npx playwright install chromium
-```
 
 ## When It Triggers
 
