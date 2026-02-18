@@ -4,24 +4,34 @@ AI agent skill for [MaraudersMapMD](https://github.com/mandarange/MaraudersMapMD
 
 ## What This Skill Does
 
-`maraudersmapmd-skill` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy. It also enforces sharded Markdown access for fast lookup and keeps shards strictly synced with the rewritten document for accuracy.
+`maraudersmapmd-skill` rewrites Markdown documents to maximize readability and scan-ability, following the MaraudersMapMD extension's formatting philosophy. It uses a SQLite-first retrieval workflow for fast lookup and falls back to rewritten/original Markdown on cache miss.
 
 The skill contains three parts:
 
 1. **Canonical Prompt** — the verbatim prompt from the extension's `src/ai/aiService.ts` `buildReadabilityPrompt()`, copied without modification
-2. **5-Phase Procedure** — an artifact-driven editorial flow (Baseline Capture → Working Copy → Skeleton → Section Rewrite → Verification & Cleanup)
+2. **5-Phase Procedure** — an editorial flow (Baseline Capture → Working Copy → Skeleton → Rewrite & SQLite Ingest → Verification & Cleanup)
 3. **Verification Checklist** — items that confirm the canonical prompt rules were followed
 
-## Sharded Markdown Workflow (AI Accuracy)
+## SQLite-First Retrieval Workflow (AI Accuracy)
 
-The skill assumes the MaraudersMapMD artifacts are available and uses them as the primary source for AI lookup:
+The skill uses SQLite as the primary retrieval source:
 
-1. **Section Pack** (`docs/MaraudersMap/<docId>/sections/*.md`) — primary source for fast retrieval
-2. **Search Index** (`docs/MaraudersMap/<docId>/index.json`) — validation of keywords, links, and AI Hint Blocks
-3. **AI Map** (`docs/MaraudersMap/<docId>/ai-map.md`) — section boundaries and summaries
-4. **Rewritten full document** (`<filename>.rewritten.md`) — only for cross-section context
+1. **SQLite Index** (`docs/MaraudersMap/shards.db`) — primary source for keyword/BM25 retrieval
+2. **Rewritten full document** (`<base>.rewritten_vN.md`) — first fallback on cache miss
+3. **Original source document** — final fallback for fact verification
 
-If the rewritten document changes, shards and index must be regenerated immediately so they match exactly.
+If the rewritten document changes, re-ingest it into SQLite immediately so retrieval stays consistent.
+
+Optional debug artifacts (`sections/*.md`, `index.json`, `ai-map.md`, `shards.json`) may exist but are not required for normal retrieval.
+
+### Diagram/Chart Image Reliability
+
+The skill enforces a strict capture lifecycle for ASCII-to-image conversion:
+
+- Always regenerate PNG in the current run (do not rely on old files)
+- Verify PNG exists on disk and has non-zero size before inserting Markdown image tags
+- Keep `temp/diagram-*.html` until PNG proof + Markdown insertion are complete
+- If PNG is missing (including manual deletion), regenerate it before completion
 
 Rewritten output uses explicit versioned filenames:
 - First rewrite: `<filename>.rewritten_v1.md`
@@ -83,7 +93,7 @@ After installing, type the following in Cursor's chat:
 Improve the readability of this document
 ```
 
-If the skill is loaded correctly, the AI will follow the 5-phase procedure (Baseline → Working Copy → Skeleton → Section Rewrite → Verification) instead of doing a generic rewrite.
+If the skill is loaded correctly, the AI will follow the 5-phase procedure (Baseline → Working Copy → Skeleton → Rewrite & SQLite Ingest → Verification) instead of doing a generic rewrite.
 
 ## Skill Contents
 
@@ -102,7 +112,7 @@ The skill activates when the user asks to:
 - Apply MaraudersMapMD formatting
 - Make a document AI-readable or AI-friendly
 - Polish a Markdown document editorially
-- Use sharded Markdown for fast retrieval or keep shards synced with the rewritten document
+- Use SQLite-first retrieval with cache-miss fallback to rewritten/original documents
 
 ## Related
 
