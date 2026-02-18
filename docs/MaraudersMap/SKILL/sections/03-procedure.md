@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 46-648 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-660 -->
 
 ## Procedure
 
@@ -18,6 +18,16 @@ Artifact paths (generated from the rewritten file only):
 - Diagram Images: `docs/MaraudersMap/<docId>/images/*.png`
 
 > [AI RULE] `<docId>` is derived from the rewritten version filename (e.g. `guide.rewritten_v2.md` → docId `guide_v2`). Never create a separate `<docId>` for the original file.
+
+### Language lock rule (highest priority)
+
+- The rewritten output must preserve the source language exactly; translation is prohibited unless the user explicitly asks for translation.
+- If source content is Korean, keep Korean narrative text, headings, and list items in Korean.
+- Keep existing English technical literals as-is (commands, code, identifiers, API names, file paths, env vars).
+- If mixed-language content exists, preserve each segment's original language unless the user requests normalization.
+- If a generated section accidentally changes language, treat it as a blocking error and rewrite that section before finalizing.
+
+> [AI RULE] Language drift (for example Korean source rewritten in English) is a hard failure. Fix before completion.
 
 ### Sharded access rule (always-on)
 

@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 15-45 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 15-47 -->
 
 ## Canonical Prompt
 
@@ -8,6 +8,8 @@ You are an expert technical editor. Rewrite the Markdown to maximize readability
 
 Core requirements:
 - Keep the final language the same as the original (do not translate). If mixed, use the dominant language.
+- Never translate user-authored prose, headings, labels, or explanatory sentences into another language.
+- If the source is Korean, output must remain Korean except for literals that are already in English (for example code, API names, CLI flags, product names, or quoted identifiers).
 - Preserve all facts, constraints, and technical details. Do not add new information.
 - Keep Markdown semantics correct (headings, lists, tables, code fences, links).
 - Use the project's AI hint block format where it helps: "> [AI RULE]", "> [AI DECISION]", "> [AI TODO]", "> [AI CONTEXT]".

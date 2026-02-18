@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T01:10:37+00:00",
-  "totalTokens": 4934,
+  "generated": "2026-02-18T01:14:54+00:00",
+  "totalTokens": 5105,
   "entries": [
     {
       "section": "When to Use",
@@ -24,9 +24,9 @@
       "slug": "canonical-prompt",
       "lineRange": [
         15,
-        45
+        47
       ],
-      "tokens": 260,
+      "tokens": 303,
       "keywords": [
         "Canonical Prompt",
         "buildReadabilityPrompt()",
@@ -41,10 +41,10 @@
       "section": "Procedure",
       "slug": "procedure",
       "lineRange": [
-        46,
-        648
+        48,
+        660
       ],
-      "tokens": 4247,
+      "tokens": 4359,
       "keywords": [
         "Procedure",
         "<filename>.rewritten_v{n}.md",
@@ -146,10 +146,10 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        649,
-        675
+        661,
+        688
       ],
-      "tokens": 365,
+      "tokens": 381,
       "keywords": [
         "Checklist",
         "#",

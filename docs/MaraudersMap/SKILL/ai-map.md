@@ -2,16 +2,16 @@
 
 **Source Path**: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md
 **Generated**: 2026-02-18
-**Total Tokens**: 4934
+**Total Tokens**: 5105
 
 ## Document Structure
 
 | Section | Lines | Tokens | Summary |
 |---------|-------|--------|----------|
 | When to Use | 8-14 | 62 | Section content. |
-| Canonical Prompt | 15-45 | 260 | The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided |
-| Procedure | 46-648 | 4247 | Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference. |
-| Checklist | 649-675 | 365 | After rewriting, verify every item below. Each maps to a rule in the canonical prompt. |
+| Canonical Prompt | 15-47 | 303 | The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided |
+| Procedure | 48-660 | 4359 | Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference. |
+| Checklist | 661-688 | 381 | After rewriting, verify every item below. Each maps to a rule in the canonical prompt. |
 
 ## Section Details
 
@@ -23,18 +23,18 @@
 
 ### Canonical Prompt
 
-- **Lines**: 15-45
-- **Tokens**: 260
+- **Lines**: 15-47
+- **Tokens**: 303
 - **Summary**: The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided
 
 ### Procedure
 
-- **Lines**: 46-648
-- **Tokens**: 4247
+- **Lines**: 48-660
+- **Tokens**: 4359
 - **Summary**: Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.
 
 ### Checklist
 
-- **Lines**: 649-675
-- **Tokens**: 365
+- **Lines**: 661-688
+- **Tokens**: 381
 - **Summary**: After rewriting, verify every item below. Each maps to a rule in the canonical prompt.

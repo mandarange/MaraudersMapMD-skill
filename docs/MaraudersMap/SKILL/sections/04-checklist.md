@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 649-675 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 661-688 -->
 
 ## Checklist
 
@@ -26,4 +26,5 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] No `temp/diagram-*.html` files remain after completion
 - [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)
 - [ ] Output language matches the source's dominant language
+- [ ] No translated narrative text appears unless translation was explicitly requested by the user
 - [ ] Output is only the final Markdown — no commentary or preamble
