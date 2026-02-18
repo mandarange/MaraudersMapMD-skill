@@ -240,10 +240,10 @@ Rendering flow:
 5. Verify the PNG exists and is non-empty. If empty or missing, retry with 800 ms wait.
 6. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
 7. Delete `temp/diagram-<name>.html`.
-8. Embed in the Markdown output:
+8. Replace the original ASCII block in the Markdown with an image reference. The path must be relative from the Markdown file to the saved PNG:
    ```markdown
    <!-- Converted from ASCII art: [original description] -->
-   ![<diagram description>](images/<diagram-name>.png)
+   ![<diagram description>](docs/MaraudersMap/<docId>/images/<diagram-name>.png)
    ```
 
 Failure handling:
@@ -275,7 +275,8 @@ Use these patterns as a starting point when generating HTML for each diagram typ
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: #ffffff;
-    padding: 32px;
+    padding: 16px;
+    width: fit-content;
     color: #1e293b;
   }
   .diagram { display: inline-block; }
@@ -608,7 +609,15 @@ Read the original source file directly. If existing MaraudersMapMD artifacts alr
 
 ### Phase 2 — Create working copy
 
-Create a `temp/` folder next to the original file. Copy the source into it as the working copy using explicit versioning: `temp/temp_<filename>.rewritten_v{n}.md`. Example first rewrite: `guide.md` → `temp/temp_guide.rewritten_v1.md`; next rewrite cycle: `temp/temp_guide.rewritten_v2.md`. Never use chained names like `rewritten.rewritten`. All intermediate files go inside this `temp/` folder. All subsequent edits happen ONLY on this copy. Never modify the original.
+Determine the base name and next version before creating any file:
+
+- **Base name**: Strip any `.rewritten_v{n}` suffix from the source filename. `guide.md` → base `guide`. `guide.rewritten_v1.md` → base `guide`. Never include `.rewritten_v{n}` in the base.
+- **Next version**: If no prior rewritten file exists, use `v1`. If `<base>.rewritten_v{n}.md` already exists, use `v{n+1}`.
+- **Working copy path**: `temp/temp_<base>.rewritten_v{N}.md` where `N` is the next version.
+
+Examples: `guide.md` (first run) → `temp/temp_guide.rewritten_v1.md`. `guide.rewritten_v1.md` (re-run) → `temp/temp_guide.rewritten_v2.md`. Never produce names like `guide.rewritten_v1.rewritten_v2.md`.
+
+All intermediate files go inside `temp/`. All edits happen ONLY on the working copy. Never modify the source.
 
 ### Phase 3 — Skeleton
 

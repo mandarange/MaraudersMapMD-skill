@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T04:08:08+00:00",
-  "totalTokens": 5021,
+  "generated": "2026-02-18T04:48:42+00:00",
+  "totalTokens": 5082,
   "entries": [
     {
       "section": "When to Use",
@@ -42,9 +42,9 @@
       "slug": "procedure",
       "lineRange": [
         48,
-        654
+        663
       ],
-      "tokens": 4257,
+      "tokens": 4318,
       "keywords": [
         "Procedure",
         "<filename>.rewritten_v{n}.md",
@@ -115,11 +115,20 @@
         ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- One",
         "directory per rewritten version.",
         ") for section summaries and the Search Index (",
-        ". Example first rewrite:",
-        "→",
-        "; next rewrite cycle:",
-        ". Never use chained names like",
-        ". All intermediate files go inside this",
+        "suffix from the source filename.",
+        "→ base",
+        ".",
+        ". Never include",
+        "in the base.\n- **Next version**: If no prior rewritten file exists, use",
+        ". If",
+        "already exists, use",
+        ".\n- **Working copy path**:",
+        "where",
+        "is the next version.\n\nExamples:",
+        "(first run) →",
+        "(re-run) →",
+        ". Never produce names like",
+        ".\n\nAll intermediate files go inside",
         ", then",
         "to the original file's directory as",
         ".\n2. Generate MaraudersMapMD artifacts from",
@@ -148,8 +157,8 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        655,
-        683
+        664,
+        692
       ],
       "tokens": 399,
       "keywords": [
