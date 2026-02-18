@@ -1,14 +1,6 @@
 ---
 name: maraudersmapmd-skill
 description: Rewrite Markdown documents to maximize readability and scan-ability and keep sharded Markdown packs in sync for fast lookup. Use this skill when the user asks to improve, rewrite, or optimize a Markdown document for readability, when asked to apply MaraudersMapMD readability formatting, or when sharded Markdown access is required.
-metadata:
-  version: "10.1.0"
-  source: "MaraudersMapMD src/ai/aiService.ts buildReadabilityPrompt()"
-  tags:
-    - markdown
-    - readability
-    - formatting
-    - maraudersmapmd
 ---
 
 # MaraudersMapMD Skill

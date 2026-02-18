@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 23-52 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 15-45 -->
 
 ## Canonical Prompt
 
@@ -14,10 +14,10 @@ Core requirements:
 - Prefer short paragraphs, clear headings, and consistent numbering.
 - Use tables for settings, options, or structured comparisons when helpful.
 - Keep code blocks and inline code exactly as-is.
-- Convert ASCII art visuals to the appropriate Markdown-native format (see "ASCII visual content classification" below):
+- Convert ASCII art visuals to the appropriate visual format (see "ASCII visual content classification" below):
   - **Data tables** drawn with ASCII borders → proper Markdown pipe tables.
-  - **Diagrams** (flowcharts, ER, architecture) → Mermaid code blocks.
-  - **Charts** (bar charts, histograms, sparklines) → Markdown tables or Mermaid `xychart-beta` / `pie` blocks.
+  - **Diagrams** (flowcharts, ER, architecture) → HTML rendering → screenshot PNG image.
+  - **Charts** (bar charts, histograms, sparklines) → Markdown tables (simple) or HTML rendering → screenshot PNG image (complex).
 - Remove fluff and redundancy; keep only what's necessary.
 - Output ONLY the final Markdown. No commentary.
 

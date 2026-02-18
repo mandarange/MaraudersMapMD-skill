@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 274-296 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 645-670 -->
 
 ## Checklist
 
@@ -16,9 +16,13 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Code blocks and inline code unchanged (except ASCII art converted per classification rules)
 - [ ] Every ASCII visual block classified (data table / chart / diagram) per the decision tree
 - [ ] All ASCII data tables converted to Markdown pipe tables with identical row/column counts
-- [ ] All ASCII diagrams converted to appropriate Mermaid code blocks with no data loss
-- [ ] All ASCII charts converted to Markdown tables or Mermaid chart blocks with every data point preserved
-- [ ] Every Mermaid code block (diagrams and charts) validated via Pretty-mermaid-skills rendering (no syntax errors)
+- [ ] All ASCII diagrams converted to HTML, rendered as screenshot PNG images, and embedded with `![...]()` syntax — no data loss
+- [ ] All ASCII charts converted to Markdown tables (simple) or HTML screenshot PNG images (complex) with every data point preserved
+- [ ] Every diagram and chart PNG image visually verified after screenshot capture (labels readable, layout correct, no overlaps)
+- [ ] Diagram images saved to `docs/MaraudersMap/<docId>/images/` with descriptive kebab-case filenames
+- [ ] Diagram image filenames are deterministic across reruns for the same input
+- [ ] No orphaned image files exist in `docs/MaraudersMap/<docId>/images/` (every PNG is referenced)
+- [ ] No `temp/diagram-*.html` files remain after completion
 - [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)
 - [ ] Output language matches the source's dominant language
 - [ ] Output is only the final Markdown — no commentary or preamble

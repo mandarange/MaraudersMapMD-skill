@@ -1,108 +1,170 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-11T02:59:00.000Z",
-  "totalTokens": 3450,
+  "generated": "2026-02-18T01:01:34+00:00",
+  "totalTokens": 4838,
   "entries": [
     {
       "section": "When to Use",
       "slug": "when-to-use",
       "lineRange": [
-        16,
-        22
+        8,
+        14
       ],
-      "tokens": 94,
-      "keywords": [],
+      "tokens": 62,
+      "keywords": [
+        "When to Use"
+      ],
       "links": [],
-      "summary": "Trigger conditions for the skill.",
+      "summary": "Section content.",
       "aiHints": []
     },
     {
       "section": "Canonical Prompt",
       "slug": "canonical-prompt",
       "lineRange": [
-        23,
-        52
+        15,
+        45
       ],
-      "tokens": 410,
+      "tokens": 260,
       "keywords": [
-        "ASCII visual content classification",
-        "Data tables",
-        "Diagrams",
-        "Charts",
-        "Mermaid",
-        "xychart-beta",
-        "pie"
+        "Canonical Prompt",
+        "buildReadabilityPrompt()",
+        "src/ai/aiService.ts",
+        "${source}"
       ],
       "links": [],
-      "summary": "Verbatim prompt with ASCII data table, diagram, and chart conversion rules.",
-      "aiHints": [
-        "[AI RULE]\", \"> [AI DECISION]\", \"> [AI TODO]\", \"> [AI CONTEXT]\"."
-      ]
+      "summary": "The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided",
+      "aiHints": []
     },
     {
       "section": "Procedure",
       "slug": "procedure",
       "lineRange": [
-        54,
-        272
+        46,
+        644
       ],
-      "tokens": 2480,
+      "tokens": 4169,
       "keywords": [
-        "Original file protection rule",
-        "Sharded access rule (always-on)",
-        "Retrieval order for accuracy",
-        "Accuracy guardrails",
-        "JSON shard pack rule (Python-first)",
-        "ASCII visual content classification",
-        "ASCII-to-Mermaid conversion rule",
-        "Mermaid validation rule (Pretty-mermaid-skills)",
-        "ASCII-to-Markdown-table conversion rule",
-        "ASCII-to-chart conversion rule",
-        "Repository safety rule",
-        "Artifact hygiene and structure rule",
-        "Final honest review rule",
-        "Phase 1 — Baseline capture (before any rewriting)",
-        "Phase 2 — Create working copy",
-        "Phase 3 — Skeleton",
-        "Phase 4 — Section-by-section rewrite",
-        "Phase 5 — Verification and cleanup",
-        "Sync rule — rewritten changes must update shards"
+        "Procedure",
+        "<filename>.rewritten.md",
+        "docs/MaraudersMap/<docId>/ai-map.md",
+        "docs/MaraudersMap/<docId>/sections/*.md",
+        "docs/MaraudersMap/<docId>/index.json",
+        "docs/MaraudersMap/<docId>/shards.json",
+        "docs/MaraudersMap/<docId>/images/*.png",
+        "<docId>",
+        "guide.rewritten.md",
+        "guide",
+        "sections/*.md",
+        "index.json",
+        "ai-map.md",
+        "shards_search.py --shards ... --keyword \"<kw>\"",
+        "shards_search.py --shards ... --query \"<text>\" --top 5",
+        "shards_search.py --db docs/MaraudersMap/shards.db --keyword \"<kw>\"",
+        "shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\"",
+        "shards_search.py --shards ... --regex \"<pattern>\"",
+        "--db ... --regex \"<pattern>\"",
+        "shards_to_json.py",
+        "shards_db.py --ingest",
+        "--ingest-all",
+        "shards.json",
+        "shards_db.py --ingest-all",
+        "python shards_to_json.py --doc-root docs/MaraudersMap/<docId>",
+        "python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --changed",
+        "python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --dry-run --report",
+        "python shards_db.py --init --map-root docs/MaraudersMap",
+        "+---+---+",
+        "├───┼───┤",
+        "█",
+        "▓",
+        "#",
+        "=",
+        "*",
+        "<!-- Converted from ASCII art: [original description] -->",
+        "┌─┐│└─┘",
+        "+---+",
+        "docs/MaraudersMap/<docId>/images/<diagram-name>.png",
+        "![<diagram description>](images/<diagram-name>.png)",
+        "<div>",
+        "architecture-overview.png",
+        "auth-flow.png",
+        "er-schema.png",
+        "data-flow-01.png",
+        "data-flow-02.png",
+        "data-flow-01-a3f2.png",
+        "temp/diagram-<name>.html",
+        "**Architecture / system layout diagram:**\n\nUse nested",
+        "elements for system boundaries and",
+        "for components. Connect with",
+        "or",
+        ". Example structure:",
+        "**Flowchart / pipeline diagram:**\n\nUse horizontal (",
+        ") or vertical (",
+        "style separators.\n- Cells bounded by",
+        ".\n- Box-drawing grids (",
+        ",",
+        "immediately after the header. Use",
+        ", or",
+        "column using repeated",
+        "in inline code for visual reference, plus a numeric",
+        "with",
+        ").\n- For HTML chart images, add a",
+        ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- Only one",
+        "directory per document.",
+        ") for section summaries and the Search Index (",
+        "folder next to the original file. Copy the original into it as the working copy:",
+        ". Example:",
+        "→",
+        ". All intermediate files go inside this",
+        ", then",
+        "to the original file's directory as",
+        ".\n2. Generate MaraudersMapMD artifacts from",
+        "only (never from the original).\n3. Verify each",
+        "shard matches its corresponding content in",
+        "(no drift).\n4. Regenerate",
+        "(see \"Parallel execution rule\"). Then run",
+        "once to batch-update the cross-doc index.\n6. Delete the",
+        ", and one set of MaraudersMapMD artifacts under",
+        "(including",
+        "if any diagrams were converted). No",
+        "folder, no",
+        "from the updated shards and index.\n4. If a cross-doc SQLite index exists (",
+        "), re-ingest the updated doc:",
+        ".\n5. Do not continue work until shards, index, and",
+        "[AI RULE]",
+        "[AI CONTEXT]"
       ],
-      "links": [
-        "https://github.com/imxv/Pretty-mermaid-skills",
-        "https://github.com/imxv/pretty-mermaid-skills"
-      ],
-      "summary": "Five-phase editorial flow with ASCII visual content classification and conversion rules.",
+      "links": [],
+      "summary": "Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.",
       "aiHints": [
-        "[AI RULE] <docId> is derived from the rewritten filename",
-        "[AI RULE] Never leave ASCII art unconverted",
-        "[AI RULE] Never embed Mermaid code that has not passed Pretty-mermaid-skills rendering",
-        "[AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original",
-        "[AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output"
+        "[AI RULE]",
+        "[AI CONTEXT]"
       ]
     },
     {
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        274,
-        296
+        645,
+        670
       ],
-      "tokens": 338,
+      "tokens": 347,
       "keywords": [
-        "ASCII visual block classified",
-        "ASCII data tables",
-        "ASCII diagrams",
-        "ASCII charts",
-        "Mermaid validation",
-        "HTML comment tracing origin"
+        "Checklist",
+        "#",
+        "> [AI RULE]",
+        "> [AI DECISION]",
+        "> [AI TODO]",
+        "> [AI CONTEXT]",
+        "![...]()",
+        "docs/MaraudersMap/<docId>/images/",
+        "temp/diagram-*.html",
+        "<!-- Converted from ASCII art: ... -->"
       ],
       "links": [],
-      "summary": "Verification items including ASCII visual block classification and conversion accuracy.",
-      "aiHints": [
-        "[AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them"
-      ]
+      "summary": "After rewriting, verify every item below. Each maps to a rule in the canonical prompt.",
+      "aiHints": []
     }
   ]
 }

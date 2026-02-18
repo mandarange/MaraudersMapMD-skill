@@ -41,10 +41,16 @@ Fetch the content from https://raw.githubusercontent.com/mandarange/MaraudersMap
 mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .cursor/rules/maraudersmapmd-skill.mdc
 ```
 
+### Cursor (Claude-style folder, team standard)
+
+```bash
+mkdir -p .cursor/skills/maraudersmapmd-skill && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .cursor/skills/maraudersmapmd-skill/SKILL.md
+```
+
 ### Claude Code
 
 ```bash
-mkdir -p .claude/skills && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .claude/skills/maraudersmapmd-skill.md
+mkdir -p .claude/skills/maraudersmapmd-skill && curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/SKILL.md -o .claude/skills/maraudersmapmd-skill/SKILL.md
 ```
 
 ### Manual
@@ -54,8 +60,16 @@ Download [`SKILL.md`](./SKILL.md) from this repo and place it at:
 | Tool | Path |
 |------|------|
 | Cursor | `.cursor/rules/maraudersmapmd-skill.mdc` |
-| Claude Code (project) | `.claude/skills/maraudersmapmd-skill.md` |
+| Cursor (Claude-style) | `.cursor/skills/maraudersmapmd-skill/SKILL.md` |
+| Claude Code (project) | `.claude/skills/maraudersmapmd-skill/SKILL.md` |
 | Claude Code (global) | `~/.claude/skills/maraudersmapmd-skill/SKILL.md` |
+
+## Compatibility Notes
+
+This skill follows the Anthropic Agent Skills folder convention (`<skill-name>/SKILL.md`) so one artifact can be reused across Claude Code and Cursor workflows.
+
+- **Claude Code**: Use the folder path above directly.
+- **Cursor**: Prefer `.cursor/skills/<skill-name>/SKILL.md` for the same folder convention. Keep `.cursor/rules/*.mdc` only for backward compatibility.
 
 ## Verify Installation
 

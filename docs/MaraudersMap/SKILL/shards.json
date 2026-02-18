@@ -1,7 +1,7 @@
 {
   "meta": {
     "doc_id": "SKILL",
-    "generated_at": "2026-02-10T18:52:07.601883+00:00",
+    "generated_at": "2026-02-18T01:01:44.887529+00:00",
     "source_sections": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections",
     "source_index": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/index.json",
     "source_ai_map": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/ai-map.md",
@@ -12,7 +12,7 @@
       "k1": 1.5,
       "b": 0.75,
       "doc_count": 4,
-      "avgdl": 689.25
+      "avgdl": 1217.5
     }
   },
   "sections": [
@@ -21,248 +21,501 @@
       "legacy_id": "when-to-use",
       "title": "When to Use",
       "path": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections/01-when-to-use.md",
-      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 16-22 -->\n\n## When to Use\n\n- User asks to improve readability, rewrite for clarity, or optimize a Markdown document for scanning\n- User asks to apply MaraudersMapMD formatting or make a document AI-readable\n- User provides a Markdown document and asks for editorial polish\n- User asks to access content quickly via sharded Markdown or to keep shards synced with the rewritten document\n",
+      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 8-14 -->\n\n## When to Use\n\n- User asks to improve readability, rewrite for clarity, or optimize a Markdown document for scanning\n- User asks to apply MaraudersMapMD formatting or make a document AI-readable\n- User provides a Markdown document and asks for editorial polish\n- User asks to access content quickly via sharded Markdown or to keep shards synced with the rewritten document\n",
       "token_count": 70,
-      "content_hash": "789f874aa290d426e2a162d052851137d179616185c141506e97ce175c9e3d14",
-      "keywords": [],
+      "content_hash": "5fdf71dfc00437d689ebd14145109cc2a188804e514573a1d31c91529ffbc6ae",
+      "keywords": [
+        "When to Use"
+      ],
       "links": [],
       "ai_hints": [],
-      "summary": "Trigger conditions for the skill.",
+      "summary": "Section content.",
       "line_range": [
-        16,
-        22
+        8,
+        14
       ],
-      "index_tokens": 94
+      "index_tokens": 62
     },
     {
       "id": "SKILL:canonical-prompt",
       "legacy_id": "canonical-prompt",
       "title": "Canonical Prompt",
       "path": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections/02-canonical-prompt.md",
-      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 23-52 -->\n\n## Canonical Prompt\n\nThe text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided Markdown.\n\nYou are an expert technical editor. Rewrite the Markdown to maximize readability and scan-ability while preserving meaning and intent.\n\nCore requirements:\n- Keep the final language the same as the original (do not translate). If mixed, use the dominant language.\n- Preserve all facts, constraints, and technical details. Do not add new information.\n- Keep Markdown semantics correct (headings, lists, tables, code fences, links).\n- Use the project's AI hint block format where it helps: \"> [AI RULE]\", \"> [AI DECISION]\", \"> [AI TODO]\", \"> [AI CONTEXT]\".\n- Prefer short paragraphs, clear headings, and consistent numbering.\n- Use tables for settings, options, or structured comparisons when helpful.\n- Keep code blocks and inline code exactly as-is.\n- Convert ASCII art visuals to the appropriate Markdown-native format (see \"ASCII visual content classification\" below):\n  - **Data tables** drawn with ASCII borders → proper Markdown pipe tables.\n  - **Diagrams** (flowcharts, ER, architecture) → Mermaid code blocks.\n  - **Charts** (bar charts, histograms, sparklines) → Markdown tables or Mermaid `xychart-beta` / `pie` blocks.\n- Remove fluff and redundancy; keep only what's necessary.\n- Output ONLY the final Markdown. No commentary.\n\nFormatting guidance:\n- Ensure headings follow a clean hierarchy.\n- Convert dense prose into bullet lists where it improves readability.\n- Keep a concise top summary if the document is long.\n\nSOURCE MARKDOWN (do not omit any content):\n<<<BEGIN MARKDOWN\n${source}\nEND MARKDOWN>>>\n",
-      "token_count": 262,
-      "content_hash": "8fd78dd966c9bf7380cfedb8427cdb31abed32bddade19a6bb2934ef03146809",
+      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 15-45 -->\n\n## Canonical Prompt\n\nThe text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided Markdown.\n\nYou are an expert technical editor. Rewrite the Markdown to maximize readability and scan-ability while preserving meaning and intent.\n\nCore requirements:\n- Keep the final language the same as the original (do not translate). If mixed, use the dominant language.\n- Preserve all facts, constraints, and technical details. Do not add new information.\n- Keep Markdown semantics correct (headings, lists, tables, code fences, links).\n- Use the project's AI hint block format where it helps: \"> [AI RULE]\", \"> [AI DECISION]\", \"> [AI TODO]\", \"> [AI CONTEXT]\".\n- Prefer short paragraphs, clear headings, and consistent numbering.\n- Use tables for settings, options, or structured comparisons when helpful.\n- Keep code blocks and inline code exactly as-is.\n- Convert ASCII art visuals to the appropriate visual format (see \"ASCII visual content classification\" below):\n  - **Data tables** drawn with ASCII borders → proper Markdown pipe tables.\n  - **Diagrams** (flowcharts, ER, architecture) → HTML rendering → screenshot PNG image.\n  - **Charts** (bar charts, histograms, sparklines) → Markdown tables (simple) or HTML rendering → screenshot PNG image (complex).\n- Remove fluff and redundancy; keep only what's necessary.\n- Output ONLY the final Markdown. No commentary.\n\nFormatting guidance:\n- Ensure headings follow a clean hierarchy.\n- Convert dense prose into bullet lists where it improves readability.\n- Keep a concise top summary if the document is long.\n\nSOURCE MARKDOWN (do not omit any content):\n<<<BEGIN MARKDOWN\n${source}\nEND MARKDOWN>>>\n",
+      "token_count": 268,
+      "content_hash": "6bac5e6595c04277101e362ce3661e43136448c93e9d428fa768d1ad4b740c5e",
       "keywords": [
-        "ASCII visual content classification",
-        "Data tables",
-        "Diagrams",
-        "Charts",
-        "Mermaid",
-        "xychart-beta",
-        "pie"
+        "Canonical Prompt",
+        "buildReadabilityPrompt()",
+        "src/ai/aiService.ts",
+        "${source}"
       ],
       "links": [],
-      "ai_hints": [
-        "[AI RULE]\", \"> [AI DECISION]\", \"> [AI TODO]\", \"> [AI CONTEXT]\"."
-      ],
-      "summary": "Verbatim prompt with ASCII data table, diagram, and chart conversion rules.",
+      "ai_hints": [],
+      "summary": "The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided",
       "line_range": [
-        23,
-        52
+        15,
+        45
       ],
-      "index_tokens": 410
+      "index_tokens": 260
     },
     {
       "id": "SKILL:procedure",
       "legacy_id": "procedure",
       "title": "Procedure",
       "path": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections/03-procedure.md",
-      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 54-272 -->\n\n## Procedure\n\nFollow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.\n\n### Original file protection rule\n\n- The original source file must remain completely untouched. Never generate shards, indexes, or any MaraudersMapMD artifacts from the original.\n- All sharding, indexing, and artifact generation targets the rewritten file (`<filename>.rewritten.md`) exclusively.\n- The original exists solely as a reference for fact-checking; it must never be modified, copied into artifact directories, or have artifacts derived from it.\n\nArtifact paths (generated from the rewritten file only):\n- AI Map: `docs/MaraudersMap/<docId>/ai-map.md`\n- Section Pack: `docs/MaraudersMap/<docId>/sections/*.md`\n- Search Index: `docs/MaraudersMap/<docId>/index.json`\n- Shard JSON: `docs/MaraudersMap/<docId>/shards.json`\n\n> [AI RULE] `<docId>` is derived from the rewritten filename (e.g. `guide.rewritten.md` → docId `guide`). Never create a separate `<docId>` for the original file.\n\n### Sharded access rule (always-on)\n\n- For fast lookup and reading, use the Section Pack (`sections/*.md`) as the primary source instead of the rewritten full document.\n- Only open the rewritten file when you need full-context validation or to resolve cross-section ambiguity.\n- The Section Pack must always be an exact shard-by-shard reflection of the rewritten document.\n- Shards and indexes exist only for rewritten documents. If artifacts for the original file are found, delete them immediately.\n\n### Retrieval order for accuracy\n\nWhen answering or extracting facts, use this order to minimize drift:\n1. Section Pack (`sections/*.md`) for the specific section.\n2. Search Index (`index.json`) for keywords/links/AI Hint Blocks validation.\n3. AI Map (`ai-map.md`) for section boundaries and summaries.\n4. Rewritten full document only if cross-section context is required.\n\n### Accuracy guardrails\n\n- Do not infer facts that are not present in the shards or index.\n- If a fact appears in a shard but is missing from the index, treat the shard as the source of truth and regenerate the index.\n- If shards disagree with the rewritten document, regenerate shards and index from the rewritten document immediately.\n\n### JSON shard pack rule (Python-first)\n\n- Generate `shards.json` from the Section Pack and Search Index to enable fast, accurate Python lookup.\n- Treat `shards.json` as a read-optimized mirror. The source of truth remains the shards and rewritten document.\n- Any time shards or index change, regenerate `shards.json` before answering questions.\n- Use `python shards_to_json.py --doc-root docs/MaraudersMap/<docId>` to rebuild the JSON pack.\n- For quick lookup, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --keyword \"<keyword>\"`.\n- For fastest relevance ranking, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --query \"<free text>\" --top 5` (BM25).\n\n### ASCII visual content classification\n\nBefore converting any ASCII art, classify it into one of three categories. The category determines the target format.\n\nDecision tree:\n\n1. **Does the ASCII block contain rows of data with column alignment?** (column headers, separator rows like `+---+---+` or `├───┼───┤`, and cells holding data values such as names, numbers, or settings)\n   → **Category: Data Table** → convert to Markdown pipe table (see \"ASCII-to-Markdown-table conversion rule\").\n\n2. **Does the ASCII block represent a quantitative visualization?** (bar lengths made of repeated characters like `█`, `▓`, `#`, `=`, `*`; axis labels with numeric values; histogram bins; sparkline-style rows)\n   → **Category: Chart** → convert to Markdown table (if simple) or Mermaid `xychart-beta` / `pie` (if complex) (see \"ASCII-to-chart conversion rule\").\n\n3. **Does the ASCII block represent structural relationships?** (boxes connected by arrows or lines; flow direction; entity-relationship grouping; sequence lifelines; tree/hierarchy)\n   → **Category: Diagram** → convert to Mermaid code block (see \"ASCII-to-Mermaid conversion rule\").\n\nAmbiguity rules:\n- If a block mixes data rows with structural arrows, split it: data rows → MD table, structural part → Mermaid.\n- If a pipe-aligned block is clearly a diagram legend or label (no meaningful row data), treat it as part of the diagram.\n- When in doubt, prefer the simpler format (MD table over Mermaid) to maximize portability.\n- Add a one-line HTML comment `<!-- Converted from ASCII art: [original description] -->` above each converted block so reviewers can trace origin.\n\n> [AI RULE] Never leave ASCII art unconverted. Every ASCII visual block must be classified and transformed to its target format.\n\n### ASCII-to-Mermaid conversion rule\n\nWhen the source Markdown contains ASCII art diagrams (box-drawing characters like `┌─┐│└─┘`, `+---+`, pipe-aligned tables used as diagrams, or any text-art layout representing structure), convert them to Mermaid code blocks during rewriting.\n\nConversion guidelines:\n- Identify the diagram type and pick the best-fit Mermaid diagram:\n  - DB schemas, ER diagrams → `erDiagram`\n  - Architecture, system layout, grouping → `block-beta` or `flowchart`\n  - Flows, pipelines → `flowchart LR` or `flowchart TD`\n  - Sequences, timelines → `sequenceDiagram` or `timeline`\n  - Class/object relationships → `classDiagram`\n- Preserve every entity, relationship, label, and grouping from the original ASCII art. Do not omit items.\n- Use Mermaid `subgraph` for grouped/boxed sections when the original uses visual grouping.\n- Keep the Mermaid block inside a fenced code block: ` ```mermaid ... ``` `.\n- If the ASCII art is ambiguous, add a one-line comment inside the Mermaid block noting the assumption.\n- Do not keep the original ASCII art alongside the Mermaid block; replace it entirely.\n\n### Mermaid validation rule (Pretty-mermaid-skills)\n\nMermaid syntax errors break rendering. After generating any Mermaid code block, validate and render it using [Pretty-mermaid-skills](https://github.com/imxv/Pretty-mermaid-skills).\n\nSetup (one-time, if not already installed):\n```bash\nnpx skills add https://github.com/imxv/pretty-mermaid-skills --skill pretty-mermaid\n```\n\nValidation flow:\n1. After converting ASCII art to Mermaid, save each Mermaid block as a temporary `.mmd` file.\n2. Render with Pretty-mermaid-skills to verify syntax:\n   ```bash\n   node scripts/render.mjs --input <file>.mmd --output <file>.svg --theme tokyo-night\n   ```\n3. If rendering fails, fix the Mermaid syntax and re-render until it succeeds.\n4. Once validated, embed the corrected Mermaid code back into the Markdown as a fenced ` ```mermaid ``` ` block.\n5. Delete the temporary `.mmd` and `.svg` files.\n\n> [AI RULE] Never embed Mermaid code that has not passed Pretty-mermaid-skills rendering. Broken diagrams are worse than no diagrams.\n\n### ASCII-to-Markdown-table conversion rule\n\nWhen the source Markdown contains data tables drawn with ASCII art (box-drawing characters, `+---+` borders, or space/tab-aligned columns), convert them to standard Markdown pipe tables.\n\nDetection patterns — any of these signals a data table:\n- Rows delimited by `+---+---+` or `├───┼───┤` or `|---|---|` style separators.\n- Cells bounded by `|` or `│` containing data values (not arrows or flow labels).\n- Space-aligned columns with a clear header row followed by a separator row of dashes or `=`.\n- Box-drawing grids (`┌┬┐`, `├┼┤`, `└┴┘`) where cells hold scalar data (names, numbers, settings, status).\n\nConversion guidelines:\n- Detect columns by splitting each row on the delimiter character (`|`, `│`, or consistent whitespace).\n- Trim leading/trailing whitespace in each cell.\n- Identify the header row (first data row, or the row directly above the first separator) and emit it as the Markdown table header.\n- Emit a separator row `|---|---|...` immediately after the header. Use `:---`, `:---:`, or `---:` to preserve original alignment if detectable.\n- Emit each subsequent data row as a pipe-delimited row.\n- If the original table has merged/spanned cells, approximate with repeated values or add a footnote explaining the merge.\n- If the original table has row-group separators (thicker lines, double borders), insert a blank row or a bold label row in the Markdown output to maintain grouping.\n- Preserve every data value exactly. Do not summarize, round, or omit any cell.\n\n> [AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original. Any mismatch is a data-loss bug.\n\n### ASCII-to-chart conversion rule\n\nWhen the source Markdown contains ASCII art representing quantitative data visualization (bar charts, histograms, sparklines, pie-chart text), convert it to the most readable Markdown-native format.\n\nDetection patterns — any of these signals a chart:\n- Rows with repeated fill characters (`█`, `▓`, `▒`, `░`, `#`, `=`, `*`, `■`) whose length encodes a numeric value.\n- An axis label column on the left and a bar on the right (horizontal bar chart).\n- Vertical columns of fill characters with labels at the bottom (vertical bar chart).\n- Percentage labels next to segments (pie-chart text representation).\n- Numeric scale markers along an edge (axis ticks).\n\nConversion decision:\n- **Simple bar chart (≤10 items, single series)** → Markdown table with a `Bar` column using repeated `█` in inline code for visual reference, plus a numeric `Value` column.\n- **Multi-series or complex chart** → Mermaid `xychart-beta` block.\n- **Pie/donut chart** → Mermaid `pie` block.\n- **Sparkline or trend** → Markdown table with rows for each data point; optionally a Mermaid `xychart-beta` line chart.\n\nConversion guidelines:\n- Extract every data label and its corresponding value from the ASCII chart.\n- Preserve the original data ordering (e.g., descending by value, chronological).\n- Include units if present in the original (e.g., `%`, `ms`, `MB`).\n- For Mermaid charts, add a `title` matching the original chart's caption or heading context.\n- Validate Mermaid chart blocks using the same Pretty-mermaid-skills flow as diagrams.\n\n> [AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output. Missing data points are conversion failures.\n\n### Repository safety rule\n\n- Never modify `README.md` in this repository. All changes must be confined to skill artifacts and generated MaraudersMapMD outputs only.\n\n### Artifact hygiene and structure rule\n\n- Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.\n- Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,sections/*.md}`.\n- Only one `<docId>` directory per document. `<docId>` corresponds to the rewritten file, not the original.\n- If artifacts derived from the original source file exist, delete them immediately.\n- Do not create or keep alternative artifact directories or extra copies outside the structure above.\n\n### Final honest review rule\n\n- Always end the workflow with a brief self-audit: re-check completed work against all rules and verify nothing is missing.\n- If any gap is found, fix it before completing the task.\n\n### Phase 1 — Baseline capture (before any rewriting)\n\nRead the original source file directly. If existing MaraudersMapMD artifacts already exist for a previous rewritten version, read the AI Map (`ai-map.md`) for section summaries and the Search Index (`index.json`) for keywords/links. These help understand structure but do not replace reading the original. Do not rewrite anything yet. Do not generate any artifacts from the original file.\n\n### Phase 2 — Create working copy\n\nCreate a `temp/` folder next to the original file. Copy the original into it as the working copy: `temp/temp_<filename>.rewritten.md`. Example: `guide.md` → `temp/temp_guide.rewritten.md`. All intermediate files go inside this `temp/` folder. All subsequent edits happen ONLY on this copy. Never modify the original.\n\n### Phase 3 — Skeleton\n\nUsing the AI Map table as a guide, write a flat heading list in the working copy. Next to each heading note its one-line purpose. Fix heading levels so they descend without skips (single `#`, then `##`, then `###`). If the document is long, place a concise summary after the title.\n\n### Phase 4 — Section-by-section rewrite\n\nOpen each Section Pack file (`sections/*.md`) one at a time, in order. For each section:\n1. Check the Search Index entry for that section's keywords, links, and AI Hint Blocks.\n2. Apply the canonical prompt rules: shorten paragraphs, convert dense prose to bullets, use tables for settings/options, keep code blocks unchanged.\n3. Preserve every keyword, link, and AI Hint Block listed in the index entry.\n4. Make the section self-contained. Use brief cross-references (\"see Section X\") instead of repeating content.\n\n### Phase 5 — Verification and cleanup\n\nCompare the finished output against the original Search Index:\n1. Every keyword in the index must appear in the output.\n2. Every AI Hint Block in the index must appear in the output.\n3. Every link in the index must appear in the output.\n4. Token count of the output should not significantly exceed the original (check AI Map's total).\n5. Run the checklist below.\n\nAfter verification passes:\n1. Move `temp/temp_<filename>.rewritten.md` to the original file's directory as `<filename>.rewritten.md`.\n2. Generate MaraudersMapMD artifacts from `<filename>.rewritten.md` only (never from the original).\n3. Verify each `sections/*.md` shard matches its corresponding content in `<filename>.rewritten.md` (no drift).\n4. Regenerate `shards.json` from the freshly generated shards and index.\n5. Delete the `temp/` folder entirely.\n6. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.\n7. Confirm the project contains: the original source file (untouched), `<filename>.rewritten.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/`. No `temp/` folder, no `temp_` files, no original-derived artifacts.\n\n### Sync rule — rewritten changes must update shards\n\nIf the rewritten document is edited at any time:\n1. Re-run the MaraudersMapMD generation on `<filename>.rewritten.md`.\n2. Replace the Section Pack and Search Index with the newly generated versions.\n3. Regenerate `shards.json` from the updated shards and index.\n4. Do not continue work until shards, index, and `shards.json` exactly match the rewritten document.\n",
-      "token_count": 2132,
-      "content_hash": "9de1ef1accf1f8a1abc21212968b51d1ee1e3ab9dc0291a811a0a5342a9eaa5f",
+      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 46-644 -->\n\n## Procedure\n\nFollow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.\n\n### Original file protection rule\n\n- The original source file must remain completely untouched. Never generate shards, indexes, or any MaraudersMapMD artifacts from the original.\n- All sharding, indexing, and artifact generation targets the rewritten file (`<filename>.rewritten.md`) exclusively.\n- The original exists solely as a reference for fact-checking; it must never be modified, copied into artifact directories, or have artifacts derived from it.\n\nArtifact paths (generated from the rewritten file only):\n- AI Map: `docs/MaraudersMap/<docId>/ai-map.md`\n- Section Pack: `docs/MaraudersMap/<docId>/sections/*.md`\n- Search Index: `docs/MaraudersMap/<docId>/index.json`\n- Shard JSON: `docs/MaraudersMap/<docId>/shards.json`\n- Diagram Images: `docs/MaraudersMap/<docId>/images/*.png`\n\n> [AI RULE] `<docId>` is derived from the rewritten filename (e.g. `guide.rewritten.md` → docId `guide`). Never create a separate `<docId>` for the original file.\n\n### Sharded access rule (always-on)\n\n- For fast lookup and reading, use the Section Pack (`sections/*.md`) as the primary source instead of the rewritten full document.\n- Only open the rewritten file when you need full-context validation or to resolve cross-section ambiguity.\n- The Section Pack must always be an exact shard-by-shard reflection of the rewritten document.\n- Shards and indexes exist only for rewritten documents. If artifacts for the original file are found, delete them immediately.\n\n### Retrieval order for accuracy\n\nWhen answering or extracting facts, use this order to minimize drift:\n1. Section Pack (`sections/*.md`) for the specific section.\n2. Search Index (`index.json`) for keywords/links/AI Hint Blocks validation.\n3. AI Map (`ai-map.md`) for section boundaries and summaries.\n4. Rewritten full document only if cross-section context is required.\n\n### Retrieval routing\n\nChoose the fastest retrieval path based on the query scope:\n\n| Query Scope | Route | Tool |\n|---|---|---|\n| Single section by keyword | **Fast-path** | `shards_search.py --shards ... --keyword \"<kw>\"` |\n| Relevance-ranked results | **BM25 JSON** | `shards_search.py --shards ... --query \"<text>\" --top 5` |\n| Cross-doc keyword search | **SQLite keyword** | `shards_search.py --db docs/MaraudersMap/shards.db --keyword \"<kw>\"` |\n| Cross-doc relevance search | **SQLite FTS5** | `shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\"` |\n| Regex pattern match | **Regex** | `shards_search.py --shards ... --regex \"<pattern>\"` or `--db ... --regex \"<pattern>\"` |\n| Full context validation | **Fallback** | Open `<filename>.rewritten.md` directly |\n\n> [AI RULE] Always attempt fast-path or BM25 before opening the full rewritten document. Only fall back to the full document when cross-section context is needed and shard results are insufficient.\n\n### Doc-type awareness\n\nDifferent document types benefit from different retrieval strategies:\n\n| Doc Type | Signal | Strategy |\n|---|---|---|\n| API Reference | Many short sections, code-heavy | Keyword search → exact section |\n| Tutorial/Guide | Sequential sections, prose-heavy | BM25 → top 3, read in order |\n| Configuration | Tables, key-value pairs | Keyword → single section |\n| Architecture | Diagrams, cross-references | Cross-doc search → multiple sections |\n| Mixed | No dominant pattern | BM25 → top 5, scan titles first |\n\n> [AI CONTEXT] Doc-type is inferred from AI Map structure and section content. No explicit tagging required.\n\n### Parallel execution rule\n\nWhen working with multiple documents or many sections, maximize throughput by running independent operations in parallel.\n\nParallelizable operations (no ordering dependency):\n\n| Operation | Parallel Unit | Constraint |\n|---|---|---|\n| Multi-document rewrite | Each document is independent | Different `<docId>` → safe to parallelize |\n| Section-by-section rewrite (Phase 4) | Sections that do NOT cross-reference each other | If section B references section A, rewrite A first |\n| Shard + index generation (Phase 5) | Per-document artifact generation | Each `<docId>` writes to its own directory |\n| `shards_to_json.py` runs | One run per `<docId>` | Each writes to `docs/MaraudersMap/<docId>/shards.json` — no conflict |\n| `shards_db.py --ingest` runs | One ingest per `<docId>` | SQLite handles concurrent reads; run ingests sequentially or use `--ingest-all` |\n| Verification (Phase 5 checks 1–4) | Per-document | Each document's checklist is independent |\n\nMust remain sequential (ordering dependency exists):\n\n| Operation | Reason |\n|---|---|\n| Phase 1 → 2 → 3 within a single document | Each phase depends on the previous |\n| Skeleton (Phase 3) before section rewrite (Phase 4) | Heading structure must exist before filling content |\n| Section rewrite → shard generation | Shards must reflect the final rewritten content |\n| `shards_to_json.py` → `shards_db.py --ingest` for the same doc | DB ingests from `shards.json`, so JSON must exist first |\n\nExecution strategy by scale:\n\n| Scale | Strategy |\n|---|---|\n| 1 document, ≤5 sections | Sequential is fine |\n| 1 document, >5 sections | Parallel-rewrite independent sections, then sequential for cross-referencing ones |\n| 2–5 documents | Parallel-rewrite all documents simultaneously |\n| >5 documents | Batch: parallel-rewrite up to 5 at a time, then `shards_db.py --ingest-all` once at the end |\n\n> [AI RULE] When the AI agent supports parallel tool calls or background tasks, it MUST use them for independent operations listed above. Sequential processing of independent documents is a performance bug.\n\n### Accuracy guardrails\n\n- Do not infer facts that are not present in the shards or index.\n- If a fact appears in a shard but is missing from the index, treat the shard as the source of truth and regenerate the index.\n- If shards disagree with the rewritten document, regenerate shards and index from the rewritten document immediately.\n\n### JSON shard pack rule (Python-first)\n\n- Generate `shards.json` from the Section Pack and Search Index to enable fast, accurate Python lookup.\n- Treat `shards.json` as a read-optimized mirror. The source of truth remains the shards and rewritten document.\n- Any time shards or index change, regenerate `shards.json` before answering questions.\n- Use `python shards_to_json.py --doc-root docs/MaraudersMap/<docId>` to rebuild the JSON pack.\n- For quick lookup, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --keyword \"<keyword>\"`.\n- For fastest relevance ranking, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --query \"<free text>\" --top 5` (BM25).\n- For incremental rebuilds: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --changed` (skips rebuild if no content changes detected).\n- To preview changes without writing: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --dry-run --report`.\n- To build and ingest into the cross-doc SQLite index: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.\n- To initialize the cross-doc index for the first time: `python shards_db.py --init --map-root docs/MaraudersMap`.\n- To search across all documents: `python shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\" --top 5`.\n\n### ASCII visual content classification\n\nBefore converting any ASCII art, classify it into one of three categories. The category determines the target format.\n\nDecision tree:\n\n1. **Does the ASCII block contain rows of data with column alignment?** (column headers, separator rows like `+---+---+` or `├───┼───┤`, and cells holding data values such as names, numbers, or settings)\n   → **Category: Data Table** → convert to Markdown pipe table (see \"ASCII-to-Markdown-table conversion rule\").\n\n2. **Does the ASCII block represent a quantitative visualization?** (bar lengths made of repeated characters like `█`, `▓`, `#`, `=`, `*`; axis labels with numeric values; histogram bins; sparkline-style rows)\n   → **Category: Chart** → convert to Markdown table (if simple) or HTML rendering → screenshot PNG image (if complex) (see \"ASCII-to-chart conversion rule\").\n\n3. **Does the ASCII block represent structural relationships?** (boxes connected by arrows or lines; flow direction; entity-relationship grouping; sequence lifelines; tree/hierarchy)\n   → **Category: Diagram** → convert to HTML diagram, render as screenshot PNG, embed as image (see \"ASCII-to-HTML-diagram conversion rule\").\n\nAmbiguity rules:\n- If a block mixes data rows with structural arrows, split it: data rows → MD table, structural part → HTML diagram screenshot.\n- If a pipe-aligned block is clearly a diagram legend or label (no meaningful row data), treat it as part of the diagram.\n- When in doubt, prefer the simpler format (MD table over HTML screenshot) to maximize portability.\n- Add a one-line HTML comment `<!-- Converted from ASCII art: [original description] -->` above each converted block so reviewers can trace origin.\n\n> [AI RULE] Never leave ASCII art unconverted. Every ASCII visual block must be classified and transformed to its target format.\n\n### ASCII-to-HTML-diagram conversion rule\n\nWhen the source Markdown contains ASCII art diagrams (box-drawing characters like `┌─┐│└─┘`, `+---+`, pipe-aligned tables used as diagrams, or any text-art layout representing structure), convert them to high-quality PNG images via HTML rendering and screenshot capture.\n\nConversion pipeline:\n1. **Analyze** the ASCII diagram — identify entities, relationships, groupings, flow direction, and labels.\n2. **Generate** a self-contained HTML file with inline CSS that visually reproduces the diagram as a clean, professional graphic.\n3. **Render** the HTML in a headless browser (Playwright or equivalent browser tool).\n4. **Screenshot** the rendered diagram as a PNG image.\n5. **Save** the PNG to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.\n6. **Embed** the image in the Markdown output: `![<diagram description>](images/<diagram-name>.png)`.\n7. **Delete** the temporary HTML file. Do not keep it in the output.\n\nConversion guidelines:\n- Identify the diagram type and apply the matching HTML/CSS pattern (see \"Diagram type HTML/CSS templates\" below):\n  - DB schemas, ER diagrams → entity-box layout with relationship lines\n  - Architecture, system layout, grouping → nested container layout with labeled connections\n  - Flows, pipelines → node-and-arrow horizontal or vertical layout\n  - Sequences, timelines → lifeline-based column layout\n  - Class/object relationships → box layout with typed connectors\n  - Tree/hierarchy → indented or layered box layout\n- Preserve every entity, relationship, label, and grouping from the original ASCII art. Do not omit items.\n- Use nested `<div>` containers for grouped/boxed sections when the original uses visual grouping.\n- If the ASCII art is ambiguous, add a one-line HTML comment in the generated HTML noting the assumption.\n- Do not keep the original ASCII art alongside the embedded image; replace it entirely.\n\nNaming convention for diagram images:\n- Use a descriptive kebab-case name derived from the diagram's context: `architecture-overview.png`, `auth-flow.png`, `er-schema.png`.\n- If multiple diagrams exist in the same document, suffix with a zero-padded index in document order: `data-flow-01.png`, `data-flow-02.png`.\n- Naming must be deterministic: for the same input, produce the same filenames every run.\n- If a filename collision occurs in the same `<docId>`, append a short stable suffix: `data-flow-01-a3f2.png`.\n\n### Diagram rendering and capture rule\n\nEvery diagram image must be visually verified. A broken or mis-rendered diagram is worse than no diagram.\n\nRendering flow:\n1. Write the self-contained HTML file to `temp/diagram-<name>.html` in the working directory.\n2. Open the HTML file in a headless browser using Playwright (or equivalent browser automation tool available in the agent's environment).\n3. Wait for the page to fully render (fonts loaded, layout stable).\n4. Take a screenshot of the diagram element (not the full page) or the viewport if the diagram fills the page. Use PNG format at 2× device pixel ratio for crisp output.\n5. Save the screenshot to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.\n6. Visually inspect the screenshot — confirm all labels are readable, no overlapping elements, and the layout matches the original ASCII structure.\n7. If the rendering is broken or misaligned, fix the HTML/CSS and re-render until it is correct.\n8. Delete `temp/diagram-<name>.html` after successful capture.\n9. Verify the temporary HTML file was deleted. If deletion fails, halt and report the cleanup error.\n10. Embed in the Markdown output:\n   ```markdown\n   <!-- Converted from ASCII art: [original description] -->\n   ![<diagram description>](images/<diagram-name>.png)\n   ```\n\nFailure handling rules:\n- If capture fails, delete the temporary HTML file and any broken PNG before retrying.\n- Never keep partial or invalid diagram outputs.\n\nScreenshot quality requirements:\n- Minimum width: 600px viewport. Maximum width: 1200px.\n- Device pixel ratio: 2 (for Retina/HiDPI clarity).\n- Background: white (`#ffffff`).\n- No browser chrome, scrollbars, or padding outside the diagram.\n- All text must be legible at the final embedded size.\n\n> [AI RULE] Never embed a diagram image that has not been visually verified after screenshot capture. If the rendering looks wrong, fix and re-render.\n\n### Diagram type HTML/CSS templates\n\nUse these patterns as a starting point when generating HTML for each diagram type. Adapt layout, colors, and sizing to match the specific diagram's content. All templates share these base styles:\n\n**Base styles (shared across all diagram types):**\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<style>\n  * { margin: 0; padding: 0; box-sizing: border-box; }\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n    background: #ffffff;\n    padding: 32px;\n    color: #1e293b;\n  }\n  .diagram { display: inline-block; }\n  .box {\n    border: 1.5px solid #64748b;\n    border-radius: 8px;\n    padding: 10px 16px;\n    background: #f8fafc;\n    font-size: 13px;\n    font-weight: 500;\n    text-align: center;\n    white-space: nowrap;\n  }\n  .box-title {\n    font-size: 11px;\n    font-weight: 600;\n    color: #64748b;\n    text-transform: uppercase;\n    letter-spacing: 0.5px;\n    margin-bottom: 4px;\n  }\n  .container {\n    border: 2px solid #334155;\n    border-radius: 12px;\n    padding: 20px;\n    background: #ffffff;\n    position: relative;\n  }\n  .container-label {\n    font-size: 15px;\n    font-weight: 700;\n    color: #1e293b;\n    margin-bottom: 16px;\n  }\n  .row {\n    display: flex;\n    gap: 16px;\n    justify-content: center;\n    align-items: flex-start;\n  }\n  .col {\n    display: flex;\n    flex-direction: column;\n    gap: 12px;\n    align-items: center;\n  }\n  .arrow-down {\n    width: 2px;\n    height: 24px;\n    background: #94a3b8;\n    position: relative;\n    margin: 0 auto;\n  }\n  .arrow-down::after {\n    content: '';\n    position: absolute;\n    bottom: -4px;\n    left: 50%;\n    transform: translateX(-50%);\n    border-left: 5px solid transparent;\n    border-right: 5px solid transparent;\n    border-top: 6px solid #94a3b8;\n  }\n  .arrow-right {\n    width: 24px;\n    height: 2px;\n    background: #94a3b8;\n    position: relative;\n    align-self: center;\n  }\n  .arrow-right::after {\n    content: '';\n    position: absolute;\n    right: -4px;\n    top: 50%;\n    transform: translateY(-50%);\n    border-top: 5px solid transparent;\n    border-bottom: 5px solid transparent;\n    border-left: 6px solid #94a3b8;\n  }\n  .badge {\n    display: inline-block;\n    font-size: 11px;\n    font-weight: 500;\n    color: #475569;\n    background: #e2e8f0;\n    border-radius: 4px;\n    padding: 2px 8px;\n    margin-top: 4px;\n  }\n  .separator {\n    width: 100%;\n    height: 1px;\n    background: #e2e8f0;\n    margin: 16px 0;\n  }\n</style>\n</head>\n<body>\n<div class=\"diagram\">\n  <!-- Diagram content here -->\n</div>\n</body>\n</html>\n```\n\n**Architecture / system layout diagram:**\n\nUse nested `.container` elements for system boundaries and `.box` for components. Connect with `.arrow-down` or `.arrow-right`. Example structure:\n\n```html\n<div class=\"container\">\n  <div class=\"container-label\">System Name</div>\n  <div class=\"row\">\n    <div class=\"box\">Component A</div>\n    <div class=\"arrow-right\"></div>\n    <div class=\"box\">Component B</div>\n    <div class=\"arrow-right\"></div>\n    <div class=\"box\">Component C</div>\n  </div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"container\" style=\"border-color: #94a3b8;\">\n    <div class=\"container-label\" style=\"font-size: 13px;\">Data Layer</div>\n    <div class=\"row\">\n      <div class=\"box\">\n        <div class=\"box-title\">table</div>\n        cache\n      </div>\n      <div class=\"box\">\n        <div class=\"box-title\">table</div>\n        queue_jobs\n      </div>\n    </div>\n  </div>\n</div>\n```\n\n**Flowchart / pipeline diagram:**\n\nUse horizontal (`.row`) or vertical (`.col`) layouts with arrows between steps. For decision nodes, use a rotated diamond shape:\n\n```html\n<div class=\"col\">\n  <div class=\"box\" style=\"background: #dbeafe; border-color: #3b82f6;\">Start</div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"box\">Process A</div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"box\" style=\"transform: rotate(45deg); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 4px;\">\n    <span style=\"transform: rotate(-45deg); font-size: 12px;\">Condition?</span>\n  </div>\n  <div class=\"row\" style=\"margin-top: 16px;\">\n    <div class=\"col\">\n      <div class=\"badge\">Yes</div>\n      <div class=\"arrow-down\"></div>\n      <div class=\"box\">Action X</div>\n    </div>\n    <div style=\"width: 48px;\"></div>\n    <div class=\"col\">\n      <div class=\"badge\">No</div>\n      <div class=\"arrow-down\"></div>\n      <div class=\"box\">Action Y</div>\n    </div>\n  </div>\n</div>\n```\n\n**ER / database schema diagram:**\n\nUse table-like boxes with attribute lists. Connect entities with labeled lines using SVG or CSS pseudo-elements:\n\n```html\n<div class=\"row\" style=\"gap: 64px; align-items: flex-start;\">\n  <div class=\"box\" style=\"text-align: left; padding: 0; overflow: hidden;\">\n    <div style=\"background: #334155; color: #fff; padding: 8px 16px; font-weight: 600; font-size: 14px;\">users</div>\n    <div style=\"padding: 8px 16px; font-size: 13px; line-height: 1.8;\">\n      <strong>id</strong> : uuid (PK)<br>\n      name : varchar<br>\n      email : varchar (UQ)<br>\n      created_at : timestamp\n    </div>\n  </div>\n  <div style=\"align-self: center; font-size: 12px; color: #64748b;\">1 ──── N</div>\n  <div class=\"box\" style=\"text-align: left; padding: 0; overflow: hidden;\">\n    <div style=\"background: #334155; color: #fff; padding: 8px 16px; font-weight: 600; font-size: 14px;\">orders</div>\n    <div style=\"padding: 8px 16px; font-size: 13px; line-height: 1.8;\">\n      <strong>id</strong> : uuid (PK)<br>\n      user_id : uuid (FK)<br>\n      total : decimal<br>\n      status : enum\n    </div>\n  </div>\n</div>\n```\n\n**Sequence diagram:**\n\nUse column-based layout with vertical lifelines and horizontal message arrows. Lifelines are vertical dashed borders; messages are styled horizontal connectors:\n\n```html\n<div style=\"display: flex; gap: 0; position: relative; min-height: 300px;\">\n  <!-- Participant headers -->\n  <div style=\"flex: 1; text-align: center;\">\n    <div class=\"box\" style=\"display: inline-block; margin-bottom: 8px;\">Client</div>\n    <div style=\"width: 2px; height: 250px; border-left: 2px dashed #cbd5e1; margin: 0 auto;\"></div>\n  </div>\n  <div style=\"flex: 1; text-align: center;\">\n    <div class=\"box\" style=\"display: inline-block; margin-bottom: 8px;\">Server</div>\n    <div style=\"width: 2px; height: 250px; border-left: 2px dashed #cbd5e1; margin: 0 auto;\"></div>\n  </div>\n  <!-- Messages (absolutely positioned over lifelines) -->\n  <div style=\"position: absolute; top: 60px; left: 15%; right: 15%;\">\n    <div style=\"display: flex; align-items: center; margin-bottom: 24px;\">\n      <span style=\"font-size: 12px; flex: 1; text-align: center;\">POST /login</span>\n    </div>\n    <div style=\"height: 2px; background: #475569; position: relative;\">\n      <div style=\"position: absolute; right: -4px; top: -4px; border-left: 6px solid #475569; border-top: 5px solid transparent; border-bottom: 5px solid transparent;\"></div>\n    </div>\n  </div>\n</div>\n```\n\n**Tree / hierarchy diagram:**\n\nUse a recursive nested structure with indented containers:\n\n```html\n<div class=\"col\" style=\"align-items: flex-start;\">\n  <div class=\"box\" style=\"background: #dbeafe; border-color: #3b82f6; font-weight: 600;\">Root Node</div>\n  <div style=\"display: flex; gap: 32px; margin-left: 24px; margin-top: 12px;\">\n    <div class=\"col\" style=\"align-items: flex-start;\">\n      <div style=\"display: flex; align-items: center; gap: 8px;\">\n        <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n        <div class=\"box\">Child A</div>\n      </div>\n      <div style=\"margin-left: 24px; margin-top: 8px;\">\n        <div style=\"display: flex; align-items: center; gap: 8px;\">\n          <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n          <div class=\"box\" style=\"font-size: 12px;\">Leaf A-1</div>\n        </div>\n      </div>\n    </div>\n    <div class=\"col\" style=\"align-items: flex-start;\">\n      <div style=\"display: flex; align-items: center; gap: 8px;\">\n        <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n        <div class=\"box\">Child B</div>\n      </div>\n    </div>\n  </div>\n</div>\n```\n\nAdaptation guidelines:\n- These templates are starting points. Adjust colors, sizes, gaps, and nesting to match the specific diagram's complexity.\n- For very complex diagrams with many connections, consider using inline SVG for precise line routing instead of CSS-only arrows.\n- Use `position: absolute` sparingly — prefer flexbox/grid layout for maintainability.\n- Keep font sizes between 11px–15px for readability in the final screenshot.\n- Test that the diagram fits within the 600–1200px viewport width before capturing.\n\n### ASCII-to-Markdown-table conversion rule\n\nWhen the source Markdown contains data tables drawn with ASCII art (box-drawing characters, `+---+` borders, or space/tab-aligned columns), convert them to standard Markdown pipe tables.\n\nDetection patterns — any of these signals a data table:\n- Rows delimited by `+---+---+` or `├───┼───┤` or `|---|---|` style separators.\n- Cells bounded by `|` or `│` containing data values (not arrows or flow labels).\n- Space-aligned columns with a clear header row followed by a separator row of dashes or `=`.\n- Box-drawing grids (`┌┬┐`, `├┼┤`, `└┴┘`) where cells hold scalar data (names, numbers, settings, status).\n\nConversion guidelines:\n- Detect columns by splitting each row on the delimiter character (`|`, `│`, or consistent whitespace).\n- Trim leading/trailing whitespace in each cell.\n- Identify the header row (first data row, or the row directly above the first separator) and emit it as the Markdown table header.\n- Emit a separator row `|---|---|...` immediately after the header. Use `:---`, `:---:`, or `---:` to preserve original alignment if detectable.\n- Emit each subsequent data row as a pipe-delimited row.\n- If the original table has merged/spanned cells, approximate with repeated values or add a footnote explaining the merge.\n- If the original table has row-group separators (thicker lines, double borders), insert a blank row or a bold label row in the Markdown output to maintain grouping.\n- Preserve every data value exactly. Do not summarize, round, or omit any cell.\n\n> [AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original. Any mismatch is a data-loss bug.\n\n### ASCII-to-chart conversion rule\n\nWhen the source Markdown contains ASCII art representing quantitative data visualization (bar charts, histograms, sparklines, pie-chart text), convert it to the most readable Markdown-native format.\n\nDetection patterns — any of these signals a chart:\n- Rows with repeated fill characters (`█`, `▓`, `▒`, `░`, `#`, `=`, `*`, `■`) whose length encodes a numeric value.\n- An axis label column on the left and a bar on the right (horizontal bar chart).\n- Vertical columns of fill characters with labels at the bottom (vertical bar chart).\n- Percentage labels next to segments (pie-chart text representation).\n- Numeric scale markers along an edge (axis ticks).\n\nConversion decision:\n- **Simple bar chart (≤10 items, single series)** → Markdown table with a `Bar` column using repeated `█` in inline code for visual reference, plus a numeric `Value` column.\n- **Multi-series or complex chart** → HTML rendering → screenshot PNG image (use CSS bar/chart layout with inline styles).\n- **Pie/donut chart** → HTML rendering → screenshot PNG image (use SVG `<circle>` with `stroke-dasharray` for segments).\n- **Sparkline or trend** → Markdown table with rows for each data point; optionally HTML rendering → screenshot PNG image (use SVG `<polyline>` for line charts).\n\nConversion guidelines:\n- Extract every data label and its corresponding value from the ASCII chart.\n- Preserve the original data ordering (e.g., descending by value, chronological).\n- Include units if present in the original (e.g., `%`, `ms`, `MB`).\n- For HTML chart images, add a `title` matching the original chart's caption or heading context.\n- Validate HTML chart images using the same rendering and capture flow as diagrams (see \"Diagram rendering and capture rule\").\n\n> [AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output. Missing data points are conversion failures.\n\n### Repository safety rule\n\n- Never modify `README.md` in this repository. All changes must be confined to skill artifacts and generated MaraudersMapMD outputs only.\n\n### Artifact hygiene and structure rule\n\n- Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.\n- Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,.manifest.json,sections/*.md,images/*.png}`. The cross-doc index lives at docs/MaraudersMap/shards.db.\n- Only one `<docId>` directory per document. `<docId>` corresponds to the rewritten file, not the original.\n- If artifacts derived from the original source file exist, delete them immediately.\n- Do not create or keep alternative artifact directories or extra copies outside the structure above.\n- Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown.\n- Before finalizing, ensure no `temp/diagram-*.html` files remain.\n\n### Final honest review rule\n\n- Always end the workflow with a brief self-audit: re-check completed work against all rules and verify nothing is missing.\n- If any gap is found, fix it before completing the task.\n\n### Phase 1 — Baseline capture (before any rewriting)\n\nRead the original source file directly. If existing MaraudersMapMD artifacts already exist for a previous rewritten version, read the AI Map (`ai-map.md`) for section summaries and the Search Index (`index.json`) for keywords/links. These help understand structure but do not replace reading the original. Do not rewrite anything yet. Do not generate any artifacts from the original file.\n\n### Phase 2 — Create working copy\n\nCreate a `temp/` folder next to the original file. Copy the original into it as the working copy: `temp/temp_<filename>.rewritten.md`. Example: `guide.md` → `temp/temp_guide.rewritten.md`. All intermediate files go inside this `temp/` folder. All subsequent edits happen ONLY on this copy. Never modify the original.\n\n### Phase 3 — Skeleton\n\nUsing the AI Map table as a guide, write a flat heading list in the working copy. Next to each heading note its one-line purpose. Fix heading levels so they descend without skips (single `#`, then `##`, then `###`). If the document is long, place a concise summary after the title.\n\n### Phase 4 — Section-by-section rewrite\n\nOpen each Section Pack file (`sections/*.md`). For each section:\n1. Check the Search Index entry for that section's keywords, links, and AI Hint Blocks.\n2. Apply the canonical prompt rules: shorten paragraphs, convert dense prose to bullets, use tables for settings/options, keep code blocks unchanged.\n3. Preserve every keyword, link, and AI Hint Block listed in the index entry.\n4. Make the section self-contained. Use brief cross-references (\"see Section X\") instead of repeating content.\n\nParallel rewrite guidance: Sections that do not reference each other may be rewritten in parallel (see \"Parallel execution rule\"). When unsure about cross-references, rewrite sequentially to preserve consistency.\n\n### Phase 5 — Verification and cleanup\n\nCompare the finished output against the original Search Index:\n1. Every keyword in the index must appear in the output.\n2. Every AI Hint Block in the index must appear in the output.\n3. Every link in the index must appear in the output.\n4. Token count of the output should not significantly exceed the original (check AI Map's total).\n5. Run the checklist below.\n\nAfter verification passes:\n1. Move `temp/temp_<filename>.rewritten.md` to the original file's directory as `<filename>.rewritten.md`.\n2. Generate MaraudersMapMD artifacts from `<filename>.rewritten.md` only (never from the original).\n3. Verify each `sections/*.md` shard matches its corresponding content in `<filename>.rewritten.md` (no drift).\n4. Regenerate `shards.json` from the freshly generated shards and index.\n5. If processing multiple documents, run steps 2–4 in parallel for each `<docId>` (see \"Parallel execution rule\"). Then run `python shards_db.py --ingest-all --map-root docs/MaraudersMap` once to batch-update the cross-doc index.\n6. Delete the `temp/` folder entirely.\n7. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.\n8. Confirm the project contains: the original source file (untouched), `<filename>.rewritten.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/` (including `images/*.png` if any diagrams were converted). No `temp/` folder, no `temp_` files, no original-derived artifacts, no temporary HTML files.\n\n### Sync rule — rewritten changes must update shards\n\nIf the rewritten document is edited at any time:\n1. Re-run the MaraudersMapMD generation on `<filename>.rewritten.md`.\n2. Replace the Section Pack and Search Index with the newly generated versions.\n3. Regenerate `shards.json` from the updated shards and index.\n4. If a cross-doc SQLite index exists (`shards.db`), re-ingest the updated doc: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.\n5. Do not continue work until shards, index, and `shards.json` exactly match the rewritten document.\n",
+      "token_count": 4177,
+      "content_hash": "c7e79727d89867ca5be20d60c26679cd80a71183c94353f0783fe72363a70057",
       "keywords": [
-        "Original file protection rule",
-        "Sharded access rule (always-on)",
-        "Retrieval order for accuracy",
-        "Accuracy guardrails",
-        "JSON shard pack rule (Python-first)",
-        "ASCII visual content classification",
-        "ASCII-to-Mermaid conversion rule",
-        "Mermaid validation rule (Pretty-mermaid-skills)",
-        "ASCII-to-Markdown-table conversion rule",
-        "ASCII-to-chart conversion rule",
-        "Repository safety rule",
-        "Artifact hygiene and structure rule",
-        "Final honest review rule",
-        "Phase 1 — Baseline capture (before any rewriting)",
-        "Phase 2 — Create working copy",
-        "Phase 3 — Skeleton",
-        "Phase 4 — Section-by-section rewrite",
-        "Phase 5 — Verification and cleanup",
-        "Sync rule — rewritten changes must update shards"
+        "Procedure",
+        "<filename>.rewritten.md",
+        "docs/MaraudersMap/<docId>/ai-map.md",
+        "docs/MaraudersMap/<docId>/sections/*.md",
+        "docs/MaraudersMap/<docId>/index.json",
+        "docs/MaraudersMap/<docId>/shards.json",
+        "docs/MaraudersMap/<docId>/images/*.png",
+        "<docId>",
+        "guide.rewritten.md",
+        "guide",
+        "sections/*.md",
+        "index.json",
+        "ai-map.md",
+        "shards_search.py --shards ... --keyword \"<kw>\"",
+        "shards_search.py --shards ... --query \"<text>\" --top 5",
+        "shards_search.py --db docs/MaraudersMap/shards.db --keyword \"<kw>\"",
+        "shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\"",
+        "shards_search.py --shards ... --regex \"<pattern>\"",
+        "--db ... --regex \"<pattern>\"",
+        "shards_to_json.py",
+        "shards_db.py --ingest",
+        "--ingest-all",
+        "shards.json",
+        "shards_db.py --ingest-all",
+        "python shards_to_json.py --doc-root docs/MaraudersMap/<docId>",
+        "python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --changed",
+        "python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --dry-run --report",
+        "python shards_db.py --init --map-root docs/MaraudersMap",
+        "+---+---+",
+        "├───┼───┤",
+        "█",
+        "▓",
+        "#",
+        "=",
+        "*",
+        "<!-- Converted from ASCII art: [original description] -->",
+        "┌─┐│└─┘",
+        "+---+",
+        "docs/MaraudersMap/<docId>/images/<diagram-name>.png",
+        "![<diagram description>](images/<diagram-name>.png)",
+        "<div>",
+        "architecture-overview.png",
+        "auth-flow.png",
+        "er-schema.png",
+        "data-flow-01.png",
+        "data-flow-02.png",
+        "data-flow-01-a3f2.png",
+        "temp/diagram-<name>.html",
+        "**Architecture / system layout diagram:**\n\nUse nested",
+        "elements for system boundaries and",
+        "for components. Connect with",
+        "or",
+        ". Example structure:",
+        "**Flowchart / pipeline diagram:**\n\nUse horizontal (",
+        ") or vertical (",
+        "style separators.\n- Cells bounded by",
+        ".\n- Box-drawing grids (",
+        ",",
+        "immediately after the header. Use",
+        ", or",
+        "column using repeated",
+        "in inline code for visual reference, plus a numeric",
+        "with",
+        ").\n- For HTML chart images, add a",
+        ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- Only one",
+        "directory per document.",
+        ") for section summaries and the Search Index (",
+        "folder next to the original file. Copy the original into it as the working copy:",
+        ". Example:",
+        "→",
+        ". All intermediate files go inside this",
+        ", then",
+        "to the original file's directory as",
+        ".\n2. Generate MaraudersMapMD artifacts from",
+        "only (never from the original).\n3. Verify each",
+        "shard matches its corresponding content in",
+        "(no drift).\n4. Regenerate",
+        "(see \"Parallel execution rule\"). Then run",
+        "once to batch-update the cross-doc index.\n6. Delete the",
+        ", and one set of MaraudersMapMD artifacts under",
+        "(including",
+        "if any diagrams were converted). No",
+        "folder, no",
+        "from the updated shards and index.\n4. If a cross-doc SQLite index exists (",
+        "), re-ingest the updated doc:",
+        ".\n5. Do not continue work until shards, index, and",
+        "[AI RULE]",
+        "[AI CONTEXT]"
       ],
-      "links": [
-        "https://github.com/imxv/Pretty-mermaid-skills",
-        "https://github.com/imxv/pretty-mermaid-skills"
-      ],
+      "links": [],
       "ai_hints": [
-        "[AI RULE] <docId> is derived from the rewritten filename",
-        "[AI RULE] Never leave ASCII art unconverted",
-        "[AI RULE] Never embed Mermaid code that has not passed Pretty-mermaid-skills rendering",
-        "[AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original",
-        "[AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output"
+        "[AI RULE]",
+        "[AI CONTEXT]"
       ],
-      "summary": "Five-phase editorial flow with ASCII visual content classification and conversion rules.",
+      "summary": "Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.",
       "line_range": [
-        54,
-        272
+        46,
+        644
       ],
-      "index_tokens": 2480
+      "index_tokens": 4169
     },
     {
       "id": "SKILL:checklist",
       "legacy_id": "checklist",
       "title": "Checklist",
       "path": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections/04-checklist.md",
-      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 274-296 -->\n\n## Checklist\n\nAfter rewriting, verify every item below. Each maps to a rule in the canonical prompt.\n\n- [ ] Heading hierarchy is correct (single `#` title, levels descend without skips)\n- [ ] Concise summary present at the top for long documents\n- [ ] Paragraphs are short (2–4 lines); dense prose converted to bullets\n- [ ] Tables used for settings, options, or structured comparisons\n- [ ] No hard line breaks inside paragraphs\n- [ ] No extra blank lines inside lists\n- [ ] Typos fixed; product names, command names, and identifiers preserved exactly\n- [ ] AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them\n- [ ] All facts, constraints, and technical details from the source are present in the output\n- [ ] Code blocks and inline code unchanged (except ASCII art converted per classification rules)\n- [ ] Every ASCII visual block classified (data table / chart / diagram) per the decision tree\n- [ ] All ASCII data tables converted to Markdown pipe tables with identical row/column counts\n- [ ] All ASCII diagrams converted to appropriate Mermaid code blocks with no data loss\n- [ ] All ASCII charts converted to Markdown tables or Mermaid chart blocks with every data point preserved\n- [ ] Every Mermaid code block (diagrams and charts) validated via Pretty-mermaid-skills rendering (no syntax errors)\n- [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)\n- [ ] Output language matches the source's dominant language\n- [ ] Output is only the final Markdown — no commentary or preamble\n",
-      "token_count": 293,
-      "content_hash": "62b91eb0a1b46a23f29200cbe839ebba65090b24a253e03b450e1df8ba951a80",
+      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 645-670 -->\n\n## Checklist\n\nAfter rewriting, verify every item below. Each maps to a rule in the canonical prompt.\n\n- [ ] Heading hierarchy is correct (single `#` title, levels descend without skips)\n- [ ] Concise summary present at the top for long documents\n- [ ] Paragraphs are short (2–4 lines); dense prose converted to bullets\n- [ ] Tables used for settings, options, or structured comparisons\n- [ ] No hard line breaks inside paragraphs\n- [ ] No extra blank lines inside lists\n- [ ] Typos fixed; product names, command names, and identifiers preserved exactly\n- [ ] AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them\n- [ ] All facts, constraints, and technical details from the source are present in the output\n- [ ] Code blocks and inline code unchanged (except ASCII art converted per classification rules)\n- [ ] Every ASCII visual block classified (data table / chart / diagram) per the decision tree\n- [ ] All ASCII data tables converted to Markdown pipe tables with identical row/column counts\n- [ ] All ASCII diagrams converted to HTML, rendered as screenshot PNG images, and embedded with `![...]()` syntax — no data loss\n- [ ] All ASCII charts converted to Markdown tables (simple) or HTML screenshot PNG images (complex) with every data point preserved\n- [ ] Every diagram and chart PNG image visually verified after screenshot capture (labels readable, layout correct, no overlaps)\n- [ ] Diagram images saved to `docs/MaraudersMap/<docId>/images/` with descriptive kebab-case filenames\n- [ ] Diagram image filenames are deterministic across reruns for the same input\n- [ ] No orphaned image files exist in `docs/MaraudersMap/<docId>/images/` (every PNG is referenced)\n- [ ] No `temp/diagram-*.html` files remain after completion\n- [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)\n- [ ] Output language matches the source's dominant language\n- [ ] Output is only the final Markdown — no commentary or preamble\n",
+      "token_count": 355,
+      "content_hash": "b74774dd27764550358a7f5a3ada446965850593be372fc918f888e725a21b9f",
       "keywords": [
-        "ASCII visual block classified",
-        "ASCII data tables",
-        "ASCII diagrams",
-        "ASCII charts",
-        "Mermaid validation",
-        "HTML comment tracing origin"
+        "Checklist",
+        "#",
+        "> [AI RULE]",
+        "> [AI DECISION]",
+        "> [AI TODO]",
+        "> [AI CONTEXT]",
+        "![...]()",
+        "docs/MaraudersMap/<docId>/images/",
+        "temp/diagram-*.html",
+        "<!-- Converted from ASCII art: ... -->"
       ],
       "links": [],
-      "ai_hints": [
-        "[AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them"
-      ],
-      "summary": "Verification items including ASCII visual block classification and conversion accuracy.",
+      "ai_hints": [],
+      "summary": "After rewriting, verify every item below. Each maps to a rule in the canonical prompt.",
       "line_range": [
-        274,
-        296
+        645,
+        670
       ],
-      "index_tokens": 338
+      "index_tokens": 347
     }
   ],
   "index": {
     "keywords": {
-      "ASCII visual content classification": [
-        "canonical-prompt",
-        "procedure"
+      "When to Use": [
+        "when-to-use"
       ],
-      "Data tables": [
+      "Canonical Prompt": [
         "canonical-prompt"
       ],
-      "Diagrams": [
+      "buildReadabilityPrompt()": [
         "canonical-prompt"
       ],
-      "Charts": [
+      "src/ai/aiService.ts": [
         "canonical-prompt"
       ],
-      "Mermaid": [
+      "${source}": [
         "canonical-prompt"
       ],
-      "xychart-beta": [
-        "canonical-prompt"
-      ],
-      "pie": [
-        "canonical-prompt"
-      ],
-      "Original file protection rule": [
+      "Procedure": [
         "procedure"
       ],
-      "Sharded access rule (always-on)": [
+      "<filename>.rewritten.md": [
         "procedure"
       ],
-      "Retrieval order for accuracy": [
+      "docs/MaraudersMap/<docId>/ai-map.md": [
         "procedure"
       ],
-      "Accuracy guardrails": [
+      "docs/MaraudersMap/<docId>/sections/*.md": [
         "procedure"
       ],
-      "JSON shard pack rule (Python-first)": [
+      "docs/MaraudersMap/<docId>/index.json": [
         "procedure"
       ],
-      "ASCII-to-Mermaid conversion rule": [
+      "docs/MaraudersMap/<docId>/shards.json": [
         "procedure"
       ],
-      "Mermaid validation rule (Pretty-mermaid-skills)": [
+      "docs/MaraudersMap/<docId>/images/*.png": [
         "procedure"
       ],
-      "ASCII-to-Markdown-table conversion rule": [
+      "<docId>": [
         "procedure"
       ],
-      "ASCII-to-chart conversion rule": [
+      "guide.rewritten.md": [
         "procedure"
       ],
-      "Repository safety rule": [
+      "guide": [
         "procedure"
       ],
-      "Artifact hygiene and structure rule": [
+      "sections/*.md": [
         "procedure"
       ],
-      "Final honest review rule": [
+      "index.json": [
         "procedure"
       ],
-      "Phase 1 — Baseline capture (before any rewriting)": [
+      "ai-map.md": [
         "procedure"
       ],
-      "Phase 2 — Create working copy": [
+      "shards_search.py --shards ... --keyword \"<kw>\"": [
         "procedure"
       ],
-      "Phase 3 — Skeleton": [
+      "shards_search.py --shards ... --query \"<text>\" --top 5": [
         "procedure"
       ],
-      "Phase 4 — Section-by-section rewrite": [
+      "shards_search.py --db docs/MaraudersMap/shards.db --keyword \"<kw>\"": [
         "procedure"
       ],
-      "Phase 5 — Verification and cleanup": [
+      "shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\"": [
         "procedure"
       ],
-      "Sync rule — rewritten changes must update shards": [
+      "shards_search.py --shards ... --regex \"<pattern>\"": [
         "procedure"
       ],
-      "ASCII visual block classified": [
+      "--db ... --regex \"<pattern>\"": [
+        "procedure"
+      ],
+      "shards_to_json.py": [
+        "procedure"
+      ],
+      "shards_db.py --ingest": [
+        "procedure"
+      ],
+      "--ingest-all": [
+        "procedure"
+      ],
+      "shards.json": [
+        "procedure"
+      ],
+      "shards_db.py --ingest-all": [
+        "procedure"
+      ],
+      "python shards_to_json.py --doc-root docs/MaraudersMap/<docId>": [
+        "procedure"
+      ],
+      "python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --changed": [
+        "procedure"
+      ],
+      "python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --dry-run --report": [
+        "procedure"
+      ],
+      "python shards_db.py --init --map-root docs/MaraudersMap": [
+        "procedure"
+      ],
+      "+---+---+": [
+        "procedure"
+      ],
+      "├───┼───┤": [
+        "procedure"
+      ],
+      "█": [
+        "procedure"
+      ],
+      "▓": [
+        "procedure"
+      ],
+      "#": [
+        "procedure",
         "checklist"
       ],
-      "ASCII data tables": [
+      "=": [
+        "procedure"
+      ],
+      "*": [
+        "procedure"
+      ],
+      "<!-- Converted from ASCII art: [original description] -->": [
+        "procedure"
+      ],
+      "┌─┐│└─┘": [
+        "procedure"
+      ],
+      "+---+": [
+        "procedure"
+      ],
+      "docs/MaraudersMap/<docId>/images/<diagram-name>.png": [
+        "procedure"
+      ],
+      "![<diagram description>](images/<diagram-name>.png)": [
+        "procedure"
+      ],
+      "<div>": [
+        "procedure"
+      ],
+      "architecture-overview.png": [
+        "procedure"
+      ],
+      "auth-flow.png": [
+        "procedure"
+      ],
+      "er-schema.png": [
+        "procedure"
+      ],
+      "data-flow-01.png": [
+        "procedure"
+      ],
+      "data-flow-02.png": [
+        "procedure"
+      ],
+      "data-flow-01-a3f2.png": [
+        "procedure"
+      ],
+      "temp/diagram-<name>.html": [
+        "procedure"
+      ],
+      "**Architecture / system layout diagram:**\n\nUse nested": [
+        "procedure"
+      ],
+      "elements for system boundaries and": [
+        "procedure"
+      ],
+      "for components. Connect with": [
+        "procedure"
+      ],
+      "or": [
+        "procedure"
+      ],
+      ". Example structure:": [
+        "procedure"
+      ],
+      "**Flowchart / pipeline diagram:**\n\nUse horizontal (": [
+        "procedure"
+      ],
+      ") or vertical (": [
+        "procedure"
+      ],
+      "style separators.\n- Cells bounded by": [
+        "procedure"
+      ],
+      ".\n- Box-drawing grids (": [
+        "procedure"
+      ],
+      ",": [
+        "procedure"
+      ],
+      "immediately after the header. Use": [
+        "procedure"
+      ],
+      ", or": [
+        "procedure"
+      ],
+      "column using repeated": [
+        "procedure"
+      ],
+      "in inline code for visual reference, plus a numeric": [
+        "procedure"
+      ],
+      "with": [
+        "procedure"
+      ],
+      ").\n- For HTML chart images, add a": [
+        "procedure"
+      ],
+      ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- Only one": [
+        "procedure"
+      ],
+      "directory per document.": [
+        "procedure"
+      ],
+      ") for section summaries and the Search Index (": [
+        "procedure"
+      ],
+      "folder next to the original file. Copy the original into it as the working copy:": [
+        "procedure"
+      ],
+      ". Example:": [
+        "procedure"
+      ],
+      "→": [
+        "procedure"
+      ],
+      ". All intermediate files go inside this": [
+        "procedure"
+      ],
+      ", then": [
+        "procedure"
+      ],
+      "to the original file's directory as": [
+        "procedure"
+      ],
+      ".\n2. Generate MaraudersMapMD artifacts from": [
+        "procedure"
+      ],
+      "only (never from the original).\n3. Verify each": [
+        "procedure"
+      ],
+      "shard matches its corresponding content in": [
+        "procedure"
+      ],
+      "(no drift).\n4. Regenerate": [
+        "procedure"
+      ],
+      "(see \"Parallel execution rule\"). Then run": [
+        "procedure"
+      ],
+      "once to batch-update the cross-doc index.\n6. Delete the": [
+        "procedure"
+      ],
+      ", and one set of MaraudersMapMD artifacts under": [
+        "procedure"
+      ],
+      "(including": [
+        "procedure"
+      ],
+      "if any diagrams were converted). No": [
+        "procedure"
+      ],
+      "folder, no": [
+        "procedure"
+      ],
+      "from the updated shards and index.\n4. If a cross-doc SQLite index exists (": [
+        "procedure"
+      ],
+      "), re-ingest the updated doc:": [
+        "procedure"
+      ],
+      ".\n5. Do not continue work until shards, index, and": [
+        "procedure"
+      ],
+      "[AI RULE]": [
+        "procedure"
+      ],
+      "[AI CONTEXT]": [
+        "procedure"
+      ],
+      "Checklist": [
         "checklist"
       ],
-      "ASCII diagrams": [
+      "> [AI RULE]": [
         "checklist"
       ],
-      "ASCII charts": [
+      "> [AI DECISION]": [
         "checklist"
       ],
-      "Mermaid validation": [
+      "> [AI TODO]": [
         "checklist"
       ],
-      "HTML comment tracing origin": [
+      "> [AI CONTEXT]": [
+        "checklist"
+      ],
+      "![...]()": [
+        "checklist"
+      ],
+      "docs/MaraudersMap/<docId>/images/": [
+        "checklist"
+      ],
+      "temp/diagram-*.html": [
+        "checklist"
+      ],
+      "<!-- Converted from ASCII art: ... -->": [
         "checklist"
       ]
     },
-    "links": {
-      "https://github.com/imxv/Pretty-mermaid-skills": [
-        "procedure"
-      ],
-      "https://github.com/imxv/pretty-mermaid-skills": [
-        "procedure"
-      ]
-    },
+    "links": {},
     "ai_hints": {
-      "[AI RULE]\", \"> [AI DECISION]\", \"> [AI TODO]\", \"> [AI CONTEXT]\".": [
-        "canonical-prompt"
-      ],
-      "[AI RULE] <docId> is derived from the rewritten filename": [
+      "[AI RULE]": [
         "procedure"
       ],
-      "[AI RULE] Never leave ASCII art unconverted": [
+      "[AI CONTEXT]": [
         "procedure"
-      ],
-      "[AI RULE] Never embed Mermaid code that has not passed Pretty-mermaid-skills rendering": [
-        "procedure"
-      ],
-      "[AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original": [
-        "procedure"
-      ],
-      "[AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output": [
-        "procedure"
-      ],
-      "[AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them": [
-        "checklist"
       ]
     },
     "term_index": {
@@ -277,7 +530,7 @@
         ],
         [
           "procedure",
-          19
+          30
         ],
         [
           "checklist",
@@ -295,7 +548,7 @@
         ],
         [
           "procedure",
-          18
+          23
         ],
         [
           "checklist",
@@ -313,7 +566,7 @@
         ],
         [
           "procedure",
-          1
+          2
         ],
         [
           "checklist",
@@ -439,7 +692,7 @@
         ],
         [
           "procedure",
-          4
+          3
         ],
         [
           "checklist",
@@ -457,7 +710,7 @@
         ],
         [
           "procedure",
-          25
+          26
         ],
         [
           "checklist",
@@ -475,20 +728,24 @@
         ],
         [
           "procedure",
-          3
+          5
         ],
         [
           "checklist",
           3
         ]
       ],
-      "16": [
+      "8": [
         [
           "when-to-use",
           1
+        ],
+        [
+          "procedure",
+          5
         ]
       ],
-      "22": [
+      "14": [
         [
           "when-to-use",
           1
@@ -505,7 +762,7 @@
         ],
         [
           "procedure",
-          7
+          12
         ]
       ],
       "to": [
@@ -519,11 +776,11 @@
         ],
         [
           "procedure",
-          30
+          49
         ],
         [
           "checklist",
-          5
+          6
         ]
       ],
       "use": [
@@ -537,7 +794,7 @@
         ],
         [
           "procedure",
-          9
+          24
         ]
       ],
       "user": [
@@ -547,6 +804,10 @@
         ],
         [
           "canonical-prompt",
+          1
+        ],
+        [
+          "procedure",
           1
         ]
       ],
@@ -570,6 +831,10 @@
         [
           "canonical-prompt",
           2
+        ],
+        [
+          "procedure",
+          1
         ]
       ],
       "rewrite": [
@@ -583,7 +848,7 @@
         ],
         [
           "procedure",
-          2
+          12
         ]
       ],
       "for": [
@@ -597,16 +862,20 @@
         ],
         [
           "procedure",
-          21
+          42
         ],
         [
           "checklist",
-          2
+          3
         ]
       ],
       "clarity": [
         [
           "when-to-use",
+          1
+        ],
+        [
+          "procedure",
           1
         ]
       ],
@@ -621,7 +890,7 @@
         ],
         [
           "procedure",
-          34
+          48
         ],
         [
           "checklist",
@@ -645,7 +914,7 @@
         ],
         [
           "procedure",
-          40
+          60
         ],
         [
           "checklist",
@@ -659,11 +928,11 @@
         ],
         [
           "canonical-prompt",
-          10
+          9
         ],
         [
           "procedure",
-          15
+          18
         ],
         [
           "checklist",
@@ -681,7 +950,7 @@
         ],
         [
           "procedure",
-          10
+          23
         ]
       ],
       "scanning": [
@@ -701,7 +970,7 @@
         ],
         [
           "procedure",
-          1
+          2
         ]
       ],
       "formatting": [
@@ -735,7 +1004,7 @@
         ],
         [
           "procedure",
-          18
+          23
         ],
         [
           "checklist",
@@ -749,6 +1018,10 @@
         ],
         [
           "procedure",
+          2
+        ],
+        [
+          "checklist",
           1
         ]
       ],
@@ -769,11 +1042,11 @@
         ],
         [
           "procedure",
-          31
+          46
         ],
         [
           "checklist",
-          4
+          5
         ]
       ],
       "editorial": [
@@ -809,7 +1082,7 @@
         ],
         [
           "procedure",
-          3
+          14
         ],
         [
           "checklist",
@@ -828,7 +1101,7 @@
           1
         ],
         [
-          "checklist",
+          "procedure",
           1
         ]
       ],
@@ -853,7 +1126,7 @@
         ],
         [
           "procedure",
-          4
+          6
         ]
       ],
       "shards": [
@@ -863,7 +1136,7 @@
         ],
         [
           "procedure",
-          26
+          54
         ]
       ],
       "synced": [
@@ -883,11 +1156,11 @@
         ],
         [
           "procedure",
-          14
+          28
         ],
         [
           "checklist",
-          3
+          4
         ]
       ],
       "the": [
@@ -901,11 +1174,11 @@
         ],
         [
           "procedure",
-          121
+          174
         ],
         [
           "checklist",
-          8
+          9
         ]
       ],
       "rewritten": [
@@ -915,16 +1188,20 @@
         ],
         [
           "procedure",
-          27
+          32
         ]
       ],
-      "23": [
+      "15": [
         [
           "canonical-prompt",
           1
+        ],
+        [
+          "procedure",
+          2
         ]
       ],
-      "52": [
+      "45": [
         [
           "canonical-prompt",
           1
@@ -965,7 +1242,7 @@
         ],
         [
           "procedure",
-          4
+          15
         ]
       ],
       "below": [
@@ -975,7 +1252,7 @@
         ],
         [
           "procedure",
-          1
+          2
         ],
         [
           "checklist",
@@ -989,11 +1266,11 @@
         ],
         [
           "procedure",
-          10
+          19
         ],
         [
           "checklist",
-          2
+          3
         ]
       ],
       "copied": [
@@ -1025,11 +1302,11 @@
         ],
         [
           "procedure",
-          21
+          37
         ],
         [
           "checklist",
-          2
+          3
         ]
       ],
       "src": [
@@ -1057,7 +1334,7 @@
         ],
         [
           "procedure",
-          16
+          19
         ]
       ],
       "extension": [
@@ -1073,7 +1350,7 @@
         ],
         [
           "procedure",
-          12
+          13
         ]
       ],
       "as": [
@@ -1083,7 +1360,11 @@
         ],
         [
           "procedure",
-          17
+          20
+        ],
+        [
+          "checklist",
+          1
         ]
       ],
       "source": [
@@ -1129,11 +1410,11 @@
         ],
         [
           "procedure",
-          4
+          9
         ],
         [
           "checklist",
-          2
+          3
         ]
       ],
       "an": [
@@ -1179,12 +1460,16 @@
         ],
         [
           "procedure",
-          1
+          2
         ]
       ],
       "scan": [
         [
           "canonical-prompt",
+          1
+        ],
+        [
+          "procedure",
           1
         ]
       ],
@@ -1228,6 +1513,10 @@
         [
           "canonical-prompt",
           1
+        ],
+        [
+          "procedure",
+          1
         ]
       ],
       "final": [
@@ -1237,7 +1526,7 @@
         ],
         [
           "procedure",
-          1
+          4
         ],
         [
           "checklist",
@@ -1261,7 +1550,11 @@
         ],
         [
           "procedure",
-          2
+          7
+        ],
+        [
+          "checklist",
+          1
         ]
       ],
       "original": [
@@ -1271,7 +1564,7 @@
         ],
         [
           "procedure",
-          32
+          34
         ]
       ],
       "do": [
@@ -1281,7 +1574,7 @@
         ],
         [
           "procedure",
-          9
+          12
         ]
       ],
       "not": [
@@ -1291,7 +1584,7 @@
         ],
         [
           "procedure",
-          15
+          19
         ]
       ],
       "translate": [
@@ -1307,18 +1600,26 @@
         ],
         [
           "procedure",
-          20
+          30
         ]
       ],
       "mixed": [
         [
           "canonical-prompt",
           1
+        ],
+        [
+          "procedure",
+          1
         ]
       ],
       "dominant": [
         [
           "canonical-prompt",
+          1
+        ],
+        [
+          "procedure",
           1
         ],
         [
@@ -1333,7 +1634,7 @@
         ],
         [
           "procedure",
-          5
+          6
         ]
       ],
       "all": [
@@ -1343,7 +1644,7 @@
         ],
         [
           "procedure",
-          5
+          14
         ],
         [
           "checklist",
@@ -1391,7 +1692,7 @@
         ],
         [
           "procedure",
-          5
+          4
         ]
       ],
       "new": [
@@ -1418,8 +1719,12 @@
           1
         ],
         [
-          "checklist",
+          "procedure",
           1
+        ],
+        [
+          "checklist",
+          2
         ]
       ],
       "headings": [
@@ -1434,6 +1739,10 @@
           2
         ],
         [
+          "procedure",
+          1
+        ],
+        [
           "checklist",
           1
         ]
@@ -1445,7 +1754,7 @@
         ],
         [
           "procedure",
-          4
+          5
         ],
         [
           "checklist",
@@ -1455,15 +1764,15 @@
       "code": [
         [
           "canonical-prompt",
-          4
+          3
         ],
         [
           "procedure",
-          8
+          3
         ],
         [
           "checklist",
-          4
+          2
         ]
       ],
       "fences": [
@@ -1499,7 +1808,7 @@
         ],
         [
           "procedure",
-          4
+          9
         ],
         [
           "checklist",
@@ -1527,11 +1836,11 @@
         ],
         [
           "procedure",
-          20
+          13
         ],
         [
           "checklist",
-          2
+          1
         ]
       ],
       "format": [
@@ -1541,7 +1850,7 @@
         ],
         [
           "procedure",
-          4
+          5
         ]
       ],
       "where": [
@@ -1571,7 +1880,7 @@
         ],
         [
           "procedure",
-          19
+          25
         ],
         [
           "checklist",
@@ -1585,7 +1894,7 @@
         ],
         [
           "procedure",
-          2
+          3
         ],
         [
           "checklist",
@@ -1609,7 +1918,7 @@
         ],
         [
           "procedure",
-          3
+          7
         ],
         [
           "checklist",
@@ -1623,13 +1932,17 @@
         ],
         [
           "procedure",
-          1
+          2
         ]
       ],
       "short": [
         [
           "canonical-prompt",
           1
+        ],
+        [
+          "procedure",
+          2
         ],
         [
           "checklist",
@@ -1733,15 +2046,15 @@
       "blocks": [
         [
           "canonical-prompt",
-          3
+          1
         ],
         [
           "procedure",
-          5
+          3
         ],
         [
           "checklist",
-          5
+          3
         ]
       ],
       "inline": [
@@ -1751,7 +2064,7 @@
         ],
         [
           "procedure",
-          1
+          8
         ],
         [
           "checklist",
@@ -1789,7 +2102,7 @@
         ],
         [
           "procedure",
-          24
+          26
         ],
         [
           "checklist",
@@ -1820,19 +2133,19 @@
         [
           "canonical-prompt",
           1
-        ],
-        [
-          "checklist",
-          1
         ]
       ],
-      "native": [
+      "visual": [
         [
           "canonical-prompt",
-          1
+          2
         ],
         [
           "procedure",
+          4
+        ],
+        [
+          "checklist",
           1
         ]
       ],
@@ -1843,21 +2156,7 @@
         ],
         [
           "procedure",
-          4
-        ]
-      ],
-      "visual": [
-        [
-          "canonical-prompt",
-          1
-        ],
-        [
-          "procedure",
-          4
-        ],
-        [
-          "checklist",
-          1
+          8
         ]
       ],
       "classification": [
@@ -1881,7 +2180,7 @@
         ],
         [
           "procedure",
-          20
+          24
         ],
         [
           "checklist",
@@ -1905,7 +2204,7 @@
         ],
         [
           "procedure",
-          2
+          3
         ]
       ],
       "proper": [
@@ -1935,11 +2234,11 @@
         ],
         [
           "procedure",
-          6
+          8
         ],
         [
           "checklist",
-          2
+          1
         ]
       ],
       "flowcharts": [
@@ -1955,7 +2254,7 @@
         ],
         [
           "procedure",
-          1
+          3
         ]
       ],
       "architecture": [
@@ -1965,21 +2264,73 @@
         ],
         [
           "procedure",
-          1
+          4
         ]
       ],
-      "mermaid": [
+      "html": [
         [
           "canonical-prompt",
           2
         ],
         [
           "procedure",
-          35
+          40
         ],
         [
           "checklist",
           4
+        ]
+      ],
+      "rendering": [
+        [
+          "canonical-prompt",
+          2
+        ],
+        [
+          "procedure",
+          11
+        ]
+      ],
+      "screenshot": [
+        [
+          "canonical-prompt",
+          2
+        ],
+        [
+          "procedure",
+          15
+        ],
+        [
+          "checklist",
+          3
+        ]
+      ],
+      "png": [
+        [
+          "canonical-prompt",
+          2
+        ],
+        [
+          "procedure",
+          23
+        ],
+        [
+          "checklist",
+          4
+        ]
+      ],
+      "image": [
+        [
+          "canonical-prompt",
+          2
+        ],
+        [
+          "procedure",
+          10
+        ],
+        [
+          "checklist",
+          3
         ]
       ],
       "charts": [
@@ -1993,7 +2344,7 @@
         ],
         [
           "checklist",
-          2
+          1
         ]
       ],
       "bar": [
@@ -2003,7 +2354,7 @@
         ],
         [
           "procedure",
-          7
+          8
         ]
       ],
       "histograms": [
@@ -2026,7 +2377,21 @@
           1
         ]
       ],
-      "xychart": [
+      "simple": [
+        [
+          "canonical-prompt",
+          1
+        ],
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "complex": [
         [
           "canonical-prompt",
           1
@@ -2034,26 +2399,10 @@
         [
           "procedure",
           3
-        ]
-      ],
-      "beta": [
-        [
-          "canonical-prompt",
-          1
         ],
         [
-          "procedure",
-          4
-        ]
-      ],
-      "pie": [
-        [
-          "canonical-prompt",
+          "checklist",
           1
-        ],
-        [
-          "procedure",
-          5
         ]
       ],
       "remove": [
@@ -2081,7 +2430,7 @@
         ],
         [
           "procedure",
-          9
+          11
         ],
         [
           "checklist",
@@ -2107,7 +2456,7 @@
         ],
         [
           "procedure",
-          8
+          11
         ],
         [
           "checklist",
@@ -2121,11 +2470,11 @@
         ],
         [
           "procedure",
-          6
+          16
         ],
         [
           "checklist",
-          5
+          7
         ]
       ],
       "commentary": [
@@ -2142,11 +2491,19 @@
         [
           "canonical-prompt",
           1
+        ],
+        [
+          "procedure",
+          1
         ]
       ],
       "ensure": [
         [
           "canonical-prompt",
+          1
+        ],
+        [
+          "procedure",
           1
         ]
       ],
@@ -2164,6 +2521,10 @@
         [
           "canonical-prompt",
           1
+        ],
+        [
+          "procedure",
+          1
         ]
       ],
       "hierarchy": [
@@ -2173,7 +2534,7 @@
         ],
         [
           "procedure",
-          1
+          3
         ],
         [
           "checklist",
@@ -2201,7 +2562,7 @@
         ],
         [
           "procedure",
-          1
+          2
         ],
         [
           "checklist",
@@ -2251,7 +2612,7 @@
         ],
         [
           "procedure",
-          1
+          15
         ],
         [
           "checklist",
@@ -2303,7 +2664,7 @@
         ],
         [
           "procedure",
-          14
+          15
         ]
       ],
       "begin": [
@@ -2319,16 +2680,16 @@
         ],
         [
           "procedure",
-          1
+          2
         ]
       ],
-      "54": [
+      "46": [
         [
           "procedure",
           1
         ]
       ],
-      "272": [
+      "644": [
         [
           "procedure",
           1
@@ -2343,7 +2704,7 @@
       "these": [
         [
           "procedure",
-          4
+          7
         ]
       ],
       "five": [
@@ -2361,13 +2722,13 @@
       "order": [
         [
           "procedure",
-          4
+          5
         ]
       ],
       "each": [
         [
           "procedure",
-          11
+          19
         ],
         [
           "checklist",
@@ -2377,7 +2738,7 @@
       "phase": [
         [
           "procedure",
-          6
+          13
         ]
       ],
       "uses": [
@@ -2389,13 +2750,13 @@
       "artifact": [
         [
           "procedure",
-          6
+          7
         ]
       ],
       "its": [
         [
           "procedure",
-          5
+          6
         ]
       ],
       "primary": [
@@ -2407,13 +2768,13 @@
       "reference": [
         [
           "procedure",
-          3
+          6
         ]
       ],
       "file": [
         [
           "procedure",
-          20
+          23
         ]
       ],
       "protection": [
@@ -2425,13 +2786,17 @@
       "must": [
         [
           "procedure",
-          11
+          19
         ]
       ],
       "remain": [
         [
           "procedure",
-          2
+          4
+        ],
+        [
+          "checklist",
+          1
         ]
       ],
       "completely": [
@@ -2449,13 +2814,13 @@
       "never": [
         [
           "procedure",
-          9
+          10
         ]
       ],
       "generate": [
         [
           "procedure",
-          4
+          5
         ]
       ],
       "indexes": [
@@ -2485,7 +2850,7 @@
       "generation": [
         [
           "procedure",
-          2
+          5
         ]
       ],
       "targets": [
@@ -2497,7 +2862,7 @@
       "filename": [
         [
           "procedure",
-          9
+          11
         ]
       ],
       "exclusively": [
@@ -2509,7 +2874,7 @@
       "exists": [
         [
           "procedure",
-          1
+          3
         ]
       ],
       "solely": [
@@ -2533,7 +2898,7 @@
       "be": [
         [
           "procedure",
-          4
+          8
         ]
       ],
       "modified": [
@@ -2557,7 +2922,7 @@
       "derived": [
         [
           "procedure",
-          6
+          7
         ]
       ],
       "paths": [
@@ -2569,31 +2934,43 @@
       "generated": [
         [
           "procedure",
-          4
+          5
         ]
       ],
       "map": [
         [
           "procedure",
-          9
+          14
         ]
       ],
       "docs": [
         [
           "procedure",
-          9
+          26
+        ],
+        [
+          "checklist",
+          2
         ]
       ],
       "maraudersmap": [
         [
           "procedure",
-          9
+          26
+        ],
+        [
+          "checklist",
+          2
         ]
       ],
       "docid": [
         [
           "procedure",
-          14
+          29
+        ],
+        [
+          "checklist",
+          2
         ]
       ],
       "pack": [
@@ -2605,31 +2982,51 @@
       "sections": [
         [
           "procedure",
-          7
+          16
         ]
       ],
       "search": [
         [
           "procedure",
-          9
+          20
         ]
       ],
       "index": [
         [
           "procedure",
-          23
+          30
         ]
       ],
       "json": [
         [
           "procedure",
-          19
+          28
         ]
       ],
       "shard": [
         [
           "procedure",
-          8
+          11
+        ]
+      ],
+      "diagram": [
+        [
+          "procedure",
+          48
+        ],
+        [
+          "checklist",
+          5
+        ]
+      ],
+      "images": [
+        [
+          "procedure",
+          14
+        ],
+        [
+          "checklist",
+          5
         ]
       ],
       "e": [
@@ -2647,7 +3044,7 @@
       "guide": [
         [
           "procedure",
-          5
+          6
         ]
       ],
       "create": [
@@ -2665,19 +3062,19 @@
       "always": [
         [
           "procedure",
-          4
+          5
         ]
       ],
       "on": [
         [
           "procedure",
-          6
+          8
         ]
       ],
       "fast": [
         [
           "procedure",
-          2
+          4
         ]
       ],
       "lookup": [
@@ -2695,19 +3092,19 @@
       "instead": [
         [
           "procedure",
-          2
+          3
         ]
       ],
       "full": [
         [
           "procedure",
-          3
+          7
         ]
       ],
       "open": [
         [
           "procedure",
-          2
+          4
         ]
       ],
       "need": [
@@ -2719,7 +3116,7 @@
       "validation": [
         [
           "procedure",
-          4
+          3
         ]
       ],
       "resolve": [
@@ -2731,7 +3128,7 @@
       "cross": [
         [
           "procedure",
-          3
+          16
         ]
       ],
       "ambiguity": [
@@ -2743,13 +3140,13 @@
       "exact": [
         [
           "procedure",
-          2
+          3
         ]
       ],
       "by": [
         [
           "procedure",
-          8
+          13
         ]
       ],
       "reflection": [
@@ -2761,13 +3158,17 @@
       "exist": [
         [
           "procedure",
-          3
+          6
+        ],
+        [
+          "checklist",
+          1
         ]
       ],
       "documents": [
         [
           "procedure",
-          1
+          8
         ],
         [
           "checklist",
@@ -2783,13 +3184,13 @@
       "delete": [
         [
           "procedure",
-          6
+          9
         ]
       ],
       "them": [
         [
           "procedure",
-          4
+          5
         ],
         [
           "checklist",
@@ -2805,7 +3206,7 @@
       "retrieval": [
         [
           "procedure",
-          1
+          4
         ]
       ],
       "accuracy": [
@@ -2847,19 +3248,19 @@
       "1": [
         [
           "procedure",
-          8
+          22
         ]
       ],
       "specific": [
         [
           "procedure",
-          1
+          3
         ]
       ],
       "2": [
         [
           "procedure",
-          8
+          14
         ],
         [
           "checklist",
@@ -2875,13 +3276,13 @@
       "3": [
         [
           "procedure",
-          8
+          12
         ]
       ],
       "boundaries": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "summaries": [
@@ -2893,7 +3294,7 @@
       "4": [
         [
           "procedure",
-          7
+          12
         ],
         [
           "checklist",
@@ -2903,7 +3304,783 @@
       "required": [
         [
           "procedure",
+          2
+        ]
+      ],
+      "routing": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "choose": [
+        [
+          "procedure",
           1
+        ]
+      ],
+      "fastest": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "path": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "based": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "query": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "scope": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "route": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "tool": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "single": [
+        [
+          "procedure",
+          6
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "keyword": [
+        [
+          "procedure",
+          11
+        ]
+      ],
+      "py": [
+        [
+          "procedure",
+          20
+        ]
+      ],
+      "kw": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "relevance": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "ranked": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "results": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "bm25": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "5": [
+        [
+          "procedure",
+          17
+        ]
+      ],
+      "doc": [
+        [
+          "procedure",
+          16
+        ]
+      ],
+      "sqlite": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "db": [
+        [
+          "procedure",
+          18
+        ]
+      ],
+      "fts5": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "regex": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "pattern": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "match": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "fallback": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "directly": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "attempt": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "before": [
+        [
+          "procedure",
+          10
+        ]
+      ],
+      "opening": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "fall": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "back": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "needed": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "insufficient": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "type": [
+        [
+          "procedure",
+          7
+        ]
+      ],
+      "awareness": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "different": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "types": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "benefit": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "strategies": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "signal": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "strategy": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "api": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "many": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "heavy": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "tutorial": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "sequential": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "read": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "configuration": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "key": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "value": [
+        [
+          "procedure",
+          7
+        ]
+      ],
+      "pairs": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "references": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "multiple": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "titles": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "first": [
+        [
+          "procedure",
+          7
+        ]
+      ],
+      "inferred": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "structure": [
+        [
+          "procedure",
+          10
+        ]
+      ],
+      "explicit": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "tagging": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "parallel": [
+        [
+          "procedure",
+          12
+        ]
+      ],
+      "execution": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "working": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "throughput": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "running": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "independent": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "operations": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "parallelizable": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "ordering": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "dependency": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "operation": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "unit": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "constraint": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "multi": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "safe": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "parallelize": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "that": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "other": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "b": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "per": [
+        [
+          "procedure",
+          5
+        ],
+        [
+          "checklist",
+          2
+        ]
+      ],
+      "writes": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "own": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "directory": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "runs": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "one": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "run": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "conflict": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "ingest": [
+        [
+          "procedure",
+          10
+        ]
+      ],
+      "handles": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "concurrent": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "reads": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "ingests": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "sequentially": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "verification": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "checks": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "checklist": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "reason": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "within": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "depends": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "previous": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "skeleton": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "heading": [
+        [
+          "procedure",
+          5
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "filling": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "reflect": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "so": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "scale": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "fine": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "then": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "referencing": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "ones": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "simultaneously": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "batch": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "up": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "at": [
+        [
+          "procedure",
+          8
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "time": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "once": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "agent": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "supports": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "calls": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "background": [
+        [
+          "procedure",
+          17
+        ]
+      ],
+      "tasks": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "listed": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "above": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "processing": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "performance": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "bug": [
+        [
+          "procedure",
+          2
         ]
       ],
       "guardrails": [
@@ -2916,12 +4093,6 @@
         [
           "procedure",
           1
-        ]
-      ],
-      "that": [
-        [
-          "procedure",
-          3
         ]
       ],
       "present": [
@@ -2979,13 +4150,7 @@
       "python": [
         [
           "procedure",
-          5
-        ]
-      ],
-      "first": [
-        [
-          "procedure",
-          3
+          12
         ]
       ],
       "enable": [
@@ -2998,12 +4163,6 @@
         [
           "procedure",
           1
-        ]
-      ],
-      "read": [
-        [
-          "procedure",
-          3
         ]
       ],
       "optimized": [
@@ -3024,22 +4183,10 @@
           1
         ]
       ],
-      "time": [
-        [
-          "procedure",
-          4
-        ]
-      ],
       "change": [
         [
           "procedure",
           1
-        ]
-      ],
-      "before": [
-        [
-          "procedure",
-          4
         ]
       ],
       "questions": [
@@ -3048,49 +4195,19 @@
           1
         ]
       ],
-      "py": [
-        [
-          "procedure",
-          3
-        ]
-      ],
-      "doc": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "root": [
         [
           "procedure",
-          1
+          8
         ]
       ],
       "rebuild": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "quick": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "keyword": [
-        [
-          "procedure",
-          4
-        ]
-      ],
-      "fastest": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "relevance": [
         [
           "procedure",
           1
@@ -3102,46 +4219,124 @@
           1
         ]
       ],
-      "query": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "free": [
         [
           "procedure",
           1
         ]
       ],
-      "5": [
+      "incremental": [
         [
           "procedure",
-          5
+          1
         ]
       ],
-      "bm25": [
+      "rebuilds": [
         [
           "procedure",
+          1
+        ]
+      ],
+      "changed": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "skips": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "changes": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "detected": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "preview": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "without": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "writing": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "dry": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "report": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "build": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "initialize": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "init": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "across": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
           1
         ]
       ],
       "converting": [
         [
           "procedure",
-          2
+          1
         ]
       ],
       "classify": [
         [
           "procedure",
           1
-        ]
-      ],
-      "one": [
-        [
-          "procedure",
-          8
         ]
       ],
       "three": [
@@ -3177,7 +4372,7 @@
       "tree": [
         [
           "procedure",
-          2
+          4
         ],
         [
           "checklist",
@@ -3205,7 +4400,7 @@
       "column": [
         [
           "procedure",
-          5
+          8
         ],
         [
           "checklist",
@@ -3221,19 +4416,19 @@
       "headers": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "separator": [
         [
           "procedure",
-          4
+          5
         ]
       ],
       "like": [
         [
           "procedure",
-          3
+          4
         ]
       ],
       "cells": [
@@ -3279,7 +4474,7 @@
       "table": [
         [
           "procedure",
-          15
+          18
         ],
         [
           "checklist",
@@ -3289,7 +4484,7 @@
       "conversion": [
         [
           "procedure",
-          11
+          12
         ]
       ],
       "represent": [
@@ -3343,7 +4538,11 @@
       "labels": [
         [
           "procedure",
-          4
+          6
+        ],
+        [
+          "checklist",
+          1
         ]
       ],
       "numeric": [
@@ -3373,28 +4572,16 @@
       "style": [
         [
           "procedure",
-          2
+          44
         ]
       ],
       "chart": [
         [
           "procedure",
-          16
+          17
         ],
         [
           "checklist",
-          2
-        ]
-      ],
-      "simple": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "complex": [
-        [
-          "procedure",
           2
         ]
       ],
@@ -3407,13 +4594,13 @@
       "relationships": [
         [
           "procedure",
-          2
+          3
         ]
       ],
       "boxes": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "connected": [
@@ -3425,31 +4612,31 @@
       "arrows": [
         [
           "procedure",
-          3
+          6
         ]
       ],
       "flow": [
         [
           "procedure",
-          4
+          9
         ]
       ],
       "direction": [
         [
           "procedure",
-          1
+          3
         ]
       ],
       "entity": [
         [
           "procedure",
-          2
+          3
         ]
       ],
       "relationship": [
         [
           "procedure",
-          2
+          3
         ]
       ],
       "grouping": [
@@ -3461,29 +4648,31 @@
       "sequence": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "lifelines": [
         [
           "procedure",
-          1
+          4
         ]
       ],
-      "diagram": [
+      "render": [
         [
           "procedure",
           5
-        ],
+        ]
+      ],
+      "embed": [
         [
-          "checklist",
-          1
+          "procedure",
+          4
         ]
       ],
       "rules": [
         [
           "procedure",
-          3
+          4
         ],
         [
           "checklist",
@@ -3529,7 +4718,7 @@
       "label": [
         [
           "procedure",
-          5
+          8
         ]
       ],
       "meaningful": [
@@ -3541,7 +4730,7 @@
       "row": [
         [
           "procedure",
-          13
+          19
         ],
         [
           "checklist",
@@ -3563,7 +4752,7 @@
       "over": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "portability": [
@@ -3575,17 +4764,7 @@
       "line": [
         [
           "procedure",
-          4
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
-      "html": [
-        [
-          "procedure",
-          1
+          7
         ],
         [
           "checklist",
@@ -3605,7 +4784,7 @@
       "converted": [
         [
           "procedure",
-          4
+          6
         ],
         [
           "checklist",
@@ -3615,19 +4794,7 @@
       "description": [
         [
           "procedure",
-          1
-        ]
-      ],
-      "above": [
-        [
-          "procedure",
-          3
-        ]
-      ],
-      "so": [
-        [
-          "procedure",
-          3
+          4
         ]
       ],
       "reviewers": [
@@ -3673,11 +4840,11 @@
       "every": [
         [
           "procedure",
-          9
+          11
         ],
         [
           "checklist",
-          4
+          5
         ]
       ],
       "classified": [
@@ -3705,7 +4872,7 @@
       "box": [
         [
           "procedure",
-          3
+          31
         ]
       ],
       "drawing": [
@@ -3727,7 +4894,11 @@
       "layout": [
         [
           "procedure",
-          2
+          15
+        ],
+        [
+          "checklist",
+          1
         ]
       ],
       "representing": [
@@ -3736,19 +4907,129 @@
           2
         ]
       ],
-      "structure": [
-        [
-          "procedure",
-          5
-        ]
-      ],
-      "during": [
+      "high": [
         [
           "procedure",
           1
         ]
       ],
-      "rewriting": [
+      "quality": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "capture": [
+        [
+          "procedure",
+          8
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "pipeline": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "analyze": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "identify": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "entities": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "groupings": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "self": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "contained": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "css": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "visually": [
+        [
+          "procedure",
+          4
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "reproduces": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "professional": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "graphic": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "headless": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "browser": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "playwright": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "equivalent": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "rendered": [
         [
           "procedure",
           2
@@ -3758,46 +5039,52 @@
           1
         ]
       ],
-      "guidelines": [
-        [
-          "procedure",
-          3
-        ]
-      ],
-      "identify": [
+      "save": [
         [
           "procedure",
           2
         ]
       ],
-      "type": [
+      "name": [
         [
           "procedure",
-          1
+          10
         ]
       ],
-      "pick": [
+      "6": [
         [
           "procedure",
-          1
+          3
         ]
       ],
-      "best": [
+      "7": [
         [
           "procedure",
-          1
+          3
         ]
       ],
-      "fit": [
+      "temporary": [
         [
           "procedure",
-          1
+          4
         ]
       ],
-      "db": [
+      "guidelines": [
         [
           "procedure",
-          1
+          4
+        ]
+      ],
+      "matching": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "templates": [
+        [
+          "procedure",
+          4
         ]
       ],
       "schemas": [
@@ -3806,22 +5093,34 @@
           1
         ]
       ],
-      "erdiagram": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "system": [
         [
           "procedure",
-          1
+          5
         ]
       ],
-      "flowchart": [
+      "nested": [
         [
           "procedure",
-          3
+          4
+        ]
+      ],
+      "container": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "labeled": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "connections": [
+        [
+          "procedure",
+          2
         ]
       ],
       "flows": [
@@ -3836,16 +5135,28 @@
           1
         ]
       ],
-      "lr": [
+      "node": [
         [
           "procedure",
-          1
+          2
         ]
       ],
-      "td": [
+      "arrow": [
         [
           "procedure",
-          1
+          14
+        ]
+      ],
+      "horizontal": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "vertical": [
+        [
+          "procedure",
+          6
         ]
       ],
       "sequences": [
@@ -3860,13 +5171,7 @@
           1
         ]
       ],
-      "sequencediagram": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "timeline": [
+      "lifeline": [
         [
           "procedure",
           1
@@ -3875,7 +5180,7 @@
       "class": [
         [
           "procedure",
-          1
+          45
         ]
       ],
       "object": [
@@ -3884,7 +5189,25 @@
           1
         ]
       ],
-      "classdiagram": [
+      "typed": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "connectors": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "indented": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "layered": [
         [
           "procedure",
           1
@@ -3893,13 +5216,19 @@
       "items": [
         [
           "procedure",
-          2
+          13
         ]
       ],
-      "subgraph": [
+      "div": [
         [
           "procedure",
-          1
+          135
+        ]
+      ],
+      "containers": [
+        [
+          "procedure",
+          2
         ]
       ],
       "grouped": [
@@ -3912,22 +5241,6 @@
         [
           "procedure",
           1
-        ]
-      ],
-      "inside": [
-        [
-          "procedure",
-          3
-        ],
-        [
-          "checklist",
-          2
-        ]
-      ],
-      "fenced": [
-        [
-          "procedure",
-          2
         ]
       ],
       "ambiguous": [
@@ -3954,6 +5267,16 @@
           1
         ]
       ],
+      "embedded": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
       "replace": [
         [
           "procedure",
@@ -3966,37 +5289,19 @@
           2
         ]
       ],
-      "pretty": [
+      "naming": [
         [
           "procedure",
-          8
-        ],
+          2
+        ]
+      ],
+      "convention": [
         [
-          "checklist",
+          "procedure",
           1
         ]
       ],
-      "skills": [
-        [
-          "procedure",
-          8
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
-      "syntax": [
-        [
-          "procedure",
-          3
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
-      "errors": [
+      "descriptive": [
         [
           "procedure",
           1
@@ -4006,153 +5311,81 @@
           1
         ]
       ],
-      "break": [
+      "kebab": [
         [
           "procedure",
           1
-        ]
-      ],
-      "rendering": [
-        [
-          "procedure",
-          3
         ],
         [
           "checklist",
           1
         ]
       ],
-      "after": [
+      "case": [
         [
           "procedure",
-          5
+          1
         ],
         [
           "checklist",
           1
         ]
       ],
-      "generating": [
+      "overview": [
         [
           "procedure",
           1
         ]
       ],
-      "validate": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "render": [
-        [
-          "procedure",
-          4
-        ]
-      ],
-      "using": [
-        [
-          "procedure",
-          4
-        ]
-      ],
-      "https": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "github": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "com": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "imxv": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "setup": [
+      "auth": [
         [
           "procedure",
           1
         ]
       ],
-      "already": [
+      "schema": [
         [
           "procedure",
           2
         ]
       ],
-      "installed": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "bash": [
+      "suffix": [
         [
           "procedure",
           2
         ]
       ],
-      "npx": [
+      "zero": [
         [
           "procedure",
           1
         ]
       ],
-      "save": [
+      "padded": [
         [
           "procedure",
           1
         ]
       ],
-      "temporary": [
+      "01": [
         [
           "procedure",
           2
         ]
       ],
-      "mmd": [
+      "02": [
         [
           "procedure",
-          3
+          1
         ]
       ],
-      "verify": [
+      "deterministic": [
         [
           "procedure",
-          3
+          1
         ],
         [
           "checklist",
-          1
-        ]
-      ],
-      "node": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "scripts": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "mjs": [
-        [
-          "procedure",
           1
         ]
       ],
@@ -4160,115 +5393,75 @@
         [
           "procedure",
           1
-        ]
-      ],
-      "svg": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "theme": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "tokyo": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "night": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "fails": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "fix": [
-        [
-          "procedure",
-          3
-        ]
-      ],
-      "re": [
-        [
-          "procedure",
-          3
-        ]
-      ],
-      "until": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "succeeds": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "once": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "validated": [
-        [
-          "procedure",
-          1
         ],
         [
           "checklist",
           1
         ]
       ],
-      "embed": [
+      "produce": [
         [
           "procedure",
+          1
+        ]
+      ],
+      "filenames": [
+        [
+          "procedure",
+          1
+        ],
+        [
+          "checklist",
           2
         ]
       ],
-      "corrected": [
+      "collision": [
         [
           "procedure",
           1
         ]
       ],
-      "back": [
+      "occurs": [
         [
           "procedure",
           1
         ]
       ],
-      "files": [
+      "append": [
         [
           "procedure",
-          4
+          1
         ]
       ],
-      "has": [
+      "stable": [
         [
           "procedure",
           3
         ]
       ],
-      "passed": [
+      "a3f2": [
         [
           "procedure",
           1
         ]
       ],
+      "verified": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
       "broken": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "mis": [
         [
           "procedure",
           1
@@ -4286,10 +5479,1522 @@
           1
         ]
       ],
-      "space": [
+      "write": [
         [
           "procedure",
           2
+        ]
+      ],
+      "temp": [
+        [
+          "procedure",
+          14
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "using": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "automation": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "available": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "environment": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "wait": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "page": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "fully": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "fonts": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "loaded": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "take": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "element": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "viewport": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "fills": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "device": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "pixel": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "ratio": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "crisp": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "inspect": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "confirm": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "overlapping": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "elements": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "matches": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "misaligned": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "fix": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "re": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "until": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "after": [
+        [
+          "procedure",
+          7
+        ],
+        [
+          "checklist",
+          3
+        ]
+      ],
+      "successful": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "9": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "verify": [
+        [
+          "procedure",
+          3
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "was": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "deleted": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "deletion": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "fails": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "halt": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "cleanup": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "error": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "10": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "failure": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "handling": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "retrying": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "partial": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "invalid": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "outputs": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "minimum": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "width": [
+        [
+          "procedure",
+          15
+        ]
+      ],
+      "600px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "maximum": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "1200px": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "retina": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "hidpi": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "white": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "ffffff": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "chrome": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "scrollbars": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "padding": [
+        [
+          "procedure",
+          12
+        ]
+      ],
+      "outside": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "legible": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "size": [
+        [
+          "procedure",
+          14
+        ]
+      ],
+      "has": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "been": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "looks": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "wrong": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "patterns": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "starting": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "point": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "generating": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "adapt": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "colors": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "sizing": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "share": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "base": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "styles": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "shared": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "doctype": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "lang": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "en": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "head": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "meta": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "charset": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "utf": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "initial": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "0": [
+        [
+          "procedure",
+          11
+        ]
+      ],
+      "margin": [
+        [
+          "procedure",
+          16
+        ]
+      ],
+      "border": [
+        [
+          "procedure",
+          21
+        ]
+      ],
+      "body": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "font": [
+        [
+          "procedure",
+          22
+        ]
+      ],
+      "family": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "apple": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "blinkmacsystemfont": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "segoe": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "ui": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "roboto": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "sans": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "serif": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "32px": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "color": [
+        [
+          "procedure",
+          10
+        ]
+      ],
+      "1e293b": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "display": [
+        [
+          "procedure",
+          13
+        ]
+      ],
+      "5px": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "solid": [
+        [
+          "procedure",
+          11
+        ]
+      ],
+      "64748b": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "radius": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "8px": [
+        [
+          "procedure",
+          12
+        ]
+      ],
+      "10px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "16px": [
+        [
+          "procedure",
+          12
+        ]
+      ],
+      "f8fafc": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "13px": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "weight": [
+        [
+          "procedure",
+          7
+        ]
+      ],
+      "500": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "align": [
+        [
+          "procedure",
+          19
+        ]
+      ],
+      "center": [
+        [
+          "procedure",
+          14
+        ]
+      ],
+      "space": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "nowrap": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "title": [
+        [
+          "procedure",
+          5
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "11px": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "600": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "transform": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "uppercase": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "letter": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "spacing": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "bottom": [
+        [
+          "procedure",
+          9
+        ]
+      ],
+      "4px": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "2px": [
+        [
+          "procedure",
+          12
+        ]
+      ],
+      "334155": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "12px": [
+        [
+          "procedure",
+          7
+        ]
+      ],
+      "20px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "position": [
+        [
+          "procedure",
+          10
+        ]
+      ],
+      "relative": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "15px": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "700": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "flex": [
+        [
+          "procedure",
+          18
+        ]
+      ],
+      "gap": [
+        [
+          "procedure",
+          9
+        ]
+      ],
+      "justify": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "start": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "col": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "down": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "height": [
+        [
+          "procedure",
+          13
+        ]
+      ],
+      "24px": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "94a3b8": [
+        [
+          "procedure",
+          8
+        ]
+      ],
+      "auto": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "absolute": [
+        [
+          "procedure",
+          5
+        ]
+      ],
+      "left": [
+        [
+          "procedure",
+          12
+        ]
+      ],
+      "50": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "translatex": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "transparent": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "right": [
+        [
+          "procedure",
+          10
+        ]
+      ],
+      "6px": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "translatey": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "badge": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "475569": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "e2e8f0": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "100": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "1px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "here": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "components": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "connect": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "example": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "component": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "c": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "layer": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "cache": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "queue": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "jobs": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "flowchart": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "layouts": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "between": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "steps": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "nodes": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "rotated": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "diamond": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "shape": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "dbeafe": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "3b82f6": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "process": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "rotate": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "45deg": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "80px": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "span": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "condition": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "yes": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "action": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "x": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "48px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "y": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "database": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "attribute": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "svg": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "pseudo": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "64px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "overflow": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "hidden": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "fff": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "14px": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "strong": [
+        [
+          "procedure",
+          4
+        ]
+      ],
+      "id": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "uuid": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "pk": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "br": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "varchar": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "email": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "uq": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "created": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "timestamp": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "n": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "orders": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "fk": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "total": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "decimal": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "status": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "enum": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "message": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "dashed": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "messages": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "styled": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "min": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "300px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "participant": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "client": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "250px": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "cbd5e1": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "server": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "absolutely": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "positioned": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "60px": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "post": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "login": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "recursive": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "child": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "leaf": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "adaptation": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "points": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "adjust": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "sizes": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "gaps": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "nesting": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "complexity": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "very": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "consider": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "precise": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "sparingly": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "flexbox": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "grid": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "maintainability": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "test": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "fits": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "capturing": [
+        [
+          "procedure",
+          1
         ]
       ],
       "tab": [
@@ -4311,12 +7016,6 @@
         ]
       ],
       "detection": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "patterns": [
         [
           "procedure",
           2
@@ -4388,12 +7087,6 @@
           1
         ]
       ],
-      "status": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "detect": [
         [
           "procedure",
@@ -4443,12 +7136,6 @@
         ]
       ],
       "cell": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "directly": [
         [
           "procedure",
           2
@@ -4554,12 +7241,6 @@
           1
         ]
       ],
-      "value": [
-        [
-          "procedure",
-          6
-        ]
-      ],
       "summarize": [
         [
           "procedure",
@@ -4594,13 +7275,19 @@
           1
         ]
       ],
-      "bug": [
+      "pie": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "most": [
         [
           "procedure",
           1
         ]
       ],
-      "most": [
+      "native": [
         [
           "procedure",
           1
@@ -4630,46 +7317,6 @@
           1
         ]
       ],
-      "left": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "right": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "horizontal": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "vertical": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "at": [
-        [
-          "procedure",
-          3
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
-      "bottom": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "percentage": [
         [
           "procedure",
@@ -4685,16 +7332,10 @@
       "segments": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "representation": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "scale": [
         [
           "procedure",
           1
@@ -4724,22 +7365,6 @@
           1
         ]
       ],
-      "10": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "single": [
-        [
-          "procedure",
-          3
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
       "series": [
         [
           "procedure",
@@ -4752,13 +7377,25 @@
           1
         ]
       ],
-      "multi": [
+      "donut": [
         [
           "procedure",
           1
         ]
       ],
-      "donut": [
+      "circle": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "stroke": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "dasharray": [
         [
           "procedure",
           1
@@ -4770,17 +7407,13 @@
           1
         ]
       ],
-      "point": [
+      "optionally": [
         [
           "procedure",
           1
-        ],
-        [
-          "checklist",
-          1
         ]
       ],
-      "optionally": [
+      "polyline": [
         [
           "procedure",
           1
@@ -4796,12 +7429,6 @@
         [
           "procedure",
           2
-        ]
-      ],
-      "ordering": [
-        [
-          "procedure",
-          1
         ]
       ],
       "descending": [
@@ -4844,35 +7471,15 @@
           1
         ]
       ],
-      "title": [
-        [
-          "procedure",
-          2
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
-      "matching": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "caption": [
         [
           "procedure",
           1
         ]
       ],
-      "heading": [
+      "validate": [
         [
           "procedure",
-          4
-        ],
-        [
-          "checklist",
           1
         ]
       ],
@@ -4886,12 +7493,6 @@
         [
           "procedure",
           4
-        ]
-      ],
-      "points": [
-        [
-          "procedure",
-          1
         ]
       ],
       "failures": [
@@ -4924,19 +7525,7 @@
           1
         ]
       ],
-      "changes": [
-        [
-          "procedure",
-          2
-        ]
-      ],
       "confined": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "outputs": [
         [
           "procedure",
           1
@@ -5002,32 +7591,32 @@
           1
         ]
       ],
+      "files": [
+        [
+          "procedure",
+          5
+        ],
+        [
+          "checklist",
+          2
+        ]
+      ],
       "enforce": [
         [
           "procedure",
           1
         ]
       ],
-      "stable": [
+      "manifest": [
         [
           "procedure",
           1
         ]
       ],
-      "directory": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "per": [
+      "lives": [
         [
           "procedure",
           1
-        ],
-        [
-          "checklist",
-          2
         ]
       ],
       "corresponds": [
@@ -5058,7 +7647,27 @@
           1
         ]
       ],
-      "outside": [
+      "orphaned": [
+        [
+          "procedure",
+          1
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "referenced": [
+        [
+          "procedure",
+          1
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "finalizing": [
         [
           "procedure",
           1
@@ -5083,12 +7692,6 @@
         ]
       ],
       "brief": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "self": [
         [
           "procedure",
           2
@@ -5130,12 +7733,6 @@
           1
         ]
       ],
-      "gap": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "completing": [
         [
           "procedure",
@@ -5154,9 +7751,13 @@
           1
         ]
       ],
-      "capture": [
+      "rewriting": [
         [
           "procedure",
+          1
+        ],
+        [
+          "checklist",
           1
         ]
       ],
@@ -5166,7 +7767,7 @@
           1
         ]
       ],
-      "previous": [
+      "already": [
         [
           "procedure",
           1
@@ -5202,28 +7803,10 @@
           1
         ]
       ],
-      "working": [
-        [
-          "procedure",
-          3
-        ]
-      ],
       "copy": [
         [
           "procedure",
           5
-        ]
-      ],
-      "temp": [
-        [
-          "procedure",
-          11
-        ]
-      ],
-      "example": [
-        [
-          "procedure",
-          1
         ]
       ],
       "intermediate": [
@@ -5238,6 +7821,16 @@
           1
         ]
       ],
+      "inside": [
+        [
+          "procedure",
+          1
+        ],
+        [
+          "checklist",
+          2
+        ]
+      ],
       "edits": [
         [
           "procedure",
@@ -5245,18 +7838,6 @@
         ]
       ],
       "happen": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "skeleton": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "write": [
         [
           "procedure",
           1
@@ -5312,32 +7893,6 @@
           1
         ]
       ],
-      "without": [
-        [
-          "procedure",
-          1
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
-      "skips": [
-        [
-          "procedure",
-          1
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
-      "then": [
-        [
-          "procedure",
-          2
-        ]
-      ],
       "place": [
         [
           "procedure",
@@ -5382,43 +7937,31 @@
           2
         ]
       ],
-      "listed": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "contained": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "references": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "x": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "repeating": [
         [
           "procedure",
           1
         ]
       ],
-      "verification": [
+      "may": [
         [
           "procedure",
           2
         ]
       ],
-      "cleanup": [
+      "unsure": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "about": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "consistency": [
         [
           "procedure",
           1
@@ -5466,28 +8009,6 @@
           1
         ]
       ],
-      "total": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "run": [
-        [
-          "procedure",
-          2
-        ]
-      ],
-      "checklist": [
-        [
-          "procedure",
-          1
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
       "passes": [
         [
           "procedure",
@@ -5500,44 +8021,16 @@
           1
         ]
       ],
-      "matches": [
-        [
-          "procedure",
-          1
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
       "freshly": [
         [
           "procedure",
           1
         ]
       ],
-      "6": [
+      "update": [
         [
           "procedure",
-          1
-        ]
-      ],
-      "may": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "7": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "confirm": [
-        [
-          "procedure",
-          1
+          2
         ]
       ],
       "set": [
@@ -5552,13 +8045,19 @@
           1
         ]
       ],
-      "sync": [
+      "including": [
         [
           "procedure",
           1
         ]
       ],
-      "update": [
+      "were": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "sync": [
         [
           "procedure",
           1
@@ -5585,7 +8084,7 @@
       "updated": [
         [
           "procedure",
-          1
+          2
         ]
       ],
       "continue": [
@@ -5594,19 +8093,13 @@
           1
         ]
       ],
-      "match": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "274": [
+      "645": [
         [
           "checklist",
           1
         ]
       ],
-      "296": [
+      "670": [
         [
           "checklist",
           1
@@ -5691,6 +8184,36 @@
         ]
       ],
       "counts": [
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "syntax": [
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "overlaps": [
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "saved": [
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "reruns": [
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "completion": [
         [
           "checklist",
           1
