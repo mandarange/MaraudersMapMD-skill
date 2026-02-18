@@ -105,6 +105,7 @@ If the skill is loaded correctly, the AI will follow the 5-phase procedure (Base
 | File | Purpose |
 |------|---------|
 | [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter, canonical prompt, 5-phase procedure, checklist |
+| [`trim_whitespace.py`](./trim_whitespace.py) | Auto-crop whitespace borders from captured PNG images (requires `Pillow`) |
 | `README.md` | This file |
 | `LICENSE` | MIT license |
 

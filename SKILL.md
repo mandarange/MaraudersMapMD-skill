@@ -244,17 +244,18 @@ Rendering flow:
 11. **Always regenerate on this run**: do not depend on pre-existing PNG files. For each converted diagram, create or overwrite `docs/MaraudersMap/<docId>/images/<diagram-name>.png` in the current run.
 12. **Hard gate**: Check that the PNG file exists on disk and has non-zero size. If it is missing or empty, retry from step 4 with 800 ms wait. If it still fails, delete any partial output, fix the HTML/CSS, and retry until capture succeeds. Never finish with a missing PNG for a converted diagram.
 13. **Filesystem proof (required)**: run a direct file existence check on the exact output path (for example `ls -l <absolute-png-path>` or equivalent tool read). Proceed only when the file is present and size > 0.
-14. Visually verify: all labels readable, no overlapping elements, layout matches original, the full diagram is present (no clipping), and the PNG has no large outer whitespace. If broken, fix the HTML/CSS and redo from step 4.
-15. Keep only the latest versioned render HTML file for this diagram (`...render_v{N}.html`) as the editable SSOT file.
-16. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
-17. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
+14. **Auto-crop whitespace**: run `python trim_whitespace.py <absolute-png-path> --padding 4` to remove excess whitespace borders from the captured PNG. This trims any outer whitespace the browser capture left behind and keeps a 4 px content margin. If Pillow is not installed, run `pip install Pillow` first. If the script reports "no trim needed", proceed — the PNG is already tight.
+15. Visually verify: all labels readable, no overlapping elements, layout matches original, the full diagram is present (no clipping), and the PNG has no large outer whitespace. If broken, fix the HTML/CSS and redo from step 4.
+16. Keep only the latest versioned render HTML file for this diagram (`...render_v{N}.html`) as the editable SSOT file.
+17. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
+18. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
     ```
     <!-- Converted from ASCII art: [original description] -->
     ![<diagram description>](<relative-path-to-png>)
     ```
     The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.
-18. Re-check that the referenced PNG path in the inserted image tag exists on disk.
-19. Remove older render HTML versions for the same diagram (`...render_v{k}.html` where `k < N`) and keep only the current highest version file as SSOT.
+19. Re-check that the referenced PNG path in the inserted image tag exists on disk.
+20. Remove older render HTML versions for the same diagram (`...render_v{k}.html` where `k < N`) and keep only the current highest version file as SSOT.
 
 Failure handling:
 - If capture fails, keep the current versioned render HTML for retry and delete only broken PNG output. Retry capture from step 4 using the same HTML.
@@ -272,7 +273,7 @@ Regression guard (required):
 Screenshot quality:
 - Viewport: 600–1200 px wide. Device pixel ratio: 2.
 - Background: white (`#ffffff`). No browser chrome or scrollbars.
-- Bounds: the output PNG must be tightly cropped to the diagram element with no excessive outer whitespace and no clipped edges.
+- Bounds: the output PNG must be tightly cropped to the diagram element with no excessive outer whitespace and no clipped edges. The `trim_whitespace.py` post-processing step (step 14) guarantees this automatically.
 - Ratio: when clip capture is used, output width/height must match the measured `.diagram` bounding-box aspect ratio.
 - All text legible at final embedded size.
 
