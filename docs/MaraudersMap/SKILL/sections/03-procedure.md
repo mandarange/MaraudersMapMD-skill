@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-666 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-670 -->
 
 ## Procedure
 
@@ -7,7 +7,7 @@ Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as 
 ### Original file protection rule
 
 - The original source file must remain completely untouched. Never generate shards, indexes, or any MaraudersMapMD artifacts from the original.
-- All sharding, indexing, and artifact generation targets the rewritten version file (`<filename>.rewritten_v{n}.md`) exclusively.
+- All sharding, indexing, and artifact generation targets the rewritten version file (`<base>.rewritten_v{N}.md`) exclusively.
 - The original exists solely as a reference for fact-checking; it must never be modified, copied into artifact directories, or have artifacts derived from it.
 
 Artifact paths (generated from the rewritten file only):
@@ -55,7 +55,7 @@ Choose the fastest retrieval path based on the query scope:
 | Cross-doc keyword search | **SQLite keyword** | `shards_search.py --db docs/MaraudersMap/shards.db --keyword "<kw>"` |
 | Cross-doc relevance search | **SQLite FTS5** | `shards_search.py --db docs/MaraudersMap/shards.db --query "<text>"` |
 | Regex pattern match | **Regex** | `shards_search.py --shards ... --regex "<pattern>"` or `--db ... --regex "<pattern>"` |
-| Full context validation | **Fallback** | Open `<filename>.rewritten_v{n}.md` directly |
+| Full context validation | **Fallback** | Open `<base>.rewritten_v{N}.md` directly |
 
 > [AI RULE] Always attempt fast-path or BM25 before opening the full rewritten document. Only fall back to the full document when cross-section context is needed and shard results are insufficient.
 
@@ -193,11 +193,12 @@ Rendering flow:
 3. Navigate the browser tool to `file://<absolute-path>/temp/diagram-<name>.html`.
 4. Wait at least 400 ms for rendering to stabilize.
 5. Call the browser tool's screenshot function with the output file path explicitly set to the absolute path of `docs/MaraudersMap/<docId>/images/<diagram-name>.png`. Do not rely on a default save location.
-6. **Hard gate**: Check that the PNG file now exists on disk and has non-zero size. If it does not exist or is empty, retry from step 3 with 800 ms wait. If it still fails after one retry, delete any partial output and skip embedding — never insert an image reference for a file that does not exist on disk.
-7. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
-8. Delete `temp/diagram-<name>.html`.
-9. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
-10. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
+6. **Always regenerate on this run**: do not depend on pre-existing PNG files. For each converted diagram, create or overwrite `docs/MaraudersMap/<docId>/images/<diagram-name>.png` in the current run.
+7. **Hard gate**: Check that the PNG file exists on disk and has non-zero size. If it is missing or empty, retry from step 3 with 800 ms wait. If it still fails, delete any partial output, fix the HTML/CSS, and retry until capture succeeds. Never finish with a missing PNG for a converted diagram.
+8. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
+9. Delete `temp/diagram-<name>.html`.
+10. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
+11. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
     ```
     <!-- Converted from ASCII art: [original description] -->
     ![<diagram description>](<relative-path-to-png>)
@@ -206,6 +207,7 @@ Rendering flow:
 
 Failure handling:
 - If capture fails, delete the temp HTML and any broken PNG before retrying.
+- If an expected image file is missing (including user-deleted files), treat it as a required regeneration task and recreate it in the current run.
 - Never keep partial or invalid outputs.
 - Keep captured PNGs on local disk; Markdown image links depend on them.
 
@@ -572,8 +574,9 @@ Determine the base name and next version before creating any file:
 - **Base name**: Strip any `.rewritten_v{n}` suffix from the source filename. `guide.md` → base `guide`. `guide.rewritten_v1.md` → base `guide`. Never include `.rewritten_v{n}` in the base.
 - **Next version**: If no prior rewritten file exists, use `v1`. If `<base>.rewritten_v{n}.md` already exists, use `v{n+1}`.
 - **Working copy path**: `temp/temp_<base>.rewritten_v{N}.md` where `N` is the next version.
+- **Filename normalization gate (required)**: Before writing output, normalize the target name to `<base>.rewritten_v{N}.md`. Remove any chained segments such as `.rewritten.rewritten`, `.rewritten_v1.rewritten_v2`, or repeated `.rewritten` tokens. These names are invalid and must be corrected before saving.
 
-Examples: `guide.md` (first run) → `temp/temp_guide.rewritten_v1.md`. `guide.rewritten_v1.md` (re-run) → `temp/temp_guide.rewritten_v2.md`. Never produce names like `guide.rewritten_v1.rewritten_v2.md`.
+Examples: `guide.md` (first run) → `temp/temp_guide.rewritten_v1.md`. `guide.rewritten_v1.md` (re-run) → `temp/temp_guide.rewritten_v2.md`. `guide.rewritten.rewritten.md` (invalid source name) still normalizes to base `guide` and must output `temp/temp_guide.rewritten_v{N}.md`.
 
 All intermediate files go inside `temp/`. All edits happen ONLY on the working copy. Never modify the source.
 
@@ -601,19 +604,20 @@ Compare the finished output against the original Search Index:
 5. Run the checklist below.
 
 After verification passes:
-1. Move `temp/temp_<filename>.rewritten_v{n}.md` to the original file's directory as `<filename>.rewritten_v{n}.md`.
-2. Generate MaraudersMapMD artifacts from `<filename>.rewritten_v{n}.md` only (never from the original).
-3. Verify each `sections/*.md` shard matches its corresponding content in `<filename>.rewritten_v{n}.md` (no drift).
+1. Move `temp/temp_<base>.rewritten_v{N}.md` to the original file's directory as `<base>.rewritten_v{N}.md`.
+2. Generate MaraudersMapMD artifacts from `<base>.rewritten_v{N}.md` only (never from the original).
+3. Verify each `sections/*.md` shard matches its corresponding content in `<base>.rewritten_v{N}.md` (no drift).
 4. Regenerate `shards.json` from the freshly generated shards and index.
 5. If processing multiple documents, run steps 2–4 in parallel for each `<docId>` (see "Parallel execution rule"). Then run `python shards_db.py --ingest-all --map-root docs/MaraudersMap` once to batch-update the cross-doc index.
 6. Delete the `temp/` folder entirely.
 7. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.
-8. Confirm the project contains: the original source file (untouched), `<filename>.rewritten_v{n}.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/` (including `images/*.png` if any diagrams were converted). PNG files referenced by Markdown must remain on local disk. No `temp/` folder, no `temp_` files, no original-derived artifacts, no temporary HTML files.
+8. Confirm the project contains: the original source file (untouched), `<base>.rewritten_v{N}.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/` (including `images/*.png` if any diagrams were converted). PNG files referenced by Markdown must remain on local disk. If any referenced PNG is missing (including manual deletion), regenerate it before completion. No `temp/` folder, no `temp_` files, no original-derived artifacts, no temporary HTML files.
+9. Confirm there are no invalid rewritten filenames in the working set (for example `*.rewritten.rewritten.md` or `*.rewritten_v*.rewritten_v*.md`). If found, rename to the normalized `<base>.rewritten_v{N}.md` form before completion.
 
 ### Sync rule — rewritten changes must update shards
 
 If the rewritten document is edited at any time:
-1. Re-run the MaraudersMapMD generation on the current rewritten version file (`<filename>.rewritten_v{n}.md`).
+1. Re-run the MaraudersMapMD generation on the current rewritten version file (`<base>.rewritten_v{N}.md`).
 2. Replace the Section Pack and Search Index with the newly generated versions.
 3. Regenerate `shards.json` from the updated shards and index.
 4. If a cross-doc SQLite index exists (`shards.db`), re-ingest the updated doc: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.

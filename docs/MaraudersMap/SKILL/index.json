@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T05:08:50+00:00",
-  "totalTokens": 5222,
+  "generated": "2026-02-18T05:14:35+00:00",
+  "totalTokens": 5365,
   "entries": [
     {
       "section": "When to Use",
@@ -42,12 +42,12 @@
       "slug": "procedure",
       "lineRange": [
         48,
-        666
+        670
       ],
-      "tokens": 4458,
+      "tokens": 4586,
       "keywords": [
         "Procedure",
-        "<filename>.rewritten_v{n}.md",
+        "<base>.rewritten_v{N}.md",
         "docs/MaraudersMap/<docId>/ai-map.md",
         "docs/MaraudersMap/<docId>/sections/*.md",
         "docs/MaraudersMap/<docId>/index.json",
@@ -127,10 +127,13 @@
         "already exists, use",
         ".\n- **Working copy path**:",
         "where",
-        "is the next version.\n\nExamples:",
+        ". Remove any chained segments such as",
+        ", or repeated",
+        "tokens. These names are invalid and must be corrected before saving.\n\nExamples:",
         "(first run) →",
         "(re-run) →",
-        ". Never produce names like",
+        "(invalid source name) still normalizes to base",
+        "and must output",
         ".\n\nAll intermediate files go inside",
         ", then",
         "to the original file's directory as",
@@ -143,6 +146,7 @@
         ", and one set of MaraudersMapMD artifacts under",
         "(including",
         "folder, no",
+        "). If found, rename to the normalized",
         "from the updated shards and index.\n4. If a cross-doc SQLite index exists (",
         "), re-ingest the updated doc:",
         ".\n5. Do not continue work until shards, index, and",
@@ -160,10 +164,10 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        667,
-        695
+        671,
+        700
       ],
-      "tokens": 399,
+      "tokens": 414,
       "keywords": [
         "Checklist",
         "#",
@@ -174,7 +178,9 @@
         "![...]()",
         "docs/MaraudersMap/<docId>/images/",
         "temp/diagram-*.html",
-        "<!-- Converted from ASCII art: ... -->"
+        "<!-- Converted from ASCII art: ... -->",
+        "<base>.rewritten_v{N}.md",
+        "rewritten.rewritten"
       ],
       "links": [],
       "summary": "After rewriting, verify every item below. Each maps to a rule in the canonical prompt.",
