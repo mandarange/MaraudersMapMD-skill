@@ -12,3 +12,4 @@ __pycache__/
 # MaraudersMapMD build artifacts
 .manifest.json
 shards.db
+docs/MaraudersMap/

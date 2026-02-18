@@ -1,73 +1,8 @@
 #!/usr/bin/env python3
 import argparse
-import json
-import math
 import re
 import sqlite3
 import sys
-
-
-def load_shards(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def build_section_map(shards):
-    section_map = {}
-    for section in shards.get("sections", []):
-        section_map[section.get("id")] = section
-        if "legacy_id" in section:
-            section_map[section["legacy_id"]] = section
-    return section_map
-
-
-def search_by_keyword(shards, section_map, keyword):
-    matches = []
-    index = shards.get("index", {}).get("keywords", {})
-    for slug in index.get(keyword, []):
-        section = section_map.get(slug)
-        if section:
-            matches.append(section)
-    return matches
-
-
-def search_by_regex(shards, pattern, flags=0):
-    regex = re.compile(pattern, flags)
-    results = []
-    for section in shards.get("sections", []):
-        if regex.search(section.get("content", "")):
-            results.append(section)
-    return results
-
-
-def search_by_bm25(shards, section_map, query):
-    term_index = shards.get("index", {}).get("term_index", {})
-    bm25_meta = shards.get("meta", {}).get("bm25", {})
-    k1 = bm25_meta.get("k1", 1.5)
-    b = bm25_meta.get("b", 0.75)
-    doc_count = bm25_meta.get("doc_count", len(section_map))
-    avgdl = bm25_meta.get("avgdl", 0) or 1
-
-    query_terms = [term.lower() for term in re.findall(r"[A-Za-z0-9]+", query)]
-    scores = {}
-
-    for term in query_terms:
-        postings = term_index.get(term, [])
-        df = len(postings)
-        if df == 0:
-            continue
-        idf = math.log(1 + (doc_count - df + 0.5) / (df + 0.5))
-        for slug, tf in postings:
-            section = section_map.get(slug)
-            if not section:
-                continue
-            dl = section.get("token_count", 0) or 1
-            denom = tf + k1 * (1 - b + b * (dl / avgdl))
-            score = idf * (tf * (k1 + 1) / denom)
-            scores[slug] = scores.get(slug, 0) + score
-
-    ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)
-    return [section_map[slug] for slug, _score in ranked]
 
 
 def _warn(message):
@@ -173,11 +108,8 @@ def _print_json(results, show_content=False):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Search shards.json for fast lookup (or use --db for SQLite/FTS5)."
-    )
-    parser.add_argument("--shards", help="Path to shards.json.")
-    parser.add_argument("--db", help="Path to SQLite DB (read-only).")
+    parser = argparse.ArgumentParser(description="Search SQLite/FTS5 shards index.")
+    parser.add_argument("--db", required=True, help="Path to SQLite DB (read-only).")
     parser.add_argument("--keyword", help="Exact keyword from shards index.")
     parser.add_argument(
         "--regex", help="Regex pattern to search within section content."
@@ -196,42 +128,26 @@ def main():
     )
     args = parser.parse_args()
 
-    if bool(args.shards) == bool(args.db):
-        raise SystemExit("Provide exactly one of --shards or --db.")
+    _check_db_schema(args.db)
 
-    if args.db:
-        _check_db_schema(args.db)
-
-        if args.keyword:
-            results = search_db_keyword(
-                args.db, args.keyword, doc_filter=args.doc, limit=args.top
-            )
-        elif args.regex:
-            results = search_db_regex(
-                args.db,
-                args.regex,
-                doc_filter=args.doc,
-                limit=args.top,
-                flags=re.IGNORECASE,
-            )
-        elif args.query:
-            results = search_db_bm25(
-                args.db, args.query, doc_filter=args.doc, limit=args.top
-            )
-        else:
-            raise SystemExit("Provide --keyword, --regex, or --query.")
+    if args.keyword:
+        results = search_db_keyword(
+            args.db, args.keyword, doc_filter=args.doc, limit=args.top
+        )
+    elif args.regex:
+        results = search_db_regex(
+            args.db,
+            args.regex,
+            doc_filter=args.doc,
+            limit=args.top,
+            flags=re.IGNORECASE,
+        )
+    elif args.query:
+        results = search_db_bm25(
+            args.db, args.query, doc_filter=args.doc, limit=args.top
+        )
     else:
-        shards = load_shards(args.shards)
-        section_map = build_section_map(shards)
-
-        if args.keyword:
-            results = search_by_keyword(shards, section_map, args.keyword)
-        elif args.regex:
-            results = search_by_regex(shards, args.regex, flags=re.IGNORECASE)
-        elif args.query:
-            results = search_by_bm25(shards, section_map, args.query)
-        else:
-            raise SystemExit("Provide --keyword, --regex, or --query.")
+        raise SystemExit("Provide --keyword, --regex, or --query.")
 
     results = results[: args.top]
     if args.format == "json":

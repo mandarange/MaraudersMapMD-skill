@@ -75,7 +75,7 @@ Artifact paths (generated from the rewritten file only):
 ### SQLite-first access rule (always-on)
 
 - For fast lookup and reading, use the SQLite index (`docs/MaraudersMap/shards.db`) as the primary retrieval source.
-- Section pack files (`sections/*.md`, `index.json`, `ai-map.md`, `shards.json`) are optional implementation artifacts, not the primary retrieval path.
+- Section pack files (`sections/*.md`, `index.json`, `ai-map.md`) are optional implementation artifacts, not the primary retrieval path. Legacy `shards.json` retrieval paths are disabled.
 - On cache miss or low-confidence retrieval from SQLite, fall back to the rewritten Markdown file first, then the original source file only when needed for fact verification.
 - If artifacts derived from the original file are found, delete them immediately.
 
@@ -162,7 +162,7 @@ Execution strategy by scale:
 - Use `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap` after each rewrite update.
 - Use `python shards_search.py --db docs/MaraudersMap/shards.db --doc "<docId>" --query "<text>" --top 5` for per-doc relevance retrieval.
 - Use `python shards_search.py --db docs/MaraudersMap/shards.db --query "<text>" --top 5` for cross-doc retrieval.
-- Optional: `sections/*.md`, `index.json`, `ai-map.md`, and `shards.json` may exist as debug artifacts, but retrieval must not depend on them.
+- Optional: `sections/*.md`, `index.json`, and `ai-map.md` may exist as debug artifacts, but retrieval must not depend on them. Legacy `shards.json` retrieval paths are disabled.
 
 ### ASCII visual content classification
 

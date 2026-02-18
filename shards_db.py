@@ -4,6 +4,9 @@ from datetime import datetime, timezone
 
 AI_HINT_PATTERN = re.compile(r"^\s*>\s*\[(AI RULE|AI DECISION|AI TODO|AI CONTEXT)\]")
 TOKEN_COUNT_RE = re.compile(r"\S+")
+HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
+REWRITTEN_FILE_RE = re.compile(r"^(?P<base>.+)\.rewritten_v(?P<version>\d+)\.md$")
+SLUG_TOKEN_RE = re.compile(r"[A-Za-z0-9]+")
 
 
 def _utc():
@@ -31,103 +34,129 @@ def _jarr(v):
     return json.dumps(v, ensure_ascii=False, separators=(",", ":"))
 
 
-def load_sections(doc_root):
-    doc_root = os.path.abspath(doc_root)
-    doc_id = os.path.basename(doc_root)
-    shards_path = os.path.join(doc_root, "shards.json")
-    if os.path.isfile(shards_path):
-        data = json.loads(_read(shards_path))
-        out = []
-        for s in data.get("sections") or []:
-            legacy_id = s.get("legacy_id") or s.get("legacyId")
-            section_id = s.get("id")
-            if not legacy_id and section_id and ":" in section_id:
-                legacy_id = section_id.split(":", 1)[1]
-            if not section_id and legacy_id:
-                section_id = f"{doc_id}:{legacy_id}"
-            content = s.get("content") or ""
-            out.append(
-                {
-                    "id": section_id,
-                    "legacy_id": legacy_id or "",
-                    "title": s.get("title"),
-                    "content": content,
-                    "content_hash": s.get("content_hash")
-                    or s.get("contentHash")
-                    or _sha(content),
-                    "token_count": s.get("token_count")
-                    or s.get("tokenCount")
-                    or _tok_count(content),
-                    "keywords": s.get("keywords", []),
-                    "links": s.get("links", []),
-                    "ai_hints": s.get("ai_hints")
-                    or s.get("aiHints")
-                    or [
-                        m.group(1)
-                        for m in (
-                            AI_HINT_PATTERN.match(l) for l in content.splitlines()
-                        )
-                        if m
-                    ],
-                    "summary": s.get("summary", ""),
-                    "line_range": s.get("line_range") or s.get("lineRange") or [],
-                    "file_path": s.get("path")
-                    or s.get("file_path")
-                    or s.get("filePath"),
-                }
-            )
-        return out
-    sections_dir = os.path.join(doc_root, "sections")
-    if not os.path.isdir(sections_dir):
-        raise FileNotFoundError(f"Missing sections directory: {sections_dir}")
-    index_path = os.path.join(doc_root, "index.json")
-    index_map = {}
-    if os.path.isfile(index_path):
-        entries = json.loads(_read(index_path)).get("entries") or []
-        index_map = {e.get("slug"): e for e in entries if e.get("slug")}
-    out = []
-    for fn in sorted(os.listdir(sections_dir)):
-        if not fn.endswith(".md"):
+def _slugify(text):
+    tokens = [t.lower() for t in SLUG_TOKEN_RE.findall(text or "")]
+    return "-".join(tokens) if tokens else "section"
+
+
+def _find_latest_rewritten(doc_root, doc_id):
+    best = None
+    best_ver = -1
+    for filename in os.listdir(doc_root):
+        match = REWRITTEN_FILE_RE.match(filename)
+        if not match:
             continue
-        path = os.path.join(sections_dir, fn)
-        content = _read(path)
-        base = os.path.splitext(fn)[0]
-        slug = base.split("-", 1)[1] if "-" in base else base
-        ie = index_map.get(slug, {})
-        title = (
-            next(
-                (
-                    l.lstrip("#").strip()
-                    for l in content.splitlines()
-                    if l.startswith("#")
-                ),
-                "",
-            )
-            or ie.get("section")
-            or slug
+        if match.group("base") != doc_id:
+            continue
+        version = int(match.group("version"))
+        if version > best_ver:
+            best_ver = version
+            best = os.path.join(doc_root, filename)
+    if not best:
+        raise FileNotFoundError(
+            f"Missing rewritten markdown: expected '{doc_id}.rewritten_vN.md' in {doc_root}"
         )
-        ai_hints = ie.get("aiHints", []) or [
+    return best
+
+
+def _build_section_record(doc_id, legacy_id, title, content, file_path, line_range):
+    return {
+        "id": f"{doc_id}:{legacy_id}",
+        "legacy_id": legacy_id,
+        "title": title,
+        "content": content,
+        "content_hash": _sha(content),
+        "token_count": _tok_count(content),
+        "keywords": [],
+        "links": [],
+        "ai_hints": [
             m.group(1)
             for m in (AI_HINT_PATTERN.match(l) for l in content.splitlines())
             if m
+        ],
+        "summary": "",
+        "line_range": line_range,
+        "file_path": file_path,
+    }
+
+
+def _sections_from_markdown(doc_id, md_path, text):
+    lines = text.splitlines()
+    heading_positions = []
+    heading_titles = []
+    for idx, line in enumerate(lines):
+        match = HEADING_RE.match(line)
+        if match:
+            heading_positions.append(idx)
+            heading_titles.append(match.group(2).strip())
+
+    sections = []
+    slug_counts = {}
+
+    def next_slug(title):
+        base_slug = _slugify(title)
+        count = slug_counts.get(base_slug, 0) + 1
+        slug_counts[base_slug] = count
+        if count == 1:
+            return base_slug
+        return f"{base_slug}-{count}"
+
+    if not heading_positions:
+        return [
+            _build_section_record(
+                doc_id=doc_id,
+                legacy_id="document",
+                title="Document",
+                content=text,
+                file_path=md_path,
+                line_range=[1, len(lines) if lines else 1],
+            )
         ]
-        out.append(
-            {
-                "id": f"{doc_id}:{slug}",
-                "legacy_id": slug,
-                "title": title,
-                "content": content,
-                "content_hash": _sha(content),
-                "token_count": _tok_count(content),
-                "keywords": ie.get("keywords", []),
-                "links": ie.get("links", []),
-                "ai_hints": ai_hints,
-                "summary": ie.get("summary", ""),
-                "line_range": ie.get("lineRange", []),
-                "file_path": path,
-            }
+
+    first_heading = heading_positions[0]
+    if first_heading > 0:
+        preamble = "\n".join(lines[:first_heading]).strip()
+        if preamble:
+            sections.append(
+                _build_section_record(
+                    doc_id=doc_id,
+                    legacy_id=next_slug("document-overview"),
+                    title="Document Overview",
+                    content=preamble,
+                    file_path=md_path,
+                    line_range=[1, first_heading],
+                )
+            )
+
+    for idx, start in enumerate(heading_positions):
+        end_exclusive = (
+            heading_positions[idx + 1]
+            if idx + 1 < len(heading_positions)
+            else len(lines)
         )
-    return out
+        chunk_lines = lines[start:end_exclusive]
+        chunk = "\n".join(chunk_lines).strip()
+        title = heading_titles[idx]
+        sections.append(
+            _build_section_record(
+                doc_id=doc_id,
+                legacy_id=next_slug(title),
+                title=title,
+                content=chunk,
+                file_path=md_path,
+                line_range=[start + 1, end_exclusive],
+            )
+        )
+
+    return sections
+
+
+def load_sections(doc_root):
+    doc_root = os.path.abspath(doc_root)
+    doc_id = os.path.basename(doc_root)
+    rewritten_path = _find_latest_rewritten(doc_root, doc_id)
+    rewritten_content = _read(rewritten_path)
+    return _sections_from_markdown(doc_id, rewritten_path, rewritten_content)
 
 
 def db_path(map_root):
@@ -222,11 +251,17 @@ def ingest_doc(conn, doc_root):
 
 def discover_docs(map_root):
     map_root = os.path.abspath(map_root)
-    return [
-        os.path.join(map_root, n)
-        for n in sorted(os.listdir(map_root))
-        if os.path.isdir(os.path.join(map_root, n, "sections"))
-    ]
+    docs = []
+    for name in sorted(os.listdir(map_root)):
+        doc_root = os.path.join(map_root, name)
+        if not os.path.isdir(doc_root):
+            continue
+        try:
+            _find_latest_rewritten(doc_root, name)
+        except FileNotFoundError:
+            continue
+        docs.append(doc_root)
+    return docs
 
 
 def print_status(conn):

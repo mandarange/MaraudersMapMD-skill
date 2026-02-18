@@ -22,7 +22,7 @@ The skill uses SQLite as the primary retrieval source:
 
 If the rewritten document changes, re-ingest it into SQLite immediately so retrieval stays consistent.
 
-Optional debug artifacts (`sections/*.md`, `index.json`, `ai-map.md`, `shards.json`) may exist but are not required for normal retrieval.
+Optional debug artifacts (`sections/*.md`, `index.json`, `ai-map.md`) may exist but are not required for normal retrieval. Legacy `shards.json` paths are disabled.
 
 ### Diagram/Chart Image Reliability
 
