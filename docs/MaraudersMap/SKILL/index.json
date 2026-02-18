@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T05:19:54+00:00",
-  "totalTokens": 5517,
+  "generated": "2026-02-18T05:22:13+00:00",
+  "totalTokens": 5610,
   "entries": [
     {
       "section": "When to Use",
@@ -42,9 +42,9 @@
       "slug": "procedure",
       "lineRange": [
         48,
-        676
+        677
       ],
-      "tokens": 4718,
+      "tokens": 4777,
       "keywords": [
         "Procedure",
         "<base>.rewritten_v{N}.md",
@@ -54,7 +54,9 @@
         "docs/MaraudersMap/<docId>/shards.json",
         "docs/MaraudersMap/<docId>/images/*.png",
         "<docId>",
+        "guide.rewritten_v1.md",
         "guide.rewritten_v2.md",
+        "guide",
         "guide_v2",
         "sections/*.md",
         "index.json",
@@ -116,8 +118,8 @@
         "in inline code for visual reference, plus a numeric",
         "with",
         ").\n- For HTML chart images, add a",
-        ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- One",
-        "directory per rewritten version.",
+        ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- One stable",
+        "files remain.\n- Before starting a new rewrite run, delete stale",
         ") for section summaries and the Search Index (",
         "suffix from the source filename.",
         "→ base",
@@ -144,7 +146,8 @@
         "(no drift).\n4. Regenerate",
         "(see \"Parallel execution rule\"). Then run",
         "once to batch-update the cross-doc index.\n6. Delete the",
-        ", and one set of MaraudersMapMD artifacts under",
+        "), and keep only the current rewritten output",
+        "), and one set of MaraudersMapMD artifacts under",
         "(including",
         "folder, no",
         "). If found, rename to the normalized",
@@ -165,10 +168,10 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        677,
-        707
+        678,
+        710
       ],
-      "tokens": 434,
+      "tokens": 468,
       "keywords": [
         "Checklist",
         "#",
@@ -179,10 +182,11 @@
         "![...]()",
         "docs/MaraudersMap/<docId>/images/",
         "temp/diagram-*.html",
+        "<docId>",
+        "<base>.rewritten_v{N}.md",
         "<!-- Converted from ASCII art: ... -->",
         "campaign-lifecycle.png",
         "FORM_EVENT_INTRODUCTION",
-        "<base>.rewritten_v{N}.md",
         "rewritten.rewritten"
       ],
       "links": [],

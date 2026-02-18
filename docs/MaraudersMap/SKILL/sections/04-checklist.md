@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 677-707 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 678-710 -->
 
 ## Checklist
 
@@ -25,6 +25,8 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Every PNG referenced by Markdown exists on local disk and is not removed during cleanup
 - [ ] Every embedded image path in Markdown is correct and relative to the rewritten Markdown file
 - [ ] No `temp/diagram-*.html` files remain after completion
+- [ ] `<docId>` is stable per logical document base (no version-suffixed duplicate docId directories)
+- [ ] Only one active rewritten Markdown exists for the document (`<base>.rewritten_v{N}.md`); older rewritten versions are cleaned up
 - [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)
 - [ ] Regression guard passes: missing `campaign-lifecycle.png` under `FORM_EVENT_INTRODUCTION` is regenerated in-run and linked with one valid image tag
 - [ ] Output language matches the source's dominant language

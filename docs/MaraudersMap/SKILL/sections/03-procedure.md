@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-676 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-677 -->
 
 ## Procedure
 
@@ -17,7 +17,7 @@ Artifact paths (generated from the rewritten file only):
 - Shard JSON: `docs/MaraudersMap/<docId>/shards.json`
 - Diagram Images: `docs/MaraudersMap/<docId>/images/*.png`
 
-> [AI RULE] `<docId>` is derived from the rewritten version filename (e.g. `guide.rewritten_v2.md` → docId `guide_v2`). Never create a separate `<docId>` for the original file.
+> [AI RULE] `<docId>` is derived from the normalized base name, not the versioned filename (e.g. `guide.rewritten_v1.md` and `guide.rewritten_v2.md` both use docId `guide`). Use one stable `<docId>` per logical document. Never create version-suffixed docIds like `guide_v2`.
 
 ### Language lock rule (highest priority)
 
@@ -557,12 +557,13 @@ Conversion guidelines:
 
 - Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.
 - Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,.manifest.json,sections/*.md,images/*.png}`. The cross-doc index lives at docs/MaraudersMap/shards.db.
-- One `<docId>` directory per rewritten version. `<docId>` corresponds to the rewritten version file, not the original.
+- One stable `<docId>` directory per logical document (base name). New rewritten versions must overwrite artifacts in the same `docs/MaraudersMap/<docId>/` directory, not create new versioned docId directories.
 - If artifacts derived from the original source file exist, delete them immediately.
 - Do not create or keep alternative artifact directories or extra copies outside the structure above.
 - Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown, but only after all converted ASCII blocks have been embedded and verified. Do not run orphan cleanup during capture.
 - Never delete PNG files that are referenced by the active rewritten Markdown.
 - Before finalizing, ensure no `temp/diagram-*.html` files remain.
+- Before starting a new rewrite run, delete stale `temp/diagram-*.html` files left from previous failed runs.
 
 ### Final honest review rule
 
@@ -616,8 +617,8 @@ After verification passes:
 4. Regenerate `shards.json` from the freshly generated shards and index.
 5. If processing multiple documents, run steps 2–4 in parallel for each `<docId>` (see "Parallel execution rule"). Then run `python shards_db.py --ingest-all --map-root docs/MaraudersMap` once to batch-update the cross-doc index.
 6. Delete the `temp/` folder entirely.
-7. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.
-8. Confirm the project contains: the original source file (untouched), `<base>.rewritten_v{N}.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/` (including `images/*.png` if any diagrams were converted). PNG files referenced by Markdown must remain on local disk. If any referenced PNG is missing (including manual deletion), regenerate it before completion. No `temp/` folder, no `temp_` files, no original-derived artifacts, no temporary HTML files.
+7. Delete stale artifacts: remove original-file-derived outputs, remove stale version-suffixed docId directories for the same base (for example `guide_v2`), and keep only the current rewritten output `<base>.rewritten_v{N}.md` for that logical document.
+8. Confirm the project contains: the original source file (untouched), exactly one active rewritten file for the document (`<base>.rewritten_v{N}.md`), and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/` (including `images/*.png` if any diagrams were converted). PNG files referenced by Markdown must remain on local disk. If any referenced PNG is missing (including manual deletion), regenerate it before completion. No `temp/` folder, no `temp_` files, no original-derived artifacts, no temporary HTML files.
 9. Confirm there are no invalid rewritten filenames in the working set (for example `*.rewritten.rewritten.md` or `*.rewritten_v*.rewritten_v*.md`). If found, rename to the normalized `<base>.rewritten_v{N}.md` form before completion.
 
 ### Sync rule — rewritten changes must update shards
