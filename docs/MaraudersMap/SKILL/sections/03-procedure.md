@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-660 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-665 -->
 
 ## Procedure
 
@@ -192,14 +192,15 @@ Rendering flow:
 2. Open the HTML file in a headless browser using Playwright (or equivalent browser automation tool available in the agent's environment).
 3. Wait for the page to fully render (fonts loaded, layout stable).
 4. Capture PNG with the local helper script:
-   `python render_html_to_png.py --html temp/diagram-<name>.html --output docs/MaraudersMap/<docId>/images/<diagram-name>.png --viewport-width 1200 --viewport-height 900 --wait-ms 400 --auto-install`
+   `python render_html_to_png.py --html temp/diagram-<name>.html --output docs/MaraudersMap/<docId>/images/<diagram-name>.png --markdown-file <filename>.rewritten_v{n}.md --alt "<diagram description>" --source-description "<original description>" --viewport-width 1200 --viewport-height 900 --wait-ms 400`
 5. If a more precise crop is needed, use an element screenshot path in your browser tool, but still write to the same output path.
 6. Save the screenshot to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.
-7. Visually inspect the screenshot — confirm all labels are readable, no overlapping elements, and the layout matches the original ASCII structure.
-8. If the rendering is broken or misaligned, fix the HTML/CSS and re-render until it is correct.
-9. Delete `temp/diagram-<name>.html` after successful capture.
-10. Verify the temporary HTML file was deleted. If deletion fails, halt and report the cleanup error.
-11. Embed in the Markdown output:
+7. Ensure the generated Markdown reference path is correct and relative to the rewritten Markdown file (for example `images/<diagram-name>.png`).
+8. Visually inspect the screenshot — confirm all labels are readable, no overlapping elements, and the layout matches the original ASCII structure.
+9. If the rendering is broken or misaligned, fix the HTML/CSS and re-render until it is correct.
+10. Delete `temp/diagram-<name>.html` after successful capture.
+11. Verify the temporary HTML file was deleted. If deletion fails, halt and report the cleanup error.
+12. Embed in the Markdown output:
    ```markdown
    <!-- Converted from ASCII art: [original description] -->
    ![<diagram description>](images/<diagram-name>.png)
@@ -218,6 +219,10 @@ Screenshot quality requirements:
 - All text must be legible at the final embedded size.
 
 > [AI RULE] Never embed a diagram image that has not been visually verified after screenshot capture. If the rendering looks wrong, fix and re-render.
+
+Playwright runtime setup (one-time per machine):
+- `npx playwright install chromium`
+- If the command fails due missing package metadata, run `npx -y playwright@latest install chromium`.
 
 ### Diagram type HTML/CSS templates
 

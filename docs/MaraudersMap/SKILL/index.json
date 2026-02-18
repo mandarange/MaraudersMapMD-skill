@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T01:14:54+00:00",
-  "totalTokens": 5105,
+  "generated": "2026-02-18T01:20:30+00:00",
+  "totalTokens": 5175,
   "entries": [
     {
       "section": "When to Use",
@@ -42,9 +42,9 @@
       "slug": "procedure",
       "lineRange": [
         48,
-        660
+        665
       ],
-      "tokens": 4359,
+      "tokens": 4411,
       "keywords": [
         "Procedure",
         "<filename>.rewritten_v{n}.md",
@@ -94,6 +94,8 @@
         "data-flow-02.png",
         "data-flow-01-a3f2.png",
         "temp/diagram-<name>.html",
+        "images/<diagram-name>.png",
+        "- If the command fails due missing package metadata, run",
         "**Architecture / system layout diagram:**\n\nUse nested",
         "elements for system boundaries and",
         "for components. Connect with",
@@ -146,10 +148,10 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        661,
-        688
+        666,
+        694
       ],
-      "tokens": 381,
+      "tokens": 399,
       "keywords": [
         "Checklist",
         "#",
