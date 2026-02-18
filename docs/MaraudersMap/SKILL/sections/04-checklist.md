@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 671-700 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 677-707 -->
 
 ## Checklist
 
@@ -26,6 +26,7 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Every embedded image path in Markdown is correct and relative to the rewritten Markdown file
 - [ ] No `temp/diagram-*.html` files remain after completion
 - [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)
+- [ ] Regression guard passes: missing `campaign-lifecycle.png` under `FORM_EVENT_INTRODUCTION` is regenerated in-run and linked with one valid image tag
 - [ ] Output language matches the source's dominant language
 - [ ] No translated narrative text appears unless translation was explicitly requested by the user
 - [ ] Rewritten filename is normalized to `<base>.rewritten_v{N}.md` (no `rewritten.rewritten` or chained rewritten suffixes)

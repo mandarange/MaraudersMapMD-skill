@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-670 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-676 -->
 
 ## Procedure
 
@@ -196,7 +196,7 @@ Rendering flow:
 6. **Always regenerate on this run**: do not depend on pre-existing PNG files. For each converted diagram, create or overwrite `docs/MaraudersMap/<docId>/images/<diagram-name>.png` in the current run.
 7. **Hard gate**: Check that the PNG file exists on disk and has non-zero size. If it is missing or empty, retry from step 3 with 800 ms wait. If it still fails, delete any partial output, fix the HTML/CSS, and retry until capture succeeds. Never finish with a missing PNG for a converted diagram.
 8. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
-9. Delete `temp/diagram-<name>.html`.
+9. Keep `temp/diagram-<name>.html` until the PNG is confirmed on disk and the Markdown image tag has been inserted.
 10. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
 11. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
     ```
@@ -204,12 +204,18 @@ Rendering flow:
     ![<diagram description>](<relative-path-to-png>)
     ```
     The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.
+12. Re-check that the referenced PNG path in the inserted image tag exists on disk. Only then delete `temp/diagram-<name>.html`.
 
 Failure handling:
-- If capture fails, delete the temp HTML and any broken PNG before retrying.
+- If capture fails, keep the temp HTML for retry and delete only broken PNG output. Retry capture from step 3 using the same HTML.
 - If an expected image file is missing (including user-deleted files), treat it as a required regeneration task and recreate it in the current run.
 - Never keep partial or invalid outputs.
 - Keep captured PNGs on local disk; Markdown image links depend on them.
+
+Regression guard (required):
+- Reproduce this case before finalizing any diagram conversion: Markdown references `./MaraudersMap/FORM_EVENT_INTRODUCTION/images/campaign-lifecycle.png` but the PNG file is missing on disk.
+- Expected behavior: regenerate `docs/MaraudersMap/FORM_EVENT_INTRODUCTION/images/campaign-lifecycle.png` in the same run, then keep exactly one valid Markdown image tag pointing to the relative path.
+- Forbidden behavior: leaving a dangling image path, deleting the temp HTML before successful capture, producing malformed Markdown such as `![a]![a](...)` or `[text](/![a](...))`.
 
 Screenshot quality:
 - Viewport: 600–1200 px wide. Device pixel ratio: 2.
@@ -554,7 +560,7 @@ Conversion guidelines:
 - One `<docId>` directory per rewritten version. `<docId>` corresponds to the rewritten version file, not the original.
 - If artifacts derived from the original source file exist, delete them immediately.
 - Do not create or keep alternative artifact directories or extra copies outside the structure above.
-- Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown.
+- Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown, but only after all converted ASCII blocks have been embedded and verified. Do not run orphan cleanup during capture.
 - Never delete PNG files that are referenced by the active rewritten Markdown.
 - Before finalizing, ensure no `temp/diagram-*.html` files remain.
 

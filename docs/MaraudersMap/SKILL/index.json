@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T05:14:35+00:00",
-  "totalTokens": 5365,
+  "generated": "2026-02-18T05:19:54+00:00",
+  "totalTokens": 5517,
   "entries": [
     {
       "section": "When to Use",
@@ -42,9 +42,9 @@
       "slug": "procedure",
       "lineRange": [
         48,
-        670
+        676
       ],
-      "tokens": 4586,
+      "tokens": 4718,
       "keywords": [
         "Procedure",
         "<base>.rewritten_v{N}.md",
@@ -99,10 +99,11 @@
         "docs/FORM_EVENT.rewritten_v1.md",
         "docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png",
         "./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png",
+        "but the PNG file is missing on disk.\n- Expected behavior: regenerate",
+        "or",
         "**Architecture / system layout diagram:**\n\nUse nested",
         "elements for system boundaries and",
         "for components. Connect with",
-        "or",
         ". Example structure:",
         "**Flowchart / pipeline diagram:**\n\nUse horizontal (",
         ") or vertical (",
@@ -164,10 +165,10 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        671,
-        700
+        677,
+        707
       ],
-      "tokens": 414,
+      "tokens": 434,
       "keywords": [
         "Checklist",
         "#",
@@ -179,6 +180,8 @@
         "docs/MaraudersMap/<docId>/images/",
         "temp/diagram-*.html",
         "<!-- Converted from ASCII art: ... -->",
+        "campaign-lifecycle.png",
+        "FORM_EVENT_INTRODUCTION",
         "<base>.rewritten_v{N}.md",
         "rewritten.rewritten"
       ],
