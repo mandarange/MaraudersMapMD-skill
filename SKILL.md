@@ -235,18 +235,19 @@ Every diagram image must be visually verified. A broken or mis-rendered diagram 
 Rendering flow:
 1. Write the self-contained HTML file to `temp/diagram-<name>.html`.
 2. Create `docs/MaraudersMap/<docId>/images/` if it does not exist.
-3. Open `file://<absolute-path>/temp/diagram-<name>.html` in the browser tool. Wait at least 400 ms for rendering to stabilize.
-4. Take a full-page screenshot and save it to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.
-5. Verify the PNG exists and is non-empty. If empty or missing, retry with 800 ms wait.
-6. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
-7. Delete `temp/diagram-<name>.html`.
-8. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
-9. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
-   ```
-   <!-- Converted from ASCII art: [original description] -->
-   ![<diagram description>](<relative-path-to-png>)
-   ```
-   The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.
+3. Navigate the browser tool to `file://<absolute-path>/temp/diagram-<name>.html`.
+4. Wait at least 400 ms for rendering to stabilize.
+5. Call the browser tool's screenshot function with the output file path explicitly set to the absolute path of `docs/MaraudersMap/<docId>/images/<diagram-name>.png`. Do not rely on a default save location.
+6. **Hard gate**: Check that the PNG file now exists on disk and has non-zero size. If it does not exist or is empty, retry from step 3 with 800 ms wait. If it still fails after one retry, delete any partial output and skip embedding — never insert an image reference for a file that does not exist on disk.
+7. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
+8. Delete `temp/diagram-<name>.html`.
+9. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
+10. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
+    ```
+    <!-- Converted from ASCII art: [original description] -->
+    ![<diagram description>](<relative-path-to-png>)
+    ```
+    The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.
 
 Failure handling:
 - If capture fails, delete the temp HTML and any broken PNG before retrying.

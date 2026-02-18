@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T04:54:30+00:00",
-  "totalTokens": 5159,
+  "generated": "2026-02-18T05:08:50+00:00",
+  "totalTokens": 5222,
   "entries": [
     {
       "section": "When to Use",
@@ -42,9 +42,9 @@
       "slug": "procedure",
       "lineRange": [
         48,
-        665
+        666
       ],
-      "tokens": 4395,
+      "tokens": 4458,
       "keywords": [
         "Procedure",
         "<filename>.rewritten_v{n}.md",
@@ -160,8 +160,8 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        666,
-        694
+        667,
+        695
       ],
       "tokens": 399,
       "keywords": [
