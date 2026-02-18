@@ -58,6 +58,7 @@ Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as 
 Artifact paths (generated from the rewritten file only):
 - SQLite Index (cross-doc): `docs/MaraudersMap/shards.db`
 - Diagram Images: `docs/MaraudersMap/<docId>/images/*.png`
+- Diagram Render HTML (single active version per diagram): `docs/MaraudersMap/<docId>/render-html/<diagram-name>.render_v{N}.html`
 - Rewritten Markdown (single active version): `<base>.rewritten_v{N}.md`
 
 > [AI RULE] `<docId>` is derived from the normalized base name, not the versioned filename (e.g. `guide.rewritten_v1.md` and `guide.rewritten_v2.md` both use docId `guide`). Use one stable `<docId>` per logical document. Never create version-suffixed docIds like `guide_v2`.
@@ -193,12 +194,12 @@ When the source Markdown contains ASCII art diagrams (box-drawing characters lik
 
 Conversion pipeline:
 1. **Analyze** the ASCII diagram — identify entities, relationships, groupings, flow direction, and labels.
-2. **Generate** a self-contained HTML file with inline CSS that visually reproduces the diagram as a clean, professional graphic.
-3. **Render** the HTML in a headless browser (Playwright or equivalent browser tool).
+2. **Generate** a self-contained HTML file with inline CSS that visually reproduces the diagram as a clean, professional graphic, and save it to the next versioned path: `docs/MaraudersMap/<docId>/render-html/<diagram-name>.render_v{N}.html`.
+3. **Render** the saved HTML in a headless browser (Playwright or equivalent browser tool).
 4. **Screenshot** the rendered diagram as a PNG image.
 5. **Save** the PNG to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.
 6. **Embed** the image in the Markdown output: `![<diagram description>](images/<diagram-name>.png)`.
-7. **Delete** the temporary HTML file. Do not keep it in the output.
+7. **Keep** only the latest versioned render HTML file so it can be edited and reused for future re-renders (SSOT per diagram).
 
 Conversion guidelines:
 - Identify the diagram type and apply the matching HTML/CSS pattern (see "Diagram type HTML/CSS templates" below):
@@ -219,33 +220,46 @@ Naming convention for diagram images:
 - Naming must be deterministic: for the same input, produce the same filenames every run.
 - If a filename collision occurs in the same `<docId>`, append a short stable suffix: `data-flow-01-a3f2.png`.
 
+Render HTML SSOT naming:
+- Base name: use the same `<diagram-name>` as the PNG file (without `.png`).
+- Versioning: use `render_v{N}` and increase by exactly +1 per rewrite for the same diagram (`render_v1`, `render_v2`, ...).
+- Path format: `docs/MaraudersMap/<docId>/render-html/<diagram-name>.render_v{N}.html`.
+- SSOT rule: keep exactly one active render HTML file (highest `N`) per diagram name; after successful capture and Markdown insertion, remove older versions for that diagram.
+
 ### Diagram rendering and capture rule
 
 Every diagram image must be visually verified. A broken or mis-rendered diagram is worse than no diagram.
 
 Rendering flow:
-1. Write the self-contained HTML file to `temp/diagram-<name>.html`.
-2. Create `docs/MaraudersMap/<docId>/images/` if it does not exist.
-3. Navigate the browser tool to `file://<absolute-path>/temp/diagram-<name>.html`.
-4. Wait at least 400 ms for rendering to stabilize.
-5. Call the browser tool's screenshot function with the output file path explicitly set to the absolute path of `docs/MaraudersMap/<docId>/images/<diagram-name>.png`. Do not rely on a default save location.
-6. **Always regenerate on this run**: do not depend on pre-existing PNG files. For each converted diagram, create or overwrite `docs/MaraudersMap/<docId>/images/<diagram-name>.png` in the current run.
-7. **Hard gate**: Check that the PNG file exists on disk and has non-zero size. If it is missing or empty, retry from step 3 with 800 ms wait. If it still fails, delete any partial output, fix the HTML/CSS, and retry until capture succeeds. Never finish with a missing PNG for a converted diagram.
-8. **Filesystem proof (required)**: run a direct file existence check on the exact output path (for example `ls -l <absolute-png-path>` or equivalent tool read). Proceed only when the file is present and size > 0.
-9. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
-10. Keep `temp/diagram-<name>.html` until the PNG is confirmed on disk and the Markdown image tag has been inserted.
-11. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
-12. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
+1. Determine the next render HTML version for this diagram (`<diagram-name>.render_v{N}.html`, where `N` is highest existing + 1, or `1` when none exists).
+2. Write or update the self-contained HTML file at `docs/MaraudersMap/<docId>/render-html/<diagram-name>.render_v{N}.html`.
+3. Create `docs/MaraudersMap/<docId>/images/` and `docs/MaraudersMap/<docId>/render-html/` if they do not exist.
+4. Navigate the browser tool to `file://<absolute-path>/docs/MaraudersMap/<docId>/render-html/<diagram-name>.render_v{N}.html`.
+5. Wait at least 400 ms for rendering to stabilize.
+6. Ensure the diagram root element (`.diagram`) has no external margin/padding and tightly wraps content (`display: inline-block`, content-sized width/height).
+7. Measure the rendered `.diagram` bounding box (`width`, `height`) before capture.
+8. If the current viewport would clip the measured bounds, resize the browser viewport to fit the full diagram with a small safety gutter (for example +24 px each side), then re-check bounds.
+9. Capture **the diagram element only** (element screenshot), not the full page/viewport, and save to the absolute path `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.
+10. If element screenshot is unavailable, capture with an explicit clip rectangle from the diagram element's bounding box (`x`, `y`, `width`, `height`) and preserve the same aspect ratio as the measured bounds. Never use a full-page screenshot fallback.
+11. **Always regenerate on this run**: do not depend on pre-existing PNG files. For each converted diagram, create or overwrite `docs/MaraudersMap/<docId>/images/<diagram-name>.png` in the current run.
+12. **Hard gate**: Check that the PNG file exists on disk and has non-zero size. If it is missing or empty, retry from step 4 with 800 ms wait. If it still fails, delete any partial output, fix the HTML/CSS, and retry until capture succeeds. Never finish with a missing PNG for a converted diagram.
+13. **Filesystem proof (required)**: run a direct file existence check on the exact output path (for example `ls -l <absolute-png-path>` or equivalent tool read). Proceed only when the file is present and size > 0.
+14. Visually verify: all labels readable, no overlapping elements, layout matches original, the full diagram is present (no clipping), and the PNG has no large outer whitespace. If broken, fix the HTML/CSS and redo from step 4.
+15. Keep only the latest versioned render HTML file for this diagram (`...render_v{N}.html`) as the editable SSOT file.
+16. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
+17. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
     ```
     <!-- Converted from ASCII art: [original description] -->
     ![<diagram description>](<relative-path-to-png>)
     ```
     The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.
-13. Re-check that the referenced PNG path in the inserted image tag exists on disk. Only then delete `temp/diagram-<name>.html`.
+18. Re-check that the referenced PNG path in the inserted image tag exists on disk.
+19. Remove older render HTML versions for the same diagram (`...render_v{k}.html` where `k < N`) and keep only the current highest version file as SSOT.
 
 Failure handling:
-- If capture fails, keep the temp HTML for retry and delete only broken PNG output. Retry capture from step 3 using the same HTML.
+- If capture fails, keep the current versioned render HTML for retry and delete only broken PNG output. Retry capture from step 4 using the same HTML.
 - If an expected image file is missing (including user-deleted files), treat it as a required regeneration task and recreate it in the current run.
+- If any edge is clipped, increase viewport size and re-capture from step 6 before finalizing.
 - Never insert a Markdown image path before filesystem proof passes for the exact PNG file.
 - Never keep partial or invalid outputs.
 - Keep captured PNGs on local disk; Markdown image links depend on them.
@@ -253,11 +267,13 @@ Failure handling:
 Regression guard (required):
 - Reproduce this case before finalizing any diagram conversion: Markdown references `./MaraudersMap/FORM_EVENT_INTRODUCTION/images/campaign-lifecycle.png` but the PNG file is missing on disk.
 - Expected behavior: regenerate `docs/MaraudersMap/FORM_EVENT_INTRODUCTION/images/campaign-lifecycle.png` in the same run, then keep exactly one valid Markdown image tag pointing to the relative path.
-- Forbidden behavior: leaving a dangling image path, deleting the temp HTML before successful capture, producing malformed Markdown such as `![a]![a](...)` or `[text](/![a](...))`.
+- Forbidden behavior: leaving a dangling image path, deleting the current highest-version render HTML file, or producing malformed Markdown such as `![a]![a](...)` or `[text](/![a](...))`.
 
 Screenshot quality:
 - Viewport: 600–1200 px wide. Device pixel ratio: 2.
 - Background: white (`#ffffff`). No browser chrome or scrollbars.
+- Bounds: the output PNG must be tightly cropped to the diagram element with no excessive outer whitespace and no clipped edges.
+- Ratio: when clip capture is used, output width/height must match the measured `.diagram` bounding-box aspect ratio.
 - All text legible at final embedded size.
 
 > [AI RULE] Never embed a diagram image that has not been visually verified. If the rendering looks wrong, fix and re-render.
@@ -279,11 +295,15 @@ Use these patterns as a starting point when generating HTML for each diagram typ
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: #ffffff;
-    padding: 16px;
+    margin: 0;
+    padding: 0;
     width: fit-content;
+    height: fit-content;
+    display: inline-block;
+    overflow: hidden;
     color: #1e293b;
   }
-  .diagram { display: inline-block; }
+  .diagram { display: inline-block; margin: 0; }
   .box {
     border: 1.5px solid #64748b;
     border-radius: 8px;
@@ -595,14 +615,15 @@ Conversion guidelines:
 
 - Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.
 - Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/images/*.png` for visuals, plus cross-doc SQLite index at `docs/MaraudersMap/shards.db`.
+- Store diagram render sources only under `docs/MaraudersMap/<docId>/render-html/` using versioned names (`<diagram-name>.render_v{N}.html`).
 - One stable `<docId>` directory per logical document (base name). New rewritten versions must overwrite artifacts in the same `docs/MaraudersMap/<docId>/` directory, not create new versioned docId directories.
 - If artifacts derived from the original source file exist, delete them immediately.
 - Do not create or keep alternative artifact directories or extra copies outside the structure above.
 - Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown, but only after all converted ASCII blocks have been embedded and verified. Do not run orphan cleanup during capture.
 - Never delete PNG files that are referenced by the active rewritten Markdown.
-- Before finalizing, ensure no `temp/diagram-*.html` files remain.
-- Before starting a new rewrite run, delete stale `temp/diagram-*.html` files left from previous failed runs.
-- Never delete a `temp/diagram-*.html` file that belongs to the current capture attempt until PNG filesystem proof passes and Markdown insertion is complete.
+- For each diagram, keep exactly one active render HTML version file (highest `render_v{N}`) and remove older versions after successful capture.
+- Never store diagram render HTML files in `temp/`; use `docs/MaraudersMap/<docId>/render-html/` only.
+- Never delete the current highest-version render HTML file for a diagram.
 
 ### Final honest review rule
 
@@ -652,7 +673,7 @@ After verification passes:
 1. Ensure `<base>.rewritten_v{N}.md` is present and normalized.
 2. Ensure SQLite is up to date for this doc (`python shards_db.py --ingest ...` completed without error).
 3. If processing multiple docs, run per-doc ingest in parallel, then run `python shards_db.py --status --map-root docs/MaraudersMap` once.
-4. Delete the `temp/` folder entirely.
+4. Delete transient files under `temp/` (working-copy artifacts only); do not delete `docs/MaraudersMap/<docId>/render-html/`.
 5. Delete stale artifacts: remove original-file-derived outputs and stale version-suffixed docId directories for the same base (for example `guide_v2`).
 6. Confirm the project contains: original source (untouched), exactly one active rewritten file (`<base>.rewritten_v{N}.md`), SQLite DB (`docs/MaraudersMap/shards.db`), and images under `docs/MaraudersMap/<docId>/images/*.png`.
 7. Confirm there are no invalid rewritten filenames in the working set (for example `*.rewritten.rewritten.md` or `*.rewritten_v*.rewritten_v*.md`). If found, rename to the normalized `<base>.rewritten_v{N}.md` form before completion.
@@ -690,7 +711,8 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Every PNG referenced by Markdown exists on local disk and is not removed during cleanup
 - [ ] Filesystem proof was executed for each generated PNG before Markdown insertion (existence + non-zero size)
 - [ ] Every embedded image path in Markdown is correct and relative to the rewritten Markdown file
-- [ ] No `temp/diagram-*.html` files remain after completion
+- [ ] Diagram render HTML files use versioned names (`<diagram-name>.render_v{N}.html`) under `docs/MaraudersMap/<docId>/render-html/`
+- [ ] For each diagram, only the latest render HTML version file remains (SSOT)
 - [ ] `<docId>` is stable per logical document base (no version-suffixed duplicate docId directories)
 - [ ] Only one active rewritten Markdown exists for the document (`<base>.rewritten_v{N}.md`); older rewritten versions are cleaned up
 - [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)

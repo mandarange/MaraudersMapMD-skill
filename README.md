@@ -29,8 +29,13 @@ Optional debug artifacts (`sections/*.md`, `index.json`, `ai-map.md`) may exist 
 The skill enforces a strict capture lifecycle for ASCII-to-image conversion:
 
 - Always regenerate PNG in the current run (do not rely on old files)
+- Capture the diagram/chart element itself (not full page) so PNG bounds are tight
+- Auto-resize viewport to fit full diagram bounds before capture to prevent edge clipping
+- Preserve measured diagram aspect ratio when clip-based capture is used
 - Verify PNG exists on disk and has non-zero size before inserting Markdown image tags
-- Keep `temp/diagram-*.html` until PNG proof + Markdown insertion are complete
+- Keep a versioned render HTML source at `docs/MaraudersMap/<docId>/render-html/<diagram-name>.render_vN.html`
+- On each rewrite for the same diagram, increment render HTML version by exactly +1 (`render_v1` -> `render_v2` -> `render_v3`)
+- Keep only the latest render HTML version per diagram (SSOT), and remove older versions after successful capture
 - If PNG is missing (including manual deletion), regenerate it before completion
 
 Rewritten output uses explicit versioned filenames:
