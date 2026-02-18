@@ -240,11 +240,13 @@ Rendering flow:
 5. Verify the PNG exists and is non-empty. If empty or missing, retry with 800 ms wait.
 6. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.
 7. Delete `temp/diagram-<name>.html`.
-8. Replace the original ASCII block in the Markdown with an image reference. The path must be relative from the Markdown file to the saved PNG:
-   ```markdown
-   <!-- Converted from ASCII art: [original description] -->
-   ![<diagram description>](docs/MaraudersMap/<docId>/images/<diagram-name>.png)
+8. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
+9. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
    ```
+   <!-- Converted from ASCII art: [original description] -->
+   ![<diagram description>](<relative-path-to-png>)
+   ```
+   The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.
 
 Failure handling:
 - If capture fails, delete the temp HTML and any broken PNG before retrying.

@@ -1,7 +1,7 @@
 {
   "meta": {
     "doc_id": "SKILL",
-    "generated_at": "2026-02-18T04:48:46.427451+00:00",
+    "generated_at": "2026-02-18T04:54:33.295609+00:00",
     "source_sections": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections",
     "source_index": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/index.json",
     "source_ai_map": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/ai-map.md",
@@ -12,7 +12,7 @@
       "k1": 1.5,
       "b": 0.75,
       "doc_count": 4,
-      "avgdl": 1278.5
+      "avgdl": 1297.75
     }
   },
   "sections": [
@@ -64,9 +64,9 @@
       "legacy_id": "procedure",
       "title": "Procedure",
       "path": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections/03-procedure.md",
-      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-663 -->\n\n## Procedure\n\nFollow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.\n\n### Original file protection rule\n\n- The original source file must remain completely untouched. Never generate shards, indexes, or any MaraudersMapMD artifacts from the original.\n- All sharding, indexing, and artifact generation targets the rewritten version file (`<filename>.rewritten_v{n}.md`) exclusively.\n- The original exists solely as a reference for fact-checking; it must never be modified, copied into artifact directories, or have artifacts derived from it.\n\nArtifact paths (generated from the rewritten file only):\n- AI Map: `docs/MaraudersMap/<docId>/ai-map.md`\n- Section Pack: `docs/MaraudersMap/<docId>/sections/*.md`\n- Search Index: `docs/MaraudersMap/<docId>/index.json`\n- Shard JSON: `docs/MaraudersMap/<docId>/shards.json`\n- Diagram Images: `docs/MaraudersMap/<docId>/images/*.png`\n\n> [AI RULE] `<docId>` is derived from the rewritten version filename (e.g. `guide.rewritten_v2.md` → docId `guide_v2`). Never create a separate `<docId>` for the original file.\n\n### Language lock rule (highest priority)\n\n- The rewritten output must preserve the source language exactly; translation is prohibited unless the user explicitly asks for translation.\n- If source content is Korean, keep Korean narrative text, headings, and list items in Korean.\n- Keep existing English technical literals as-is (commands, code, identifiers, API names, file paths, env vars).\n- If mixed-language content exists, preserve each segment's original language unless the user requests normalization.\n- If a generated section accidentally changes language, treat it as a blocking error and rewrite that section before finalizing.\n\n> [AI RULE] Language drift (for example Korean source rewritten in English) is a hard failure. Fix before completion.\n\n### Sharded access rule (always-on)\n\n- For fast lookup and reading, use the Section Pack (`sections/*.md`) as the primary source instead of the rewritten full document.\n- Only open the rewritten file when you need full-context validation or to resolve cross-section ambiguity.\n- The Section Pack must always be an exact shard-by-shard reflection of the rewritten document.\n- Shards and indexes exist only for rewritten documents. If artifacts for the original file are found, delete them immediately.\n\n### Retrieval order for accuracy\n\nWhen answering or extracting facts, use this order to minimize drift:\n1. Section Pack (`sections/*.md`) for the specific section.\n2. Search Index (`index.json`) for keywords/links/AI Hint Blocks validation.\n3. AI Map (`ai-map.md`) for section boundaries and summaries.\n4. Rewritten full document only if cross-section context is required.\n\n### Retrieval routing\n\nChoose the fastest retrieval path based on the query scope:\n\n| Query Scope | Route | Tool |\n|---|---|---|\n| Single section by keyword | **Fast-path** | `shards_search.py --shards ... --keyword \"<kw>\"` |\n| Relevance-ranked results | **BM25 JSON** | `shards_search.py --shards ... --query \"<text>\" --top 5` |\n| Cross-doc keyword search | **SQLite keyword** | `shards_search.py --db docs/MaraudersMap/shards.db --keyword \"<kw>\"` |\n| Cross-doc relevance search | **SQLite FTS5** | `shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\"` |\n| Regex pattern match | **Regex** | `shards_search.py --shards ... --regex \"<pattern>\"` or `--db ... --regex \"<pattern>\"` |\n| Full context validation | **Fallback** | Open `<filename>.rewritten_v{n}.md` directly |\n\n> [AI RULE] Always attempt fast-path or BM25 before opening the full rewritten document. Only fall back to the full document when cross-section context is needed and shard results are insufficient.\n\n### Doc-type awareness\n\nDifferent document types benefit from different retrieval strategies:\n\n| Doc Type | Signal | Strategy |\n|---|---|---|\n| API Reference | Many short sections, code-heavy | Keyword search → exact section |\n| Tutorial/Guide | Sequential sections, prose-heavy | BM25 → top 3, read in order |\n| Configuration | Tables, key-value pairs | Keyword → single section |\n| Architecture | Diagrams, cross-references | Cross-doc search → multiple sections |\n| Mixed | No dominant pattern | BM25 → top 5, scan titles first |\n\n> [AI CONTEXT] Doc-type is inferred from AI Map structure and section content. No explicit tagging required.\n\n### Parallel execution rule\n\nWhen working with multiple documents or many sections, maximize throughput by running independent operations in parallel.\n\nParallelizable operations (no ordering dependency):\n\n| Operation | Parallel Unit | Constraint |\n|---|---|---|\n| Multi-document rewrite | Each document is independent | Different `<docId>` → safe to parallelize |\n| Section-by-section rewrite (Phase 4) | Sections that do NOT cross-reference each other | If section B references section A, rewrite A first |\n| Shard + index generation (Phase 5) | Per-document artifact generation | Each `<docId>` writes to its own directory |\n| `shards_to_json.py` runs | One run per `<docId>` | Each writes to `docs/MaraudersMap/<docId>/shards.json` — no conflict |\n| `shards_db.py --ingest` runs | One ingest per `<docId>` | SQLite handles concurrent reads; run ingests sequentially or use `--ingest-all` |\n| Verification (Phase 5 checks 1–4) | Per-document | Each document's checklist is independent |\n\nMust remain sequential (ordering dependency exists):\n\n| Operation | Reason |\n|---|---|\n| Phase 1 → 2 → 3 within a single document | Each phase depends on the previous |\n| Skeleton (Phase 3) before section rewrite (Phase 4) | Heading structure must exist before filling content |\n| Section rewrite → shard generation | Shards must reflect the final rewritten content |\n| `shards_to_json.py` → `shards_db.py --ingest` for the same doc | DB ingests from `shards.json`, so JSON must exist first |\n\nExecution strategy by scale:\n\n| Scale | Strategy |\n|---|---|\n| 1 document, ≤5 sections | Sequential is fine |\n| 1 document, >5 sections | Parallel-rewrite independent sections, then sequential for cross-referencing ones |\n| 2–5 documents | Parallel-rewrite all documents simultaneously |\n| >5 documents | Batch: parallel-rewrite up to 5 at a time, then `shards_db.py --ingest-all` once at the end |\n\n> [AI RULE] When the AI agent supports parallel tool calls or background tasks, it MUST use them for independent operations listed above. Sequential processing of independent documents is a performance bug.\n\n### Accuracy guardrails\n\n- Do not infer facts that are not present in the shards or index.\n- If a fact appears in a shard but is missing from the index, treat the shard as the source of truth and regenerate the index.\n- If shards disagree with the rewritten document, regenerate shards and index from the rewritten document immediately.\n\n### JSON shard pack rule (Python-first)\n\n- Generate `shards.json` from the Section Pack and Search Index to enable fast, accurate Python lookup.\n- Treat `shards.json` as a read-optimized mirror. The source of truth remains the shards and rewritten document.\n- Any time shards or index change, regenerate `shards.json` before answering questions.\n- Use `python shards_to_json.py --doc-root docs/MaraudersMap/<docId>` to rebuild the JSON pack.\n- For quick lookup, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --keyword \"<keyword>\"`.\n- For fastest relevance ranking, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --query \"<free text>\" --top 5` (BM25).\n- For incremental rebuilds: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --changed` (skips rebuild if no content changes detected).\n- To preview changes without writing: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --dry-run --report`.\n- To build and ingest into the cross-doc SQLite index: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.\n- To initialize the cross-doc index for the first time: `python shards_db.py --init --map-root docs/MaraudersMap`.\n- To search across all documents: `python shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\" --top 5`.\n\n### ASCII visual content classification\n\nBefore converting any ASCII art, classify it into one of three categories. The category determines the target format.\n\nDecision tree:\n\n1. **Does the ASCII block contain rows of data with column alignment?** (column headers, separator rows like `+---+---+` or `├───┼───┤`, and cells holding data values such as names, numbers, or settings)\n   → **Category: Data Table** → convert to Markdown pipe table (see \"ASCII-to-Markdown-table conversion rule\").\n\n2. **Does the ASCII block represent a quantitative visualization?** (bar lengths made of repeated characters like `█`, `▓`, `#`, `=`, `*`; axis labels with numeric values; histogram bins; sparkline-style rows)\n   → **Category: Chart** → convert to Markdown table (if simple) or HTML rendering → screenshot PNG image (if complex) (see \"ASCII-to-chart conversion rule\").\n\n3. **Does the ASCII block represent structural relationships?** (boxes connected by arrows or lines; flow direction; entity-relationship grouping; sequence lifelines; tree/hierarchy)\n   → **Category: Diagram** → convert to HTML diagram, render as screenshot PNG, embed as image (see \"ASCII-to-HTML-diagram conversion rule\").\n\nAmbiguity rules:\n- If a block mixes data rows with structural arrows, split it: data rows → MD table, structural part → HTML diagram screenshot.\n- If a pipe-aligned block is clearly a diagram legend or label (no meaningful row data), treat it as part of the diagram.\n- When in doubt, prefer the simpler format (MD table over HTML screenshot) to maximize portability.\n- Add a one-line HTML comment `<!-- Converted from ASCII art: [original description] -->` above each converted block so reviewers can trace origin.\n\n> [AI RULE] Never leave ASCII art unconverted. Every ASCII visual block must be classified and transformed to its target format.\n\n### ASCII-to-HTML-diagram conversion rule\n\nWhen the source Markdown contains ASCII art diagrams (box-drawing characters like `┌─┐│└─┘`, `+---+`, pipe-aligned tables used as diagrams, or any text-art layout representing structure), convert them to high-quality PNG images via HTML rendering and screenshot capture.\n\nConversion pipeline:\n1. **Analyze** the ASCII diagram — identify entities, relationships, groupings, flow direction, and labels.\n2. **Generate** a self-contained HTML file with inline CSS that visually reproduces the diagram as a clean, professional graphic.\n3. **Render** the HTML in a headless browser (Playwright or equivalent browser tool).\n4. **Screenshot** the rendered diagram as a PNG image.\n5. **Save** the PNG to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.\n6. **Embed** the image in the Markdown output: `![<diagram description>](images/<diagram-name>.png)`.\n7. **Delete** the temporary HTML file. Do not keep it in the output.\n\nConversion guidelines:\n- Identify the diagram type and apply the matching HTML/CSS pattern (see \"Diagram type HTML/CSS templates\" below):\n  - DB schemas, ER diagrams → entity-box layout with relationship lines\n  - Architecture, system layout, grouping → nested container layout with labeled connections\n  - Flows, pipelines → node-and-arrow horizontal or vertical layout\n  - Sequences, timelines → lifeline-based column layout\n  - Class/object relationships → box layout with typed connectors\n  - Tree/hierarchy → indented or layered box layout\n- Preserve every entity, relationship, label, and grouping from the original ASCII art. Do not omit items.\n- Use nested `<div>` containers for grouped/boxed sections when the original uses visual grouping.\n- If the ASCII art is ambiguous, add a one-line HTML comment in the generated HTML noting the assumption.\n- Do not keep the original ASCII art alongside the embedded image; replace it entirely.\n\nNaming convention for diagram images:\n- Use a descriptive kebab-case name derived from the diagram's context: `architecture-overview.png`, `auth-flow.png`, `er-schema.png`.\n- If multiple diagrams exist in the same document, suffix with a zero-padded index in document order: `data-flow-01.png`, `data-flow-02.png`.\n- Naming must be deterministic: for the same input, produce the same filenames every run.\n- If a filename collision occurs in the same `<docId>`, append a short stable suffix: `data-flow-01-a3f2.png`.\n\n### Diagram rendering and capture rule\n\nEvery diagram image must be visually verified. A broken or mis-rendered diagram is worse than no diagram.\n\nRendering flow:\n1. Write the self-contained HTML file to `temp/diagram-<name>.html`.\n2. Create `docs/MaraudersMap/<docId>/images/` if it does not exist.\n3. Open `file://<absolute-path>/temp/diagram-<name>.html` in the browser tool. Wait at least 400 ms for rendering to stabilize.\n4. Take a full-page screenshot and save it to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.\n5. Verify the PNG exists and is non-empty. If empty or missing, retry with 800 ms wait.\n6. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.\n7. Delete `temp/diagram-<name>.html`.\n8. Replace the original ASCII block in the Markdown with an image reference. The path must be relative from the Markdown file to the saved PNG:\n   ```markdown\n   <!-- Converted from ASCII art: [original description] -->\n   ![<diagram description>](docs/MaraudersMap/<docId>/images/<diagram-name>.png)\n   ```\n\nFailure handling:\n- If capture fails, delete the temp HTML and any broken PNG before retrying.\n- Never keep partial or invalid outputs.\n- Keep captured PNGs on local disk; Markdown image links depend on them.\n\nScreenshot quality:\n- Viewport: 600–1200 px wide. Device pixel ratio: 2.\n- Background: white (`#ffffff`). No browser chrome or scrollbars.\n- All text legible at final embedded size.\n\n> [AI RULE] Never embed a diagram image that has not been visually verified. If the rendering looks wrong, fix and re-render.\n\n### Diagram type HTML/CSS templates\n\nUse these patterns as a starting point when generating HTML for each diagram type. Adapt layout, colors, and sizing to match the specific diagram's content. All templates share these base styles:\n\n**Base styles (shared across all diagram types):**\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<style>\n  * { margin: 0; padding: 0; box-sizing: border-box; }\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n    background: #ffffff;\n    padding: 16px;\n    width: fit-content;\n    color: #1e293b;\n  }\n  .diagram { display: inline-block; }\n  .box {\n    border: 1.5px solid #64748b;\n    border-radius: 8px;\n    padding: 10px 16px;\n    background: #f8fafc;\n    font-size: 13px;\n    font-weight: 500;\n    text-align: center;\n    white-space: nowrap;\n  }\n  .box-title {\n    font-size: 11px;\n    font-weight: 600;\n    color: #64748b;\n    text-transform: uppercase;\n    letter-spacing: 0.5px;\n    margin-bottom: 4px;\n  }\n  .container {\n    border: 2px solid #334155;\n    border-radius: 12px;\n    padding: 20px;\n    background: #ffffff;\n    position: relative;\n  }\n  .container-label {\n    font-size: 15px;\n    font-weight: 700;\n    color: #1e293b;\n    margin-bottom: 16px;\n  }\n  .row {\n    display: flex;\n    gap: 16px;\n    justify-content: center;\n    align-items: flex-start;\n  }\n  .col {\n    display: flex;\n    flex-direction: column;\n    gap: 12px;\n    align-items: center;\n  }\n  .arrow-down {\n    width: 2px;\n    height: 24px;\n    background: #94a3b8;\n    position: relative;\n    margin: 0 auto;\n  }\n  .arrow-down::after {\n    content: '';\n    position: absolute;\n    bottom: -4px;\n    left: 50%;\n    transform: translateX(-50%);\n    border-left: 5px solid transparent;\n    border-right: 5px solid transparent;\n    border-top: 6px solid #94a3b8;\n  }\n  .arrow-right {\n    width: 24px;\n    height: 2px;\n    background: #94a3b8;\n    position: relative;\n    align-self: center;\n  }\n  .arrow-right::after {\n    content: '';\n    position: absolute;\n    right: -4px;\n    top: 50%;\n    transform: translateY(-50%);\n    border-top: 5px solid transparent;\n    border-bottom: 5px solid transparent;\n    border-left: 6px solid #94a3b8;\n  }\n  .badge {\n    display: inline-block;\n    font-size: 11px;\n    font-weight: 500;\n    color: #475569;\n    background: #e2e8f0;\n    border-radius: 4px;\n    padding: 2px 8px;\n    margin-top: 4px;\n  }\n  .separator {\n    width: 100%;\n    height: 1px;\n    background: #e2e8f0;\n    margin: 16px 0;\n  }\n</style>\n</head>\n<body>\n<div class=\"diagram\">\n  <!-- Diagram content here -->\n</div>\n</body>\n</html>\n```\n\n**Architecture / system layout diagram:**\n\nUse nested `.container` elements for system boundaries and `.box` for components. Connect with `.arrow-down` or `.arrow-right`. Example structure:\n\n```html\n<div class=\"container\">\n  <div class=\"container-label\">System Name</div>\n  <div class=\"row\">\n    <div class=\"box\">Component A</div>\n    <div class=\"arrow-right\"></div>\n    <div class=\"box\">Component B</div>\n    <div class=\"arrow-right\"></div>\n    <div class=\"box\">Component C</div>\n  </div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"container\" style=\"border-color: #94a3b8;\">\n    <div class=\"container-label\" style=\"font-size: 13px;\">Data Layer</div>\n    <div class=\"row\">\n      <div class=\"box\">\n        <div class=\"box-title\">table</div>\n        cache\n      </div>\n      <div class=\"box\">\n        <div class=\"box-title\">table</div>\n        queue_jobs\n      </div>\n    </div>\n  </div>\n</div>\n```\n\n**Flowchart / pipeline diagram:**\n\nUse horizontal (`.row`) or vertical (`.col`) layouts with arrows between steps. For decision nodes, use a rotated diamond shape:\n\n```html\n<div class=\"col\">\n  <div class=\"box\" style=\"background: #dbeafe; border-color: #3b82f6;\">Start</div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"box\">Process A</div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"box\" style=\"transform: rotate(45deg); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 4px;\">\n    <span style=\"transform: rotate(-45deg); font-size: 12px;\">Condition?</span>\n  </div>\n  <div class=\"row\" style=\"margin-top: 16px;\">\n    <div class=\"col\">\n      <div class=\"badge\">Yes</div>\n      <div class=\"arrow-down\"></div>\n      <div class=\"box\">Action X</div>\n    </div>\n    <div style=\"width: 48px;\"></div>\n    <div class=\"col\">\n      <div class=\"badge\">No</div>\n      <div class=\"arrow-down\"></div>\n      <div class=\"box\">Action Y</div>\n    </div>\n  </div>\n</div>\n```\n\n**ER / database schema diagram:**\n\nUse table-like boxes with attribute lists. Connect entities with labeled lines using SVG or CSS pseudo-elements:\n\n```html\n<div class=\"row\" style=\"gap: 64px; align-items: flex-start;\">\n  <div class=\"box\" style=\"text-align: left; padding: 0; overflow: hidden;\">\n    <div style=\"background: #334155; color: #fff; padding: 8px 16px; font-weight: 600; font-size: 14px;\">users</div>\n    <div style=\"padding: 8px 16px; font-size: 13px; line-height: 1.8;\">\n      <strong>id</strong> : uuid (PK)<br>\n      name : varchar<br>\n      email : varchar (UQ)<br>\n      created_at : timestamp\n    </div>\n  </div>\n  <div style=\"align-self: center; font-size: 12px; color: #64748b;\">1 ──── N</div>\n  <div class=\"box\" style=\"text-align: left; padding: 0; overflow: hidden;\">\n    <div style=\"background: #334155; color: #fff; padding: 8px 16px; font-weight: 600; font-size: 14px;\">orders</div>\n    <div style=\"padding: 8px 16px; font-size: 13px; line-height: 1.8;\">\n      <strong>id</strong> : uuid (PK)<br>\n      user_id : uuid (FK)<br>\n      total : decimal<br>\n      status : enum\n    </div>\n  </div>\n</div>\n```\n\n**Sequence diagram:**\n\nUse column-based layout with vertical lifelines and horizontal message arrows. Lifelines are vertical dashed borders; messages are styled horizontal connectors:\n\n```html\n<div style=\"display: flex; gap: 0; position: relative; min-height: 300px;\">\n  <!-- Participant headers -->\n  <div style=\"flex: 1; text-align: center;\">\n    <div class=\"box\" style=\"display: inline-block; margin-bottom: 8px;\">Client</div>\n    <div style=\"width: 2px; height: 250px; border-left: 2px dashed #cbd5e1; margin: 0 auto;\"></div>\n  </div>\n  <div style=\"flex: 1; text-align: center;\">\n    <div class=\"box\" style=\"display: inline-block; margin-bottom: 8px;\">Server</div>\n    <div style=\"width: 2px; height: 250px; border-left: 2px dashed #cbd5e1; margin: 0 auto;\"></div>\n  </div>\n  <!-- Messages (absolutely positioned over lifelines) -->\n  <div style=\"position: absolute; top: 60px; left: 15%; right: 15%;\">\n    <div style=\"display: flex; align-items: center; margin-bottom: 24px;\">\n      <span style=\"font-size: 12px; flex: 1; text-align: center;\">POST /login</span>\n    </div>\n    <div style=\"height: 2px; background: #475569; position: relative;\">\n      <div style=\"position: absolute; right: -4px; top: -4px; border-left: 6px solid #475569; border-top: 5px solid transparent; border-bottom: 5px solid transparent;\"></div>\n    </div>\n  </div>\n</div>\n```\n\n**Tree / hierarchy diagram:**\n\nUse a recursive nested structure with indented containers:\n\n```html\n<div class=\"col\" style=\"align-items: flex-start;\">\n  <div class=\"box\" style=\"background: #dbeafe; border-color: #3b82f6; font-weight: 600;\">Root Node</div>\n  <div style=\"display: flex; gap: 32px; margin-left: 24px; margin-top: 12px;\">\n    <div class=\"col\" style=\"align-items: flex-start;\">\n      <div style=\"display: flex; align-items: center; gap: 8px;\">\n        <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n        <div class=\"box\">Child A</div>\n      </div>\n      <div style=\"margin-left: 24px; margin-top: 8px;\">\n        <div style=\"display: flex; align-items: center; gap: 8px;\">\n          <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n          <div class=\"box\" style=\"font-size: 12px;\">Leaf A-1</div>\n        </div>\n      </div>\n    </div>\n    <div class=\"col\" style=\"align-items: flex-start;\">\n      <div style=\"display: flex; align-items: center; gap: 8px;\">\n        <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n        <div class=\"box\">Child B</div>\n      </div>\n    </div>\n  </div>\n</div>\n```\n\nAdaptation guidelines:\n- These templates are starting points. Adjust colors, sizes, gaps, and nesting to match the specific diagram's complexity.\n- For very complex diagrams with many connections, consider using inline SVG for precise line routing instead of CSS-only arrows.\n- Use `position: absolute` sparingly — prefer flexbox/grid layout for maintainability.\n- Keep font sizes between 11px–15px for readability in the final screenshot.\n- Test that the diagram fits within the 600–1200px viewport width before capturing.\n\n### ASCII-to-Markdown-table conversion rule\n\nWhen the source Markdown contains data tables drawn with ASCII art (box-drawing characters, `+---+` borders, or space/tab-aligned columns), convert them to standard Markdown pipe tables.\n\nDetection patterns — any of these signals a data table:\n- Rows delimited by `+---+---+` or `├───┼───┤` or `|---|---|` style separators.\n- Cells bounded by `|` or `│` containing data values (not arrows or flow labels).\n- Space-aligned columns with a clear header row followed by a separator row of dashes or `=`.\n- Box-drawing grids (`┌┬┐`, `├┼┤`, `└┴┘`) where cells hold scalar data (names, numbers, settings, status).\n\nConversion guidelines:\n- Detect columns by splitting each row on the delimiter character (`|`, `│`, or consistent whitespace).\n- Trim leading/trailing whitespace in each cell.\n- Identify the header row (first data row, or the row directly above the first separator) and emit it as the Markdown table header.\n- Emit a separator row `|---|---|...` immediately after the header. Use `:---`, `:---:`, or `---:` to preserve original alignment if detectable.\n- Emit each subsequent data row as a pipe-delimited row.\n- If the original table has merged/spanned cells, approximate with repeated values or add a footnote explaining the merge.\n- If the original table has row-group separators (thicker lines, double borders), insert a blank row or a bold label row in the Markdown output to maintain grouping.\n- Preserve every data value exactly. Do not summarize, round, or omit any cell.\n\n> [AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original. Any mismatch is a data-loss bug.\n\n### ASCII-to-chart conversion rule\n\nWhen the source Markdown contains ASCII art representing quantitative data visualization (bar charts, histograms, sparklines, pie-chart text), convert it to the most readable Markdown-native format.\n\nDetection patterns — any of these signals a chart:\n- Rows with repeated fill characters (`█`, `▓`, `▒`, `░`, `#`, `=`, `*`, `■`) whose length encodes a numeric value.\n- An axis label column on the left and a bar on the right (horizontal bar chart).\n- Vertical columns of fill characters with labels at the bottom (vertical bar chart).\n- Percentage labels next to segments (pie-chart text representation).\n- Numeric scale markers along an edge (axis ticks).\n\nConversion decision:\n- **Simple bar chart (≤10 items, single series)** → Markdown table with a `Bar` column using repeated `█` in inline code for visual reference, plus a numeric `Value` column.\n- **Multi-series or complex chart** → HTML rendering → screenshot PNG image (use CSS bar/chart layout with inline styles).\n- **Pie/donut chart** → HTML rendering → screenshot PNG image (use SVG `<circle>` with `stroke-dasharray` for segments).\n- **Sparkline or trend** → Markdown table with rows for each data point; optionally HTML rendering → screenshot PNG image (use SVG `<polyline>` for line charts).\n\nConversion guidelines:\n- Extract every data label and its corresponding value from the ASCII chart.\n- Preserve the original data ordering (e.g., descending by value, chronological).\n- Include units if present in the original (e.g., `%`, `ms`, `MB`).\n- For HTML chart images, add a `title` matching the original chart's caption or heading context.\n- Validate HTML chart images using the same rendering and capture flow as diagrams (see \"Diagram rendering and capture rule\").\n\n> [AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output. Missing data points are conversion failures.\n\n### Repository safety rule\n\n- Never modify `README.md` in this repository. All changes must be confined to skill artifacts and generated MaraudersMapMD outputs only.\n\n### Artifact hygiene and structure rule\n\n- Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.\n- Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,.manifest.json,sections/*.md,images/*.png}`. The cross-doc index lives at docs/MaraudersMap/shards.db.\n- One `<docId>` directory per rewritten version. `<docId>` corresponds to the rewritten version file, not the original.\n- If artifacts derived from the original source file exist, delete them immediately.\n- Do not create or keep alternative artifact directories or extra copies outside the structure above.\n- Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown.\n- Never delete PNG files that are referenced by the active rewritten Markdown.\n- Before finalizing, ensure no `temp/diagram-*.html` files remain.\n\n### Final honest review rule\n\n- Always end the workflow with a brief self-audit: re-check completed work against all rules and verify nothing is missing.\n- If any gap is found, fix it before completing the task.\n\n### Phase 1 — Baseline capture (before any rewriting)\n\nRead the original source file directly. If existing MaraudersMapMD artifacts already exist for a previous rewritten version, read the AI Map (`ai-map.md`) for section summaries and the Search Index (`index.json`) for keywords/links. These help understand structure but do not replace reading the original. Do not rewrite anything yet. Do not generate any artifacts from the original file.\n\n### Phase 2 — Create working copy\n\nDetermine the base name and next version before creating any file:\n\n- **Base name**: Strip any `.rewritten_v{n}` suffix from the source filename. `guide.md` → base `guide`. `guide.rewritten_v1.md` → base `guide`. Never include `.rewritten_v{n}` in the base.\n- **Next version**: If no prior rewritten file exists, use `v1`. If `<base>.rewritten_v{n}.md` already exists, use `v{n+1}`.\n- **Working copy path**: `temp/temp_<base>.rewritten_v{N}.md` where `N` is the next version.\n\nExamples: `guide.md` (first run) → `temp/temp_guide.rewritten_v1.md`. `guide.rewritten_v1.md` (re-run) → `temp/temp_guide.rewritten_v2.md`. Never produce names like `guide.rewritten_v1.rewritten_v2.md`.\n\nAll intermediate files go inside `temp/`. All edits happen ONLY on the working copy. Never modify the source.\n\n### Phase 3 — Skeleton\n\nUsing the AI Map table as a guide, write a flat heading list in the working copy. Next to each heading note its one-line purpose. Fix heading levels so they descend without skips (single `#`, then `##`, then `###`). If the document is long, place a concise summary after the title.\n\n### Phase 4 — Section-by-section rewrite\n\nOpen each Section Pack file (`sections/*.md`). For each section:\n1. Check the Search Index entry for that section's keywords, links, and AI Hint Blocks.\n2. Apply the canonical prompt rules: shorten paragraphs, convert dense prose to bullets, use tables for settings/options, keep code blocks unchanged.\n3. Preserve every keyword, link, and AI Hint Block listed in the index entry.\n4. Make the section self-contained. Use brief cross-references (\"see Section X\") instead of repeating content.\n\nParallel rewrite guidance: Sections that do not reference each other may be rewritten in parallel (see \"Parallel execution rule\"). When unsure about cross-references, rewrite sequentially to preserve consistency.\n\n### Phase 5 — Verification and cleanup\n\nCompare the finished output against the original Search Index:\n1. Every keyword in the index must appear in the output.\n2. Every AI Hint Block in the index must appear in the output.\n3. Every link in the index must appear in the output.\n4. Token count of the output should not significantly exceed the original (check AI Map's total).\n5. Run the checklist below.\n\nAfter verification passes:\n1. Move `temp/temp_<filename>.rewritten_v{n}.md` to the original file's directory as `<filename>.rewritten_v{n}.md`.\n2. Generate MaraudersMapMD artifacts from `<filename>.rewritten_v{n}.md` only (never from the original).\n3. Verify each `sections/*.md` shard matches its corresponding content in `<filename>.rewritten_v{n}.md` (no drift).\n4. Regenerate `shards.json` from the freshly generated shards and index.\n5. If processing multiple documents, run steps 2–4 in parallel for each `<docId>` (see \"Parallel execution rule\"). Then run `python shards_db.py --ingest-all --map-root docs/MaraudersMap` once to batch-update the cross-doc index.\n6. Delete the `temp/` folder entirely.\n7. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.\n8. Confirm the project contains: the original source file (untouched), `<filename>.rewritten_v{n}.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/` (including `images/*.png` if any diagrams were converted). PNG files referenced by Markdown must remain on local disk. No `temp/` folder, no `temp_` files, no original-derived artifacts, no temporary HTML files.\n\n### Sync rule — rewritten changes must update shards\n\nIf the rewritten document is edited at any time:\n1. Re-run the MaraudersMapMD generation on the current rewritten version file (`<filename>.rewritten_v{n}.md`).\n2. Replace the Section Pack and Search Index with the newly generated versions.\n3. Regenerate `shards.json` from the updated shards and index.\n4. If a cross-doc SQLite index exists (`shards.db`), re-ingest the updated doc: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.\n5. Do not continue work until shards, index, and `shards.json` exactly match the rewritten document.\n",
-      "token_count": 4326,
-      "content_hash": "f4195aebbba6401f809db7f68f2fc190810b4ca5fe138577600ca67a84e6698c",
+      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 48-665 -->\n\n## Procedure\n\nFollow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.\n\n### Original file protection rule\n\n- The original source file must remain completely untouched. Never generate shards, indexes, or any MaraudersMapMD artifacts from the original.\n- All sharding, indexing, and artifact generation targets the rewritten version file (`<filename>.rewritten_v{n}.md`) exclusively.\n- The original exists solely as a reference for fact-checking; it must never be modified, copied into artifact directories, or have artifacts derived from it.\n\nArtifact paths (generated from the rewritten file only):\n- AI Map: `docs/MaraudersMap/<docId>/ai-map.md`\n- Section Pack: `docs/MaraudersMap/<docId>/sections/*.md`\n- Search Index: `docs/MaraudersMap/<docId>/index.json`\n- Shard JSON: `docs/MaraudersMap/<docId>/shards.json`\n- Diagram Images: `docs/MaraudersMap/<docId>/images/*.png`\n\n> [AI RULE] `<docId>` is derived from the rewritten version filename (e.g. `guide.rewritten_v2.md` → docId `guide_v2`). Never create a separate `<docId>` for the original file.\n\n### Language lock rule (highest priority)\n\n- The rewritten output must preserve the source language exactly; translation is prohibited unless the user explicitly asks for translation.\n- If source content is Korean, keep Korean narrative text, headings, and list items in Korean.\n- Keep existing English technical literals as-is (commands, code, identifiers, API names, file paths, env vars).\n- If mixed-language content exists, preserve each segment's original language unless the user requests normalization.\n- If a generated section accidentally changes language, treat it as a blocking error and rewrite that section before finalizing.\n\n> [AI RULE] Language drift (for example Korean source rewritten in English) is a hard failure. Fix before completion.\n\n### Sharded access rule (always-on)\n\n- For fast lookup and reading, use the Section Pack (`sections/*.md`) as the primary source instead of the rewritten full document.\n- Only open the rewritten file when you need full-context validation or to resolve cross-section ambiguity.\n- The Section Pack must always be an exact shard-by-shard reflection of the rewritten document.\n- Shards and indexes exist only for rewritten documents. If artifacts for the original file are found, delete them immediately.\n\n### Retrieval order for accuracy\n\nWhen answering or extracting facts, use this order to minimize drift:\n1. Section Pack (`sections/*.md`) for the specific section.\n2. Search Index (`index.json`) for keywords/links/AI Hint Blocks validation.\n3. AI Map (`ai-map.md`) for section boundaries and summaries.\n4. Rewritten full document only if cross-section context is required.\n\n### Retrieval routing\n\nChoose the fastest retrieval path based on the query scope:\n\n| Query Scope | Route | Tool |\n|---|---|---|\n| Single section by keyword | **Fast-path** | `shards_search.py --shards ... --keyword \"<kw>\"` |\n| Relevance-ranked results | **BM25 JSON** | `shards_search.py --shards ... --query \"<text>\" --top 5` |\n| Cross-doc keyword search | **SQLite keyword** | `shards_search.py --db docs/MaraudersMap/shards.db --keyword \"<kw>\"` |\n| Cross-doc relevance search | **SQLite FTS5** | `shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\"` |\n| Regex pattern match | **Regex** | `shards_search.py --shards ... --regex \"<pattern>\"` or `--db ... --regex \"<pattern>\"` |\n| Full context validation | **Fallback** | Open `<filename>.rewritten_v{n}.md` directly |\n\n> [AI RULE] Always attempt fast-path or BM25 before opening the full rewritten document. Only fall back to the full document when cross-section context is needed and shard results are insufficient.\n\n### Doc-type awareness\n\nDifferent document types benefit from different retrieval strategies:\n\n| Doc Type | Signal | Strategy |\n|---|---|---|\n| API Reference | Many short sections, code-heavy | Keyword search → exact section |\n| Tutorial/Guide | Sequential sections, prose-heavy | BM25 → top 3, read in order |\n| Configuration | Tables, key-value pairs | Keyword → single section |\n| Architecture | Diagrams, cross-references | Cross-doc search → multiple sections |\n| Mixed | No dominant pattern | BM25 → top 5, scan titles first |\n\n> [AI CONTEXT] Doc-type is inferred from AI Map structure and section content. No explicit tagging required.\n\n### Parallel execution rule\n\nWhen working with multiple documents or many sections, maximize throughput by running independent operations in parallel.\n\nParallelizable operations (no ordering dependency):\n\n| Operation | Parallel Unit | Constraint |\n|---|---|---|\n| Multi-document rewrite | Each document is independent | Different `<docId>` → safe to parallelize |\n| Section-by-section rewrite (Phase 4) | Sections that do NOT cross-reference each other | If section B references section A, rewrite A first |\n| Shard + index generation (Phase 5) | Per-document artifact generation | Each `<docId>` writes to its own directory |\n| `shards_to_json.py` runs | One run per `<docId>` | Each writes to `docs/MaraudersMap/<docId>/shards.json` — no conflict |\n| `shards_db.py --ingest` runs | One ingest per `<docId>` | SQLite handles concurrent reads; run ingests sequentially or use `--ingest-all` |\n| Verification (Phase 5 checks 1–4) | Per-document | Each document's checklist is independent |\n\nMust remain sequential (ordering dependency exists):\n\n| Operation | Reason |\n|---|---|\n| Phase 1 → 2 → 3 within a single document | Each phase depends on the previous |\n| Skeleton (Phase 3) before section rewrite (Phase 4) | Heading structure must exist before filling content |\n| Section rewrite → shard generation | Shards must reflect the final rewritten content |\n| `shards_to_json.py` → `shards_db.py --ingest` for the same doc | DB ingests from `shards.json`, so JSON must exist first |\n\nExecution strategy by scale:\n\n| Scale | Strategy |\n|---|---|\n| 1 document, ≤5 sections | Sequential is fine |\n| 1 document, >5 sections | Parallel-rewrite independent sections, then sequential for cross-referencing ones |\n| 2–5 documents | Parallel-rewrite all documents simultaneously |\n| >5 documents | Batch: parallel-rewrite up to 5 at a time, then `shards_db.py --ingest-all` once at the end |\n\n> [AI RULE] When the AI agent supports parallel tool calls or background tasks, it MUST use them for independent operations listed above. Sequential processing of independent documents is a performance bug.\n\n### Accuracy guardrails\n\n- Do not infer facts that are not present in the shards or index.\n- If a fact appears in a shard but is missing from the index, treat the shard as the source of truth and regenerate the index.\n- If shards disagree with the rewritten document, regenerate shards and index from the rewritten document immediately.\n\n### JSON shard pack rule (Python-first)\n\n- Generate `shards.json` from the Section Pack and Search Index to enable fast, accurate Python lookup.\n- Treat `shards.json` as a read-optimized mirror. The source of truth remains the shards and rewritten document.\n- Any time shards or index change, regenerate `shards.json` before answering questions.\n- Use `python shards_to_json.py --doc-root docs/MaraudersMap/<docId>` to rebuild the JSON pack.\n- For quick lookup, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --keyword \"<keyword>\"`.\n- For fastest relevance ranking, use `python shards_search.py --shards docs/MaraudersMap/<docId>/shards.json --query \"<free text>\" --top 5` (BM25).\n- For incremental rebuilds: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --changed` (skips rebuild if no content changes detected).\n- To preview changes without writing: `python shards_to_json.py --doc-root docs/MaraudersMap/<docId> --dry-run --report`.\n- To build and ingest into the cross-doc SQLite index: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.\n- To initialize the cross-doc index for the first time: `python shards_db.py --init --map-root docs/MaraudersMap`.\n- To search across all documents: `python shards_search.py --db docs/MaraudersMap/shards.db --query \"<text>\" --top 5`.\n\n### ASCII visual content classification\n\nBefore converting any ASCII art, classify it into one of three categories. The category determines the target format.\n\nDecision tree:\n\n1. **Does the ASCII block contain rows of data with column alignment?** (column headers, separator rows like `+---+---+` or `├───┼───┤`, and cells holding data values such as names, numbers, or settings)\n   → **Category: Data Table** → convert to Markdown pipe table (see \"ASCII-to-Markdown-table conversion rule\").\n\n2. **Does the ASCII block represent a quantitative visualization?** (bar lengths made of repeated characters like `█`, `▓`, `#`, `=`, `*`; axis labels with numeric values; histogram bins; sparkline-style rows)\n   → **Category: Chart** → convert to Markdown table (if simple) or HTML rendering → screenshot PNG image (if complex) (see \"ASCII-to-chart conversion rule\").\n\n3. **Does the ASCII block represent structural relationships?** (boxes connected by arrows or lines; flow direction; entity-relationship grouping; sequence lifelines; tree/hierarchy)\n   → **Category: Diagram** → convert to HTML diagram, render as screenshot PNG, embed as image (see \"ASCII-to-HTML-diagram conversion rule\").\n\nAmbiguity rules:\n- If a block mixes data rows with structural arrows, split it: data rows → MD table, structural part → HTML diagram screenshot.\n- If a pipe-aligned block is clearly a diagram legend or label (no meaningful row data), treat it as part of the diagram.\n- When in doubt, prefer the simpler format (MD table over HTML screenshot) to maximize portability.\n- Add a one-line HTML comment `<!-- Converted from ASCII art: [original description] -->` above each converted block so reviewers can trace origin.\n\n> [AI RULE] Never leave ASCII art unconverted. Every ASCII visual block must be classified and transformed to its target format.\n\n### ASCII-to-HTML-diagram conversion rule\n\nWhen the source Markdown contains ASCII art diagrams (box-drawing characters like `┌─┐│└─┘`, `+---+`, pipe-aligned tables used as diagrams, or any text-art layout representing structure), convert them to high-quality PNG images via HTML rendering and screenshot capture.\n\nConversion pipeline:\n1. **Analyze** the ASCII diagram — identify entities, relationships, groupings, flow direction, and labels.\n2. **Generate** a self-contained HTML file with inline CSS that visually reproduces the diagram as a clean, professional graphic.\n3. **Render** the HTML in a headless browser (Playwright or equivalent browser tool).\n4. **Screenshot** the rendered diagram as a PNG image.\n5. **Save** the PNG to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.\n6. **Embed** the image in the Markdown output: `![<diagram description>](images/<diagram-name>.png)`.\n7. **Delete** the temporary HTML file. Do not keep it in the output.\n\nConversion guidelines:\n- Identify the diagram type and apply the matching HTML/CSS pattern (see \"Diagram type HTML/CSS templates\" below):\n  - DB schemas, ER diagrams → entity-box layout with relationship lines\n  - Architecture, system layout, grouping → nested container layout with labeled connections\n  - Flows, pipelines → node-and-arrow horizontal or vertical layout\n  - Sequences, timelines → lifeline-based column layout\n  - Class/object relationships → box layout with typed connectors\n  - Tree/hierarchy → indented or layered box layout\n- Preserve every entity, relationship, label, and grouping from the original ASCII art. Do not omit items.\n- Use nested `<div>` containers for grouped/boxed sections when the original uses visual grouping.\n- If the ASCII art is ambiguous, add a one-line HTML comment in the generated HTML noting the assumption.\n- Do not keep the original ASCII art alongside the embedded image; replace it entirely.\n\nNaming convention for diagram images:\n- Use a descriptive kebab-case name derived from the diagram's context: `architecture-overview.png`, `auth-flow.png`, `er-schema.png`.\n- If multiple diagrams exist in the same document, suffix with a zero-padded index in document order: `data-flow-01.png`, `data-flow-02.png`.\n- Naming must be deterministic: for the same input, produce the same filenames every run.\n- If a filename collision occurs in the same `<docId>`, append a short stable suffix: `data-flow-01-a3f2.png`.\n\n### Diagram rendering and capture rule\n\nEvery diagram image must be visually verified. A broken or mis-rendered diagram is worse than no diagram.\n\nRendering flow:\n1. Write the self-contained HTML file to `temp/diagram-<name>.html`.\n2. Create `docs/MaraudersMap/<docId>/images/` if it does not exist.\n3. Open `file://<absolute-path>/temp/diagram-<name>.html` in the browser tool. Wait at least 400 ms for rendering to stabilize.\n4. Take a full-page screenshot and save it to `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.\n5. Verify the PNG exists and is non-empty. If empty or missing, retry with 800 ms wait.\n6. Visually verify: all labels readable, no overlapping elements, layout matches original. If broken, fix the HTML/CSS and redo from step 3.\n7. Delete `temp/diagram-<name>.html`.\n8. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.\n9. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:\n   ```\n   <!-- Converted from ASCII art: [original description] -->\n   ![<diagram description>](<relative-path-to-png>)\n   ```\n   The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.\n\nFailure handling:\n- If capture fails, delete the temp HTML and any broken PNG before retrying.\n- Never keep partial or invalid outputs.\n- Keep captured PNGs on local disk; Markdown image links depend on them.\n\nScreenshot quality:\n- Viewport: 600–1200 px wide. Device pixel ratio: 2.\n- Background: white (`#ffffff`). No browser chrome or scrollbars.\n- All text legible at final embedded size.\n\n> [AI RULE] Never embed a diagram image that has not been visually verified. If the rendering looks wrong, fix and re-render.\n\n### Diagram type HTML/CSS templates\n\nUse these patterns as a starting point when generating HTML for each diagram type. Adapt layout, colors, and sizing to match the specific diagram's content. All templates share these base styles:\n\n**Base styles (shared across all diagram types):**\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<style>\n  * { margin: 0; padding: 0; box-sizing: border-box; }\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n    background: #ffffff;\n    padding: 16px;\n    width: fit-content;\n    color: #1e293b;\n  }\n  .diagram { display: inline-block; }\n  .box {\n    border: 1.5px solid #64748b;\n    border-radius: 8px;\n    padding: 10px 16px;\n    background: #f8fafc;\n    font-size: 13px;\n    font-weight: 500;\n    text-align: center;\n    white-space: nowrap;\n  }\n  .box-title {\n    font-size: 11px;\n    font-weight: 600;\n    color: #64748b;\n    text-transform: uppercase;\n    letter-spacing: 0.5px;\n    margin-bottom: 4px;\n  }\n  .container {\n    border: 2px solid #334155;\n    border-radius: 12px;\n    padding: 20px;\n    background: #ffffff;\n    position: relative;\n  }\n  .container-label {\n    font-size: 15px;\n    font-weight: 700;\n    color: #1e293b;\n    margin-bottom: 16px;\n  }\n  .row {\n    display: flex;\n    gap: 16px;\n    justify-content: center;\n    align-items: flex-start;\n  }\n  .col {\n    display: flex;\n    flex-direction: column;\n    gap: 12px;\n    align-items: center;\n  }\n  .arrow-down {\n    width: 2px;\n    height: 24px;\n    background: #94a3b8;\n    position: relative;\n    margin: 0 auto;\n  }\n  .arrow-down::after {\n    content: '';\n    position: absolute;\n    bottom: -4px;\n    left: 50%;\n    transform: translateX(-50%);\n    border-left: 5px solid transparent;\n    border-right: 5px solid transparent;\n    border-top: 6px solid #94a3b8;\n  }\n  .arrow-right {\n    width: 24px;\n    height: 2px;\n    background: #94a3b8;\n    position: relative;\n    align-self: center;\n  }\n  .arrow-right::after {\n    content: '';\n    position: absolute;\n    right: -4px;\n    top: 50%;\n    transform: translateY(-50%);\n    border-top: 5px solid transparent;\n    border-bottom: 5px solid transparent;\n    border-left: 6px solid #94a3b8;\n  }\n  .badge {\n    display: inline-block;\n    font-size: 11px;\n    font-weight: 500;\n    color: #475569;\n    background: #e2e8f0;\n    border-radius: 4px;\n    padding: 2px 8px;\n    margin-top: 4px;\n  }\n  .separator {\n    width: 100%;\n    height: 1px;\n    background: #e2e8f0;\n    margin: 16px 0;\n  }\n</style>\n</head>\n<body>\n<div class=\"diagram\">\n  <!-- Diagram content here -->\n</div>\n</body>\n</html>\n```\n\n**Architecture / system layout diagram:**\n\nUse nested `.container` elements for system boundaries and `.box` for components. Connect with `.arrow-down` or `.arrow-right`. Example structure:\n\n```html\n<div class=\"container\">\n  <div class=\"container-label\">System Name</div>\n  <div class=\"row\">\n    <div class=\"box\">Component A</div>\n    <div class=\"arrow-right\"></div>\n    <div class=\"box\">Component B</div>\n    <div class=\"arrow-right\"></div>\n    <div class=\"box\">Component C</div>\n  </div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"container\" style=\"border-color: #94a3b8;\">\n    <div class=\"container-label\" style=\"font-size: 13px;\">Data Layer</div>\n    <div class=\"row\">\n      <div class=\"box\">\n        <div class=\"box-title\">table</div>\n        cache\n      </div>\n      <div class=\"box\">\n        <div class=\"box-title\">table</div>\n        queue_jobs\n      </div>\n    </div>\n  </div>\n</div>\n```\n\n**Flowchart / pipeline diagram:**\n\nUse horizontal (`.row`) or vertical (`.col`) layouts with arrows between steps. For decision nodes, use a rotated diamond shape:\n\n```html\n<div class=\"col\">\n  <div class=\"box\" style=\"background: #dbeafe; border-color: #3b82f6;\">Start</div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"box\">Process A</div>\n  <div class=\"arrow-down\"></div>\n  <div class=\"box\" style=\"transform: rotate(45deg); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 4px;\">\n    <span style=\"transform: rotate(-45deg); font-size: 12px;\">Condition?</span>\n  </div>\n  <div class=\"row\" style=\"margin-top: 16px;\">\n    <div class=\"col\">\n      <div class=\"badge\">Yes</div>\n      <div class=\"arrow-down\"></div>\n      <div class=\"box\">Action X</div>\n    </div>\n    <div style=\"width: 48px;\"></div>\n    <div class=\"col\">\n      <div class=\"badge\">No</div>\n      <div class=\"arrow-down\"></div>\n      <div class=\"box\">Action Y</div>\n    </div>\n  </div>\n</div>\n```\n\n**ER / database schema diagram:**\n\nUse table-like boxes with attribute lists. Connect entities with labeled lines using SVG or CSS pseudo-elements:\n\n```html\n<div class=\"row\" style=\"gap: 64px; align-items: flex-start;\">\n  <div class=\"box\" style=\"text-align: left; padding: 0; overflow: hidden;\">\n    <div style=\"background: #334155; color: #fff; padding: 8px 16px; font-weight: 600; font-size: 14px;\">users</div>\n    <div style=\"padding: 8px 16px; font-size: 13px; line-height: 1.8;\">\n      <strong>id</strong> : uuid (PK)<br>\n      name : varchar<br>\n      email : varchar (UQ)<br>\n      created_at : timestamp\n    </div>\n  </div>\n  <div style=\"align-self: center; font-size: 12px; color: #64748b;\">1 ──── N</div>\n  <div class=\"box\" style=\"text-align: left; padding: 0; overflow: hidden;\">\n    <div style=\"background: #334155; color: #fff; padding: 8px 16px; font-weight: 600; font-size: 14px;\">orders</div>\n    <div style=\"padding: 8px 16px; font-size: 13px; line-height: 1.8;\">\n      <strong>id</strong> : uuid (PK)<br>\n      user_id : uuid (FK)<br>\n      total : decimal<br>\n      status : enum\n    </div>\n  </div>\n</div>\n```\n\n**Sequence diagram:**\n\nUse column-based layout with vertical lifelines and horizontal message arrows. Lifelines are vertical dashed borders; messages are styled horizontal connectors:\n\n```html\n<div style=\"display: flex; gap: 0; position: relative; min-height: 300px;\">\n  <!-- Participant headers -->\n  <div style=\"flex: 1; text-align: center;\">\n    <div class=\"box\" style=\"display: inline-block; margin-bottom: 8px;\">Client</div>\n    <div style=\"width: 2px; height: 250px; border-left: 2px dashed #cbd5e1; margin: 0 auto;\"></div>\n  </div>\n  <div style=\"flex: 1; text-align: center;\">\n    <div class=\"box\" style=\"display: inline-block; margin-bottom: 8px;\">Server</div>\n    <div style=\"width: 2px; height: 250px; border-left: 2px dashed #cbd5e1; margin: 0 auto;\"></div>\n  </div>\n  <!-- Messages (absolutely positioned over lifelines) -->\n  <div style=\"position: absolute; top: 60px; left: 15%; right: 15%;\">\n    <div style=\"display: flex; align-items: center; margin-bottom: 24px;\">\n      <span style=\"font-size: 12px; flex: 1; text-align: center;\">POST /login</span>\n    </div>\n    <div style=\"height: 2px; background: #475569; position: relative;\">\n      <div style=\"position: absolute; right: -4px; top: -4px; border-left: 6px solid #475569; border-top: 5px solid transparent; border-bottom: 5px solid transparent;\"></div>\n    </div>\n  </div>\n</div>\n```\n\n**Tree / hierarchy diagram:**\n\nUse a recursive nested structure with indented containers:\n\n```html\n<div class=\"col\" style=\"align-items: flex-start;\">\n  <div class=\"box\" style=\"background: #dbeafe; border-color: #3b82f6; font-weight: 600;\">Root Node</div>\n  <div style=\"display: flex; gap: 32px; margin-left: 24px; margin-top: 12px;\">\n    <div class=\"col\" style=\"align-items: flex-start;\">\n      <div style=\"display: flex; align-items: center; gap: 8px;\">\n        <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n        <div class=\"box\">Child A</div>\n      </div>\n      <div style=\"margin-left: 24px; margin-top: 8px;\">\n        <div style=\"display: flex; align-items: center; gap: 8px;\">\n          <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n          <div class=\"box\" style=\"font-size: 12px;\">Leaf A-1</div>\n        </div>\n      </div>\n    </div>\n    <div class=\"col\" style=\"align-items: flex-start;\">\n      <div style=\"display: flex; align-items: center; gap: 8px;\">\n        <div style=\"width: 16px; height: 2px; background: #94a3b8;\"></div>\n        <div class=\"box\">Child B</div>\n      </div>\n    </div>\n  </div>\n</div>\n```\n\nAdaptation guidelines:\n- These templates are starting points. Adjust colors, sizes, gaps, and nesting to match the specific diagram's complexity.\n- For very complex diagrams with many connections, consider using inline SVG for precise line routing instead of CSS-only arrows.\n- Use `position: absolute` sparingly — prefer flexbox/grid layout for maintainability.\n- Keep font sizes between 11px–15px for readability in the final screenshot.\n- Test that the diagram fits within the 600–1200px viewport width before capturing.\n\n### ASCII-to-Markdown-table conversion rule\n\nWhen the source Markdown contains data tables drawn with ASCII art (box-drawing characters, `+---+` borders, or space/tab-aligned columns), convert them to standard Markdown pipe tables.\n\nDetection patterns — any of these signals a data table:\n- Rows delimited by `+---+---+` or `├───┼───┤` or `|---|---|` style separators.\n- Cells bounded by `|` or `│` containing data values (not arrows or flow labels).\n- Space-aligned columns with a clear header row followed by a separator row of dashes or `=`.\n- Box-drawing grids (`┌┬┐`, `├┼┤`, `└┴┘`) where cells hold scalar data (names, numbers, settings, status).\n\nConversion guidelines:\n- Detect columns by splitting each row on the delimiter character (`|`, `│`, or consistent whitespace).\n- Trim leading/trailing whitespace in each cell.\n- Identify the header row (first data row, or the row directly above the first separator) and emit it as the Markdown table header.\n- Emit a separator row `|---|---|...` immediately after the header. Use `:---`, `:---:`, or `---:` to preserve original alignment if detectable.\n- Emit each subsequent data row as a pipe-delimited row.\n- If the original table has merged/spanned cells, approximate with repeated values or add a footnote explaining the merge.\n- If the original table has row-group separators (thicker lines, double borders), insert a blank row or a bold label row in the Markdown output to maintain grouping.\n- Preserve every data value exactly. Do not summarize, round, or omit any cell.\n\n> [AI RULE] A converted Markdown table must contain the exact same number of data rows and columns as the ASCII original. Any mismatch is a data-loss bug.\n\n### ASCII-to-chart conversion rule\n\nWhen the source Markdown contains ASCII art representing quantitative data visualization (bar charts, histograms, sparklines, pie-chart text), convert it to the most readable Markdown-native format.\n\nDetection patterns — any of these signals a chart:\n- Rows with repeated fill characters (`█`, `▓`, `▒`, `░`, `#`, `=`, `*`, `■`) whose length encodes a numeric value.\n- An axis label column on the left and a bar on the right (horizontal bar chart).\n- Vertical columns of fill characters with labels at the bottom (vertical bar chart).\n- Percentage labels next to segments (pie-chart text representation).\n- Numeric scale markers along an edge (axis ticks).\n\nConversion decision:\n- **Simple bar chart (≤10 items, single series)** → Markdown table with a `Bar` column using repeated `█` in inline code for visual reference, plus a numeric `Value` column.\n- **Multi-series or complex chart** → HTML rendering → screenshot PNG image (use CSS bar/chart layout with inline styles).\n- **Pie/donut chart** → HTML rendering → screenshot PNG image (use SVG `<circle>` with `stroke-dasharray` for segments).\n- **Sparkline or trend** → Markdown table with rows for each data point; optionally HTML rendering → screenshot PNG image (use SVG `<polyline>` for line charts).\n\nConversion guidelines:\n- Extract every data label and its corresponding value from the ASCII chart.\n- Preserve the original data ordering (e.g., descending by value, chronological).\n- Include units if present in the original (e.g., `%`, `ms`, `MB`).\n- For HTML chart images, add a `title` matching the original chart's caption or heading context.\n- Validate HTML chart images using the same rendering and capture flow as diagrams (see \"Diagram rendering and capture rule\").\n\n> [AI RULE] Every numeric value visible in the ASCII chart must appear in the converted output. Missing data points are conversion failures.\n\n### Repository safety rule\n\n- Never modify `README.md` in this repository. All changes must be confined to skill artifacts and generated MaraudersMapMD outputs only.\n\n### Artifact hygiene and structure rule\n\n- Always delete outdated or superseded MaraudersMapMD artifacts (old shard packs, stale indexes, obsolete JSON packs) so the project folder never accumulates unused files.\n- Enforce a single, stable folder structure: `docs/MaraudersMap/<docId>/{ai-map.md,index.json,shards.json,.manifest.json,sections/*.md,images/*.png}`. The cross-doc index lives at docs/MaraudersMap/shards.db.\n- One `<docId>` directory per rewritten version. `<docId>` corresponds to the rewritten version file, not the original.\n- If artifacts derived from the original source file exist, delete them immediately.\n- Do not create or keep alternative artifact directories or extra copies outside the structure above.\n- Delete orphaned images in `docs/MaraudersMap/<docId>/images/` that are not referenced by the rewritten Markdown.\n- Never delete PNG files that are referenced by the active rewritten Markdown.\n- Before finalizing, ensure no `temp/diagram-*.html` files remain.\n\n### Final honest review rule\n\n- Always end the workflow with a brief self-audit: re-check completed work against all rules and verify nothing is missing.\n- If any gap is found, fix it before completing the task.\n\n### Phase 1 — Baseline capture (before any rewriting)\n\nRead the original source file directly. If existing MaraudersMapMD artifacts already exist for a previous rewritten version, read the AI Map (`ai-map.md`) for section summaries and the Search Index (`index.json`) for keywords/links. These help understand structure but do not replace reading the original. Do not rewrite anything yet. Do not generate any artifacts from the original file.\n\n### Phase 2 — Create working copy\n\nDetermine the base name and next version before creating any file:\n\n- **Base name**: Strip any `.rewritten_v{n}` suffix from the source filename. `guide.md` → base `guide`. `guide.rewritten_v1.md` → base `guide`. Never include `.rewritten_v{n}` in the base.\n- **Next version**: If no prior rewritten file exists, use `v1`. If `<base>.rewritten_v{n}.md` already exists, use `v{n+1}`.\n- **Working copy path**: `temp/temp_<base>.rewritten_v{N}.md` where `N` is the next version.\n\nExamples: `guide.md` (first run) → `temp/temp_guide.rewritten_v1.md`. `guide.rewritten_v1.md` (re-run) → `temp/temp_guide.rewritten_v2.md`. Never produce names like `guide.rewritten_v1.rewritten_v2.md`.\n\nAll intermediate files go inside `temp/`. All edits happen ONLY on the working copy. Never modify the source.\n\n### Phase 3 — Skeleton\n\nUsing the AI Map table as a guide, write a flat heading list in the working copy. Next to each heading note its one-line purpose. Fix heading levels so they descend without skips (single `#`, then `##`, then `###`). If the document is long, place a concise summary after the title.\n\n### Phase 4 — Section-by-section rewrite\n\nOpen each Section Pack file (`sections/*.md`). For each section:\n1. Check the Search Index entry for that section's keywords, links, and AI Hint Blocks.\n2. Apply the canonical prompt rules: shorten paragraphs, convert dense prose to bullets, use tables for settings/options, keep code blocks unchanged.\n3. Preserve every keyword, link, and AI Hint Block listed in the index entry.\n4. Make the section self-contained. Use brief cross-references (\"see Section X\") instead of repeating content.\n\nParallel rewrite guidance: Sections that do not reference each other may be rewritten in parallel (see \"Parallel execution rule\"). When unsure about cross-references, rewrite sequentially to preserve consistency.\n\n### Phase 5 — Verification and cleanup\n\nCompare the finished output against the original Search Index:\n1. Every keyword in the index must appear in the output.\n2. Every AI Hint Block in the index must appear in the output.\n3. Every link in the index must appear in the output.\n4. Token count of the output should not significantly exceed the original (check AI Map's total).\n5. Run the checklist below.\n\nAfter verification passes:\n1. Move `temp/temp_<filename>.rewritten_v{n}.md` to the original file's directory as `<filename>.rewritten_v{n}.md`.\n2. Generate MaraudersMapMD artifacts from `<filename>.rewritten_v{n}.md` only (never from the original).\n3. Verify each `sections/*.md` shard matches its corresponding content in `<filename>.rewritten_v{n}.md` (no drift).\n4. Regenerate `shards.json` from the freshly generated shards and index.\n5. If processing multiple documents, run steps 2–4 in parallel for each `<docId>` (see \"Parallel execution rule\"). Then run `python shards_db.py --ingest-all --map-root docs/MaraudersMap` once to batch-update the cross-doc index.\n6. Delete the `temp/` folder entirely.\n7. Delete any stale or original-file-derived MaraudersMapMD artifacts. Only artifacts derived from the rewritten file may remain.\n8. Confirm the project contains: the original source file (untouched), `<filename>.rewritten_v{n}.md`, and one set of MaraudersMapMD artifacts under `docs/MaraudersMap/<docId>/` (including `images/*.png` if any diagrams were converted). PNG files referenced by Markdown must remain on local disk. No `temp/` folder, no `temp_` files, no original-derived artifacts, no temporary HTML files.\n\n### Sync rule — rewritten changes must update shards\n\nIf the rewritten document is edited at any time:\n1. Re-run the MaraudersMapMD generation on the current rewritten version file (`<filename>.rewritten_v{n}.md`).\n2. Replace the Section Pack and Search Index with the newly generated versions.\n3. Regenerate `shards.json` from the updated shards and index.\n4. If a cross-doc SQLite index exists (`shards.db`), re-ingest the updated doc: `python shards_db.py --ingest docs/MaraudersMap/<docId> --map-root docs/MaraudersMap`.\n5. Do not continue work until shards, index, and `shards.json` exactly match the rewritten document.\n",
+      "token_count": 4403,
+      "content_hash": "412ff2f7bb1c9cca424c0128ddee54a52b4637e808c2adb13b7e4cbcc0bb433b",
       "keywords": [
         "Procedure",
         "<filename>.rewritten_v{n}.md",
@@ -118,6 +118,9 @@
         "temp/diagram-<name>.html",
         "docs/MaraudersMap/<docId>/images/",
         "file://<absolute-path>/temp/diagram-<name>.html",
+        "docs/FORM_EVENT.rewritten_v1.md",
+        "docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png",
+        "./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png",
         "**Architecture / system layout diagram:**\n\nUse nested",
         "elements for system boundaries and",
         "for components. Connect with",
@@ -176,18 +179,18 @@
       "summary": "Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.",
       "line_range": [
         48,
-        663
+        665
       ],
-      "index_tokens": 4318
+      "index_tokens": 4395
     },
     {
       "id": "SKILL:checklist",
       "legacy_id": "checklist",
       "title": "Checklist",
       "path": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/docs/MaraudersMap/SKILL/sections/04-checklist.md",
-      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 664-692 -->\n\n## Checklist\n\nAfter rewriting, verify every item below. Each maps to a rule in the canonical prompt.\n\n- [ ] Heading hierarchy is correct (single `#` title, levels descend without skips)\n- [ ] Concise summary present at the top for long documents\n- [ ] Paragraphs are short (2–4 lines); dense prose converted to bullets\n- [ ] Tables used for settings, options, or structured comparisons\n- [ ] No hard line breaks inside paragraphs\n- [ ] No extra blank lines inside lists\n- [ ] Typos fixed; product names, command names, and identifiers preserved exactly\n- [ ] AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them\n- [ ] All facts, constraints, and technical details from the source are present in the output\n- [ ] Code blocks and inline code unchanged (except ASCII art converted per classification rules)\n- [ ] Every ASCII visual block classified (data table / chart / diagram) per the decision tree\n- [ ] All ASCII data tables converted to Markdown pipe tables with identical row/column counts\n- [ ] All ASCII diagrams converted to HTML, rendered as screenshot PNG images, and embedded with `![...]()` syntax — no data loss\n- [ ] All ASCII charts converted to Markdown tables (simple) or HTML screenshot PNG images (complex) with every data point preserved\n- [ ] Every diagram and chart PNG image visually verified after screenshot capture (labels readable, layout correct, no overlaps)\n- [ ] Diagram images saved to `docs/MaraudersMap/<docId>/images/` with descriptive kebab-case filenames\n- [ ] Diagram image filenames are deterministic across reruns for the same input\n- [ ] No orphaned image files exist in `docs/MaraudersMap/<docId>/images/` (every PNG is referenced)\n- [ ] Every PNG referenced by Markdown exists on local disk and is not removed during cleanup\n- [ ] Every embedded image path in Markdown is correct and relative to the rewritten Markdown file\n- [ ] No `temp/diagram-*.html` files remain after completion\n- [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)\n- [ ] Output language matches the source's dominant language\n- [ ] No translated narrative text appears unless translation was explicitly requested by the user\n- [ ] Output is only the final Markdown — no commentary or preamble\n",
+      "content": "<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 666-694 -->\n\n## Checklist\n\nAfter rewriting, verify every item below. Each maps to a rule in the canonical prompt.\n\n- [ ] Heading hierarchy is correct (single `#` title, levels descend without skips)\n- [ ] Concise summary present at the top for long documents\n- [ ] Paragraphs are short (2–4 lines); dense prose converted to bullets\n- [ ] Tables used for settings, options, or structured comparisons\n- [ ] No hard line breaks inside paragraphs\n- [ ] No extra blank lines inside lists\n- [ ] Typos fixed; product names, command names, and identifiers preserved exactly\n- [ ] AI Hint Blocks (`> [AI RULE]`, `> [AI DECISION]`, `> [AI TODO]`, `> [AI CONTEXT]`) used only where the source content warrants them\n- [ ] All facts, constraints, and technical details from the source are present in the output\n- [ ] Code blocks and inline code unchanged (except ASCII art converted per classification rules)\n- [ ] Every ASCII visual block classified (data table / chart / diagram) per the decision tree\n- [ ] All ASCII data tables converted to Markdown pipe tables with identical row/column counts\n- [ ] All ASCII diagrams converted to HTML, rendered as screenshot PNG images, and embedded with `![...]()` syntax — no data loss\n- [ ] All ASCII charts converted to Markdown tables (simple) or HTML screenshot PNG images (complex) with every data point preserved\n- [ ] Every diagram and chart PNG image visually verified after screenshot capture (labels readable, layout correct, no overlaps)\n- [ ] Diagram images saved to `docs/MaraudersMap/<docId>/images/` with descriptive kebab-case filenames\n- [ ] Diagram image filenames are deterministic across reruns for the same input\n- [ ] No orphaned image files exist in `docs/MaraudersMap/<docId>/images/` (every PNG is referenced)\n- [ ] Every PNG referenced by Markdown exists on local disk and is not removed during cleanup\n- [ ] Every embedded image path in Markdown is correct and relative to the rewritten Markdown file\n- [ ] No `temp/diagram-*.html` files remain after completion\n- [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)\n- [ ] Output language matches the source's dominant language\n- [ ] No translated narrative text appears unless translation was explicitly requested by the user\n- [ ] Output is only the final Markdown — no commentary or preamble\n",
       "token_count": 407,
-      "content_hash": "bab1abfa8311d496c10bb4a986ea7e5bab16a0f4fe14deec030b78f3a42ce1e3",
+      "content_hash": "2678d6647dc3877708993d358647dbe64bd97aa0b23ab7a2c012b66bb843efae",
       "keywords": [
         "Checklist",
         "#",
@@ -204,8 +207,8 @@
       "ai_hints": [],
       "summary": "After rewriting, verify every item below. Each maps to a rule in the canonical prompt.",
       "line_range": [
-        664,
-        692
+        666,
+        694
       ],
       "index_tokens": 399
     }
@@ -377,6 +380,15 @@
         "checklist"
       ],
       "file://<absolute-path>/temp/diagram-<name>.html": [
+        "procedure"
+      ],
+      "docs/FORM_EVENT.rewritten_v1.md": [
+        "procedure"
+      ],
+      "docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png": [
+        "procedure"
+      ],
+      "./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png": [
         "procedure"
       ],
       "**Architecture / system layout diagram:**\n\nUse nested": [
@@ -752,7 +764,7 @@
         ],
         [
           "procedure",
-          32
+          33
         ],
         [
           "checklist",
@@ -770,7 +782,7 @@
         ],
         [
           "procedure",
-          5
+          8
         ],
         [
           "checklist",
@@ -818,7 +830,7 @@
         ],
         [
           "procedure",
-          49
+          51
         ],
         [
           "checklist",
@@ -936,7 +948,7 @@
         ],
         [
           "procedure",
-          46
+          47
         ],
         [
           "checklist",
@@ -960,7 +972,7 @@
         ],
         [
           "procedure",
-          61
+          62
         ],
         [
           "checklist",
@@ -1088,7 +1100,7 @@
         ],
         [
           "procedure",
-          49
+          51
         ],
         [
           "checklist",
@@ -1202,7 +1214,7 @@
         ],
         [
           "procedure",
-          30
+          29
         ],
         [
           "checklist",
@@ -1220,7 +1232,7 @@
         ],
         [
           "procedure",
-          170
+          176
         ],
         [
           "checklist",
@@ -1234,7 +1246,7 @@
         ],
         [
           "procedure",
-          46
+          49
         ],
         [
           "checklist",
@@ -1292,7 +1304,7 @@
         ],
         [
           "procedure",
-          16
+          18
         ],
         [
           "checklist",
@@ -1320,7 +1332,7 @@
         ],
         [
           "procedure",
-          23
+          26
         ],
         [
           "checklist",
@@ -1356,7 +1368,7 @@
         ],
         [
           "procedure",
-          38
+          40
         ],
         [
           "checklist",
@@ -1388,7 +1400,7 @@
         ],
         [
           "procedure",
-          18
+          19
         ]
       ],
       "extension": [
@@ -1478,7 +1490,7 @@
         ],
         [
           "procedure",
-          4
+          3
         ],
         [
           "checklist",
@@ -1632,7 +1644,7 @@
         ],
         [
           "procedure",
-          12
+          13
         ]
       ],
       "not": [
@@ -1642,7 +1654,7 @@
         ],
         [
           "procedure",
-          19
+          20
         ],
         [
           "checklist",
@@ -1662,7 +1674,7 @@
         ],
         [
           "procedure",
-          35
+          36
         ]
       ],
       "mixed": [
@@ -1726,7 +1738,7 @@
         ],
         [
           "procedure",
-          1
+          2
         ]
       ],
       "labels": [
@@ -1876,7 +1888,7 @@
         ],
         [
           "procedure",
-          2
+          3
         ]
       ],
       "code": [
@@ -2096,7 +2108,7 @@
         ],
         [
           "procedure",
-          4
+          5
         ]
       ],
       "project": [
@@ -2116,7 +2128,7 @@
         ],
         [
           "procedure",
-          9
+          10
         ],
         [
           "checklist",
@@ -2386,7 +2398,7 @@
         ],
         [
           "procedure",
-          3
+          5
         ],
         [
           "checklist",
@@ -2620,7 +2632,7 @@
         ],
         [
           "procedure",
-          26
+          29
         ],
         [
           "checklist",
@@ -2764,7 +2776,7 @@
         ],
         [
           "procedure",
-          17
+          20
         ],
         [
           "checklist",
@@ -2934,7 +2946,7 @@
         ],
         [
           "procedure",
-          17
+          18
         ]
       ],
       "begin": [
@@ -2950,7 +2962,7 @@
         ],
         [
           "procedure",
-          2
+          3
         ]
       ],
       "48": [
@@ -2959,7 +2971,7 @@
           1
         ]
       ],
-      "663": [
+      "665": [
         [
           "procedure",
           1
@@ -3038,7 +3050,7 @@
       "reference": [
         [
           "procedure",
-          7
+          6
         ]
       ],
       "file": [
@@ -3220,7 +3232,7 @@
       "docs": [
         [
           "procedure",
-          28
+          29
         ],
         [
           "checklist",
@@ -3230,7 +3242,7 @@
       "maraudersmap": [
         [
           "procedure",
-          28
+          29
         ],
         [
           "checklist",
@@ -3240,7 +3252,7 @@
       "docid": [
         [
           "procedure",
-          31
+          30
         ],
         [
           "checklist",
@@ -3286,7 +3298,7 @@
       "diagram": [
         [
           "procedure",
-          45
+          44
         ],
         [
           "checklist",
@@ -3296,7 +3308,7 @@
       "images": [
         [
           "procedure",
-          15
+          16
         ],
         [
           "checklist",
@@ -3622,13 +3634,13 @@
       "exact": [
         [
           "procedure",
-          3
+          4
         ]
       ],
       "by": [
         [
           "procedure",
-          15
+          16
         ],
         [
           "checklist",
@@ -3670,7 +3682,7 @@
       "delete": [
         [
           "procedure",
-          10
+          11
         ]
       ],
       "them": [
@@ -3808,7 +3820,7 @@
       "path": [
         [
           "procedure",
-          6
+          8
         ],
         [
           "checklist",
@@ -4276,7 +4288,7 @@
       "directory": [
         [
           "procedure",
-          3
+          4
         ]
       ],
       "runs": [
@@ -4288,7 +4300,7 @@
       "one": [
         [
           "procedure",
-          8
+          10
         ]
       ],
       "run": [
@@ -4470,7 +4482,7 @@
       "at": [
         [
           "procedure",
-          8
+          10
         ],
         [
           "checklist",
@@ -5202,7 +5214,7 @@
       "line": [
         [
           "procedure",
-          7
+          11
         ],
         [
           "checklist",
@@ -5212,7 +5224,7 @@
       "comment": [
         [
           "procedure",
-          2
+          3
         ],
         [
           "checklist",
@@ -5486,7 +5498,7 @@
       "name": [
         [
           "procedure",
-          13
+          12
         ]
       ],
       "6": [
@@ -5712,13 +5724,13 @@
       "replace": [
         [
           "procedure",
-          4
+          3
         ]
       ],
       "entirely": [
         [
           "procedure",
-          2
+          3
         ]
       ],
       "naming": [
@@ -6043,10 +6055,16 @@
           1
         ]
       ],
+      "compute": [
+        [
+          "procedure",
+          1
+        ]
+      ],
       "relative": [
         [
           "procedure",
-          6
+          8
         ],
         [
           "checklist",
@@ -6061,6 +6079,166 @@
         [
           "checklist",
           1
+        ]
+      ],
+      "form": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "event": [
+        [
+          "procedure",
+          3
+        ]
+      ],
+      "v1": [
+        [
+          "procedure",
+          6
+        ]
+      ],
+      "campaign": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "lifecycle": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "9": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "locate": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "start": [
+        [
+          "procedure",
+          7
+        ]
+      ],
+      "those": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "touch": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "surrounding": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "insert": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "following": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "two": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "their": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "place": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "nothing": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "else": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "result": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "followed": [
+        [
+          "procedure",
+          2
+        ]
+      ],
+      "tag": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "extra": [
+        [
+          "procedure",
+          2
+        ],
+        [
+          "checklist",
+          1
+        ]
+      ],
+      "duplicate": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "alt": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "wrapping": [
+        [
+          "procedure",
+          1
+        ]
+      ],
+      "link": [
+        [
+          "procedure",
+          3
         ]
       ],
       "handling": [
@@ -6683,12 +6861,6 @@
         [
           "procedure",
           2
-        ]
-      ],
-      "start": [
-        [
-          "procedure",
-          6
         ]
       ],
       "col": [
@@ -7433,12 +7605,6 @@
           4
         ]
       ],
-      "followed": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "dashes": [
         [
           "procedure",
@@ -7584,12 +7750,6 @@
         ]
       ],
       "double": [
-        [
-          "procedure",
-          1
-        ]
-      ],
-      "insert": [
         [
           "procedure",
           1
@@ -8007,16 +8167,6 @@
           1
         ]
       ],
-      "extra": [
-        [
-          "procedure",
-          1
-        ],
-        [
-          "checklist",
-          1
-        ]
-      ],
       "copies": [
         [
           "procedure",
@@ -8109,12 +8259,6 @@
           2
         ]
       ],
-      "nothing": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "completing": [
         [
           "procedure",
@@ -8189,12 +8333,6 @@
         [
           "procedure",
           1
-        ]
-      ],
-      "v1": [
-        [
-          "procedure",
-          5
         ]
       ],
       "prior": [
@@ -8287,12 +8425,6 @@
           1
         ]
       ],
-      "place": [
-        [
-          "procedure",
-          1
-        ]
-      ],
       "entry": [
         [
           "procedure",
@@ -8323,12 +8455,6 @@
         [
           "checklist",
           1
-        ]
-      ],
-      "link": [
-        [
-          "procedure",
-          2
         ]
       ],
       "repeating": [
@@ -8515,13 +8641,13 @@
           1
         ]
       ],
-      "664": [
+      "666": [
         [
           "checklist",
           1
         ]
       ],
-      "692": [
+      "694": [
         [
           "checklist",
           1
