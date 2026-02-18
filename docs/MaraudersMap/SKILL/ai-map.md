@@ -2,7 +2,7 @@
 
 **Source Path**: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md
 **Generated**: 2026-02-18
-**Total Tokens**: 5610
+**Total Tokens**: 5426
 
 ## Document Structure
 
@@ -10,8 +10,8 @@
 |---------|-------|--------|----------|
 | When to Use | 8-14 | 62 | Section content. |
 | Canonical Prompt | 15-47 | 303 | The text below is copied verbatim from `buildReadabilityPrompt()` in `src/ai/aiService.ts` of the MaraudersMapMD extension. Apply it as-is. `${source}` stands for the user-provided |
-| Procedure | 48-677 | 4777 | Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference. |
-| Checklist | 678-710 | 468 | After rewriting, verify every item below. Each maps to a rule in the canonical prompt. |
+| Procedure | 48-667 | 4575 | Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference. |
+| Checklist | 668-701 | 486 | After rewriting, verify every item below. Each maps to a rule in the canonical prompt. |
 
 ## Section Details
 
@@ -29,12 +29,12 @@
 
 ### Procedure
 
-- **Lines**: 48-677
-- **Tokens**: 4777
+- **Lines**: 48-667
+- **Tokens**: 4575
 - **Summary**: Follow these five phases in order. Each phase uses a MaraudersMapMD artifact as its primary reference.
 
 ### Checklist
 
-- **Lines**: 678-710
-- **Tokens**: 468
+- **Lines**: 668-701
+- **Tokens**: 486
 - **Summary**: After rewriting, verify every item below. Each maps to a rule in the canonical prompt.

@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 678-710 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 668-701 -->
 
 ## Checklist
 
@@ -23,6 +23,7 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Diagram image filenames are deterministic across reruns for the same input
 - [ ] No orphaned image files exist in `docs/MaraudersMap/<docId>/images/` (every PNG is referenced)
 - [ ] Every PNG referenced by Markdown exists on local disk and is not removed during cleanup
+- [ ] Filesystem proof was executed for each generated PNG before Markdown insertion (existence + non-zero size)
 - [ ] Every embedded image path in Markdown is correct and relative to the rewritten Markdown file
 - [ ] No `temp/diagram-*.html` files remain after completion
 - [ ] `<docId>` is stable per logical document base (no version-suffixed duplicate docId directories)
