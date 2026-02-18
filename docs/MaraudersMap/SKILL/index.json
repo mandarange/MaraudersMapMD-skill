@@ -1,8 +1,8 @@
 {
   "version": 1,
   "source": "/Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md",
-  "generated": "2026-02-18T01:01:34+00:00",
-  "totalTokens": 4838,
+  "generated": "2026-02-18T01:10:37+00:00",
+  "totalTokens": 4934,
   "entries": [
     {
       "section": "When to Use",
@@ -42,20 +42,20 @@
       "slug": "procedure",
       "lineRange": [
         46,
-        644
+        648
       ],
-      "tokens": 4169,
+      "tokens": 4247,
       "keywords": [
         "Procedure",
-        "<filename>.rewritten.md",
+        "<filename>.rewritten_v{n}.md",
         "docs/MaraudersMap/<docId>/ai-map.md",
         "docs/MaraudersMap/<docId>/sections/*.md",
         "docs/MaraudersMap/<docId>/index.json",
         "docs/MaraudersMap/<docId>/shards.json",
         "docs/MaraudersMap/<docId>/images/*.png",
         "<docId>",
-        "guide.rewritten.md",
-        "guide",
+        "guide.rewritten_v2.md",
+        "guide_v2",
         "sections/*.md",
         "index.json",
         "ai-map.md",
@@ -110,12 +110,13 @@
         "in inline code for visual reference, plus a numeric",
         "with",
         ").\n- For HTML chart images, add a",
-        ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- Only one",
-        "directory per document.",
+        ". The cross-doc index lives at docs/MaraudersMap/shards.db.\n- One",
+        "directory per rewritten version.",
         ") for section summaries and the Search Index (",
-        "folder next to the original file. Copy the original into it as the working copy:",
-        ". Example:",
+        ". Example first rewrite:",
         "→",
+        "; next rewrite cycle:",
+        ". Never use chained names like",
         ". All intermediate files go inside this",
         ", then",
         "to the original file's directory as",
@@ -127,7 +128,6 @@
         "once to batch-update the cross-doc index.\n6. Delete the",
         ", and one set of MaraudersMapMD artifacts under",
         "(including",
-        "if any diagrams were converted). No",
         "folder, no",
         "from the updated shards and index.\n4. If a cross-doc SQLite index exists (",
         "), re-ingest the updated doc:",
@@ -146,10 +146,10 @@
       "section": "Checklist",
       "slug": "checklist",
       "lineRange": [
-        645,
-        670
+        649,
+        675
       ],
-      "tokens": 347,
+      "tokens": 365,
       "keywords": [
         "Checklist",
         "#",

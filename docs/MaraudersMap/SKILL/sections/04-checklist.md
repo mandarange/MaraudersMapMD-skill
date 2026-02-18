@@ -1,4 +1,4 @@
-<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 645-670 -->
+<!-- Section from: /Users/choi-dong-won/Desktop/devs/MaraudersMapMD-skill/SKILL.md | Lines: 649-675 -->
 
 ## Checklist
 
@@ -22,6 +22,7 @@ After rewriting, verify every item below. Each maps to a rule in the canonical p
 - [ ] Diagram images saved to `docs/MaraudersMap/<docId>/images/` with descriptive kebab-case filenames
 - [ ] Diagram image filenames are deterministic across reruns for the same input
 - [ ] No orphaned image files exist in `docs/MaraudersMap/<docId>/images/` (every PNG is referenced)
+- [ ] Every PNG referenced by Markdown exists on local disk and is not removed during cleanup
 - [ ] No `temp/diagram-*.html` files remain after completion
 - [ ] Converted blocks include an HTML comment tracing origin (`<!-- Converted from ASCII art: ... -->`)
 - [ ] Output language matches the source's dominant language

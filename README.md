@@ -23,6 +23,10 @@ The skill assumes the MaraudersMapMD artifacts are available and uses them as th
 
 If the rewritten document changes, shards and index must be regenerated immediately so they match exactly.
 
+Rewritten output uses explicit versioned filenames:
+- First rewrite: `<filename>.rewritten_v1.md`
+- Next revision: `<filename>.rewritten_v2.md` (not `rewritten.rewritten.md`)
+
 ## Quick Install (Recommended)
 
 Humans make mistakes. We recommend letting the AI handle the installation for you.
@@ -86,8 +90,19 @@ If the skill is loaded correctly, the AI will follow the 5-phase procedure (Base
 | File | Purpose |
 |------|---------|
 | [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter, canonical prompt, 5-phase procedure, checklist |
+| `render_html_to_png.py` | Local Playwright-based HTML → PNG capture helper used by diagram/chart conversion flow |
 | `README.md` | This file |
 | `LICENSE` | MIT license |
+
+## HTML to PNG Capture Helper
+
+If your workflow generates HTML diagrams/charts but does not produce PNG output, run:
+
+```bash
+python3 render_html_to_png.py --html temp/diagram-example.html --output docs/MaraudersMap/SKILL/images/diagram-example.png --viewport-width 1200 --viewport-height 900 --wait-ms 400 --auto-install
+```
+
+This command uses `npx playwright screenshot` under the hood and can auto-install the browser runtime when missing.
 
 ## When It Triggers
 
