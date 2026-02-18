@@ -239,23 +239,24 @@ Rendering flow:
 6. Ensure the diagram root element (`.diagram`) has no external margin/padding and tightly wraps content (`display: inline-block`, content-sized width/height).
 7. Measure the rendered `.diagram` bounding box (`width`, `height`) before capture.
 8. If the current viewport would clip the measured bounds, resize the browser viewport to fit the full diagram with a small safety gutter (for example +24 px each side), then re-check bounds.
-9. Capture **the diagram element only** (element screenshot), not the full page/viewport, and save to the absolute path `docs/MaraudersMap/<docId>/images/<diagram-name>.png`.
+9. Capture **the diagram element only** (element screenshot targeting the `.diagram` element), not the full page/viewport, and save to the absolute path `docs/MaraudersMap/<docId>/images/<diagram-name>.png`. This is **non-negotiable** — full-page or viewport screenshots always include body/viewport whitespace that cannot be fully corrected by post-processing.
 10. If element screenshot is unavailable, capture with an explicit clip rectangle from the diagram element's bounding box (`x`, `y`, `width`, `height`) and preserve the same aspect ratio as the measured bounds. Never use a full-page screenshot fallback.
-11. **Always regenerate on this run**: do not depend on pre-existing PNG files. For each converted diagram, create or overwrite `docs/MaraudersMap/<docId>/images/<diagram-name>.png` in the current run.
-12. **Hard gate**: Check that the PNG file exists on disk and has non-zero size. If it is missing or empty, retry from step 4 with 800 ms wait. If it still fails, delete any partial output, fix the HTML/CSS, and retry until capture succeeds. Never finish with a missing PNG for a converted diagram.
-13. **Filesystem proof (required)**: run a direct file existence check on the exact output path (for example `ls -l <absolute-png-path>` or equivalent tool read). Proceed only when the file is present and size > 0.
-14. **Auto-crop whitespace**: run `python trim_whitespace.py <absolute-png-path> --padding 4` to remove excess whitespace borders from the captured PNG. This trims any outer whitespace the browser capture left behind and keeps a 4 px content margin. If Pillow is not installed, run `pip install Pillow` first. If the script reports "no trim needed", proceed — the PNG is already tight.
-15. Visually verify: all labels readable, no overlapping elements, layout matches original, the full diagram is present (no clipping), and the PNG has no large outer whitespace. If broken, fix the HTML/CSS and redo from step 4.
-16. Keep only the latest versioned render HTML file for this diagram (`...render_v{N}.html`) as the editable SSOT file.
-17. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
-18. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
+11. **Dimension sanity check**: Compare the captured PNG dimensions against the measured `.diagram` bounding box from step 7. If the PNG width or height exceeds 1.5× the bounding-box dimensions, the capture targeted the wrong element or fell back to viewport capture — discard the PNG and redo from step 9 with the correct `.diagram` element selector.
+12. **Always regenerate on this run**: do not depend on pre-existing PNG files. For each converted diagram, create or overwrite `docs/MaraudersMap/<docId>/images/<diagram-name>.png` in the current run.
+13. **Hard gate**: Check that the PNG file exists on disk and has non-zero size. If it is missing or empty, retry from step 4 with 800 ms wait. If it still fails, delete any partial output, fix the HTML/CSS, and retry until capture succeeds. Never finish with a missing PNG for a converted diagram.
+14. **Filesystem proof (required)**: run a direct file existence check on the exact output path (for example `ls -l <absolute-png-path>` or equivalent tool read). Proceed only when the file is present and size > 0.
+15. **Auto-crop whitespace**: If `trim_whitespace.py` does not exist in the project, fetch it first: `curl -fsSL https://raw.githubusercontent.com/mandarange/MaraudersMapMD-skill/main/trim_whitespace.py -o trim_whitespace.py`. Then run `pip install Pillow` if not already installed, and execute `python trim_whitespace.py <absolute-png-path> --padding 4`. This trims any residual whitespace the browser capture left behind and keeps a 4 px content margin. If the script reports "no trim needed", proceed — the PNG is already tight.
+16. Visually verify: all labels readable, no overlapping elements, layout matches original, the full diagram is present (no clipping), and the PNG has no large outer whitespace. If broken, fix the HTML/CSS and redo from step 4.
+17. Keep only the latest versioned render HTML file for this diagram (`...render_v{N}.html`) as the editable SSOT file.
+18. Compute the relative path from the rewritten Markdown file's directory to the saved PNG. Example: if the Markdown is at `docs/FORM_EVENT.rewritten_v1.md` and the PNG is at `docs/MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`, the relative path is `./MaraudersMap/FORM_EVENT/images/campaign-lifecycle.png`.
+19. In the rewritten Markdown, locate the exact lines of the original ASCII block (start line to end line). Delete those lines entirely — do not touch any surrounding text, headings, or links. Insert the following two lines in their place, and nothing else:
     ```
     <!-- Converted from ASCII art: [original description] -->
     ![<diagram description>](<relative-path-to-png>)
     ```
     The result must be exactly one comment line followed by exactly one image tag line. No extra text, no duplicate alt, no wrapping in a link.
-19. Re-check that the referenced PNG path in the inserted image tag exists on disk.
-20. Remove older render HTML versions for the same diagram (`...render_v{k}.html` where `k < N`) and keep only the current highest version file as SSOT.
+20. Re-check that the referenced PNG path in the inserted image tag exists on disk.
+21. Remove older render HTML versions for the same diagram (`...render_v{k}.html` where `k < N`) and keep only the current highest version file as SSOT.
 
 Failure handling:
 - If capture fails, keep the current versioned render HTML for retry and delete only broken PNG output. Retry capture from step 4 using the same HTML.
@@ -273,7 +274,7 @@ Regression guard (required):
 Screenshot quality:
 - Viewport: 600–1200 px wide. Device pixel ratio: 2.
 - Background: white (`#ffffff`). No browser chrome or scrollbars.
-- Bounds: the output PNG must be tightly cropped to the diagram element with no excessive outer whitespace and no clipped edges. The `trim_whitespace.py` post-processing step (step 14) guarantees this automatically.
+- Bounds: the output PNG must be tightly cropped to the diagram element with no excessive outer whitespace and no clipped edges. The dimension sanity check (step 11) catches viewport-sized captures, and `trim_whitespace.py` post-processing (step 15) trims any residual whitespace.
 - Ratio: when clip capture is used, output width/height must match the measured `.diagram` bounding-box aspect ratio.
 - All text legible at final embedded size.
 
@@ -281,7 +282,9 @@ Screenshot quality:
 
 ### Diagram type HTML/CSS templates
 
-Use these patterns as a starting point when generating HTML for each diagram type. Adapt layout, colors, and sizing to match the specific diagram's content. All templates share these base styles:
+Use these patterns as a starting point when generating HTML for each diagram type. Adapt layout, colors, and sizing to match the specific diagram's content. All templates share these base styles.
+
+> [AI RULE] The body and `.diagram` CSS rules below are **mandatory for correct capture**. If any of these are missing or overridden, the captured PNG will contain viewport-sized whitespace. Never use `width: 100%`, `display: block`, or fixed pixel `width`/`height` on body or `.diagram`. Never add `padding` or `margin` to body.
 
 **Base styles (shared across all diagram types):**
 
@@ -298,13 +301,14 @@ Use these patterns as a starting point when generating HTML for each diagram typ
     background: #ffffff;
     margin: 0;
     padding: 0;
-    width: fit-content;
-    height: fit-content;
-    display: inline-block;
-    overflow: hidden;
+    width: fit-content;   /* REQUIRED — shrink to content */
+    height: fit-content;  /* REQUIRED — shrink to content */
+    display: inline-block; /* REQUIRED — enables fit-content */
+    overflow: hidden;     /* REQUIRED — no scrollbars */
     color: #1e293b;
   }
-  .diagram { display: inline-block; margin: 0; }
+  /* REQUIRED — capture target must shrink-wrap content, never expand to viewport */
+  .diagram { display: inline-block; margin: 0; padding: 0; }
   .box {
     border: 1.5px solid #64748b;
     border-radius: 8px;
