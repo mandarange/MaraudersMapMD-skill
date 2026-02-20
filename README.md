@@ -26,17 +26,9 @@ Optional debug artifacts (`sections/*.md`, `index.json`, `ai-map.md`) may exist 
 
 ### Diagram/Chart Image Reliability
 
-The skill enforces a strict capture lifecycle for ASCII-to-image conversion:
+This skill focuses purely on text rewriting and readability. When encountering complex ASCII art (flowcharts, ER schemas, architecture diagrams), this skill intentionally leaves them untouched. 
 
-- Always regenerate PNG in the current run (do not rely on old files)
-- Capture the diagram/chart element itself (not full page) so PNG bounds are tight
-- Auto-resize viewport to fit full diagram bounds before capture to prevent edge clipping
-- Preserve measured diagram aspect ratio when clip-based capture is used
-- Verify PNG exists on disk and has non-zero size before inserting Markdown image tags
-- Keep a versioned render HTML source at `docs/MaraudersMap/<docId>/render-html/<diagram-name>.render_vN.html`
-- On each rewrite for the same diagram, increment render HTML version by exactly +1 (`render_v1` -> `render_v2` -> `render_v3`)
-- Keep only the latest render HTML version per diagram (SSOT), and remove older versions after successful capture
-- If PNG is missing (including manual deletion), regenerate it before completion
+To convert those ASCII text diagrams into high-quality Mermaid.js PNGs, use the companion skill: **[Marauders_ASCII2Chart_Skill](https://github.com/mandarange/Marauders_ASCII2Chart_Skill)**.
 
 Rewritten output uses explicit versioned filenames:
 - First rewrite: `<filename>.rewritten_v1.md`
@@ -105,7 +97,6 @@ If the skill is loaded correctly, the AI will follow the 5-phase procedure (Base
 | File | Purpose |
 |------|---------|
 | [`SKILL.md`](./SKILL.md) | Skill definition — YAML frontmatter, canonical prompt, 5-phase procedure, checklist |
-| [`trim_whitespace.py`](./trim_whitespace.py) | Auto-crop whitespace borders from captured PNG images (requires `Pillow`) |
 | `README.md` | This file |
 | `LICENSE` | MIT license |
 
@@ -122,6 +113,7 @@ The skill activates when the user asks to:
 
 ## Related
 
+- [Marauders_ASCII2Chart_Skill](https://github.com/mandarange/Marauders_ASCII2Chart_Skill) — The companion skill for rendering ASCII diagrams to Premium PNGs
 - [MaraudersMapMD](https://github.com/mandarange/MaraudersMapMD) — The VS Code extension this skill is based on
 - [Anthropic Skills Spec](https://github.com/anthropics/skills) — The skill format specification
 
