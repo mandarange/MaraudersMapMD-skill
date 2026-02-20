@@ -59,7 +59,7 @@ def _find_latest_rewritten(doc_root, doc_id):
     return best
 
 
-def _build_section_record(doc_id, legacy_id, title, content, file_path, line_range):
+def _build_section_record(doc_id, legacy_id, title, content, file_path, line_range, keywords=None, summary=""):
     return {
         "id": f"{doc_id}:{legacy_id}",
         "legacy_id": legacy_id,
@@ -67,14 +67,14 @@ def _build_section_record(doc_id, legacy_id, title, content, file_path, line_ran
         "content": content,
         "content_hash": _sha(content),
         "token_count": _tok_count(content),
-        "keywords": [],
+        "keywords": keywords or [],
         "links": [],
         "ai_hints": [
             m.group(1)
             for m in (AI_HINT_PATTERN.match(l) for l in content.splitlines())
             if m
         ],
-        "summary": "",
+        "summary": summary,
         "line_range": line_range,
         "file_path": file_path,
     }
@@ -82,9 +82,40 @@ def _build_section_record(doc_id, legacy_id, title, content, file_path, line_ran
 
 def _sections_from_markdown(doc_id, md_path, text):
     lines = text.splitlines()
+
+    fm_keywords = []
+    fm_summary = ""
+    fm_end_idx = -1
+    if lines and lines[0].strip() == "---":
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "---":
+                fm_end_idx = i
+                break
+
+    if fm_end_idx > 0:
+        for i in range(1, fm_end_idx):
+            line = lines[i].strip()
+            lower_line = line.lower()
+            if lower_line.startswith("tags:") or lower_line.startswith("keywords:"):
+                try:
+                    val = line.split(":", 1)[1].strip()
+                    if val.startswith("[") and val.endswith("]"):
+                        val = val[1:-1]
+                    fm_keywords.extend([k.strip().strip("'\"") for k in val.split(",") if k.strip()])
+                except IndexError:
+                    pass
+            elif lower_line.startswith("description:") or lower_line.startswith("summary:"):
+                try:
+                    val = line.split(":", 1)[1].strip()
+                    fm_summary = val.strip("'\"")
+                except IndexError:
+                    pass
+
     heading_positions = []
     heading_titles = []
     for idx, line in enumerate(lines):
+        if idx <= fm_end_idx:
+            continue
         match = HEADING_RE.match(line)
         if match:
             heading_positions.append(idx)
@@ -102,20 +133,25 @@ def _sections_from_markdown(doc_id, md_path, text):
         return f"{base_slug}-{count}"
 
     if not heading_positions:
+        content_lines = lines[fm_end_idx + 1:] if fm_end_idx >= 0 else lines
+        content = "\n".join(content_lines).strip()
         return [
             _build_section_record(
                 doc_id=doc_id,
                 legacy_id="document",
                 title="Document",
-                content=text,
+                content=content,
                 file_path=md_path,
                 line_range=[1, len(lines) if lines else 1],
+                keywords=fm_keywords,
+                summary=fm_summary,
             )
         ]
 
     first_heading = heading_positions[0]
     if first_heading > 0:
-        preamble = "\n".join(lines[:first_heading]).strip()
+        start_idx = fm_end_idx + 1 if fm_end_idx >= 0 else 0
+        preamble = "\n".join(lines[start_idx:first_heading]).strip()
         if preamble:
             sections.append(
                 _build_section_record(
@@ -125,6 +161,8 @@ def _sections_from_markdown(doc_id, md_path, text):
                     content=preamble,
                     file_path=md_path,
                     line_range=[1, first_heading],
+                    keywords=fm_keywords,
+                    summary=fm_summary,
                 )
             )
 
@@ -145,6 +183,7 @@ def _sections_from_markdown(doc_id, md_path, text):
                 content=chunk,
                 file_path=md_path,
                 line_range=[start + 1, end_exclusive],
+                keywords=fm_keywords,
             )
         )
 
